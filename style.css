@@ -1,0 +1,642 @@
+/* --- GLOBAL STYLES --- */
+body {
+    background: url(inii.png);
+    font-family: Arial;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Memaksa body setinggi layar */
+}
+
+/* --- TOPPER / HEADER SECTION --- */
+.topper {
+    width: 100%;
+    text-align: center;
+    background: rgba(247, 213, 219, 0.5); /* pink soft seperti gambar */
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 35px;
+}
+
+.brand {
+    margin: 0;
+    font-size: 35px;
+    font-weight: bold;
+    font-family: monospace;
+    color: #2f3e46;
+}
+
+.brand span {
+    color: rgb(182, 139, 201);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.subtitle {
+    margin: 10px 0;
+    font-size: 25px;
+    color: rgb(182, 139, 201);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.desc {
+    max-width: 650px;
+    margin: 10px auto 0;
+    font-size: 14px;
+    color: #2f3e46;
+    line-height: 1.7;
+    font-style: italic;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* --- MAIN LAYOUT --- */
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    flex: 1; /* Penting agar footer tetap di bawah */
+}
+
+/* --- LEFT PANEL (CAMERA & VIDEO) --- */
+.left-panel {
+    width: 50%;
+    max-width: 700px;
+    margin: 0 auto;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+
+    border-radius: 20px;
+    padding: 20px;
+
+    height: fit-content;
+    font-style: italic;
+}
+
+.header {
+    background: pink;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-header {
+    max-height: 60px;
+    width: auto;
+}
+
+.camera-box {
+    position: relative;
+    width: 60%;
+    margin: 0 auto;
+    padding-top: 10px;
+    border-radius: 15px;
+}
+
+video {
+     width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 15px;
+
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+
+    /* Safari iOS */
+    -webkit-filter: none;
+
+    will-change: transform, filter;
+}
+
+#countdown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 70px;
+    color: white;
+    font-weight: bold;
+}
+
+/* --- INTERACTIVE ELEMENTS (BUTTONS & DROPDOWNS) --- */
+.btn {
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: monospace;
+    background: rgb(200, 161, 218);
+}
+
+.btn:hover {
+    filter: brightness(0.9);
+    transform: scale(1.02);
+}
+
+.pink {
+    background: #f3b6c1;
+}
+
+.btn-group {
+    position: relative;
+    display: inline-block;
+    
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: 0.2s;
+    background:rgb(200, 161, 218) ;
+}
+
+
+.dropdown[style*="block"] {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown div {
+    padding: 10px;
+    cursor: pointer;
+}
+/* KHUSUS LAYOUT ITEM */
+.layout-item {
+    background: rgba(255,255,255,0.15) !important;
+    padding: 5px !important;
+}
+
+.dropdown div:hover {
+    background: #eee;
+}
+
+/* --- FRAME & COLOR PICKER --- */
+.frame-color {
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: monospace;
+    background: rgb(200, 161, 218);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.frame-color:hover {
+    filter: brightness(0.9);
+    transform: scale(1.02);
+}
+
+.frame-color p {
+    margin: 0;
+    font-size: 14px;
+    color: #000;
+}
+
+#bgColor {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+#bgColor::-webkit-color-swatch {
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#bgColor::-moz-color-swatch {
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* --- RIGHT PANEL (MACHINE & OUTPUT) --- */
+.right-panel {
+    width: 40%;
+    text-align: center;
+}
+
+.machine {
+    margin: 20px auto;
+    width: 200px;
+}
+
+.camera-top {
+    background: rgb(200, 161, 218);
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.red-dot {
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+}
+
+.lens {
+    width: 40px;
+    height: 40px;
+    border: 4px solid black;
+    border-radius: 50%;
+}
+
+.output-slot {
+    width: 120px;
+    height: 40px;
+    background: #bfc7ce;
+    margin: 10px auto;
+    border-radius: 10px;
+}
+
+/* --- PHOTO STRIP & ANIMATION --- */
+.strip {
+    width: 180px;
+    margin: auto;
+    padding: 15px;
+    border-radius: 10px;
+    transform: translateY(-250px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#photosContainer {
+    width: 100%;
+}
+
+#logoStrip {
+    width: 100px;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+.strip img {
+    width: 100%;
+    margin-bottom: 12px;
+    border-radius: 8px;
+}
+
+.strip.show {
+    animation: keluar 1s forwards;
+}
+
+@keyframes keluar {
+    from { transform: translateY(-250px); }
+    to { transform: translateY(0); }
+}
+
+.strip.grid-6 {
+    width: 220px;
+    padding: 12px;
+    border-radius: 0;
+
+}
+.strip.grid-6 #photosContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+.strip.grid-6 img {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.strip::after {
+    content: "";
+    display: block;
+    height: 40px;
+}
+
+
+
+/* --- FILTER DROPDOWN GRID --- */
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: monospace;
+    font-style: italic;
+}
+
+.filter-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.preview-box {
+    width: 17.5px;
+    height: 17.5px;
+    border-radius: 6px;
+    background-image: url('https://picsum.photos/50');
+    background-size: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Filter States */
+.preview-box.none { filter: none; }
+.preview-box.bw { filter: grayscale(100%); }
+.preview-box.sepia { filter: sepia(100%); }
+.preview-box.bright { filter: brightness(150%); }
+.preview-box.contras { filter: contrast(150%); }
+.preview-box.vintage { filter: sepia(60%) brightness(105%) contrast(110%); }
+.preview-box.soft { filter: blur(2px) brightness(140%); }
+
+.dropdown.grid-mode {
+    display: none;
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background: rgb(200, 161, 218);
+    border-radius: 15px;
+    padding: 10px;
+    z-index: 100;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    min-width: 300px;
+}
+
+.dropdown.grid-mode[style*="block"] {
+    display: grid !important;
+}
+
+/* --- STATUS & INFO --- */
+.info {
+    padding: 10px;
+    text-align: center;
+}
+
+#status {
+    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
+    font-size: 14px;
+    color: #000000;
+    margin: 0;
+    font-weight: 500;
+    text-shadow: 0.5px 0.5px 0px rgba(255, 255, 255, 0.5);
+}
+
+/* --- FOOTER --- */
+footer {
+    background: transparent;
+    background-color: rgba(247, 213, 219, 0.5);
+    color: #333;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 30px;
+    width: 100%;
+}
+
+
+.footer-content p {
+    margin: 5px 0;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.footer-content span {
+    color: rgb(143, 92, 165);
+}
+
+/* ===== LAYOUT DROPDOWN ===== */
+
+.layout-menu {
+    
+    flex-direction: row !important;
+
+    align-items: center;
+    gap: 10px;
+
+    width: fit-content;
+    max-width: 500px;
+
+    padding: 10px;
+
+    background: rgb(200, 161, 218);
+
+    border-radius: 15px;
+
+    overflow-x: auto;
+}
+.layout-menu[style*="block"] {
+    display: flex !important;
+}
+
+/* CARD LAYOUT */
+.layout-item {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    min-width: 65px;
+
+    padding: 5px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.15);
+
+    transition: 0.2s;
+}
+
+.layout-item:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.25);
+}
+
+/* GAMBAR */
+.layout-item img {
+    width: 55px;
+    height: 75px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+/* TEXT */
+.layout-item span {
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    font-family: monospace;
+    font-style: italic;
+
+    color: black;
+}
+
+
+/* ============================= */
+/* MOBILE VERSION */
+/* ============================= */
+
+@media screen and (max-width: 768px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    /* TOP HEADER */
+    .topper {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .brand {
+        font-size: 28px;
+    }
+
+    .subtitle {
+        font-size: 18px;
+    }
+
+    .desc {
+        font-size: 11px;
+        padding: 0 10px;
+        line-height: 1.5;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+        width: 90%;
+        padding: 15px;
+        border-radius: 18px;
+    }
+
+    .camera-box {
+        width: 100%;
+    }
+
+    video {
+        width: 100%;
+        height: 320px;
+    }
+
+    /* BUTTON AREA */
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .btn {
+        font-size: 11px;
+        padding: 8px 10px;
+        margin: 2px;
+    }
+
+    .frame-color {
+        font-size: 11px;
+        padding: 8px 10px;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .machine {
+        width: 150px;
+        margin-bottom: 10px;
+    }
+
+    .camera-top {
+        padding: 10px;
+    }
+
+    .lens {
+        width: 30px;
+        height: 30px;
+    }
+
+    .red-dot {
+        width: 15px;
+        height: 15px;
+    }
+
+    /* PHOTO STRIP */
+    .strip {
+        width: 150px;
+        padding: 10px;
+    }
+
+    .strip.grid-6 {
+        width: 180px;
+    }
+
+    #logoStrip {
+        width: 80px;
+    }
+
+    /* DROPDOWN */
+    .dropdown.grid-mode {
+        grid-template-columns: repeat(2, 1fr);
+        min-width: 220px;
+    }
+
+    .layout-menu {
+        max-width: 250px;
+        overflow-x: auto;
+    }
+
+    .layout-item img {
+        width: 45px;
+        height: 65px;
+    }
+
+    /* STATUS */
+    #status {
+        font-size: 11px;
+    }
+
+    /* FOOTER */
+    footer {
+        margin-top: 20px;
+        padding: 15px 10px;
+    }
+
+    .footer-content p {
+        font-size: 10px;
+    }
+}

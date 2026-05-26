@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>wednbOOth | Photobooth Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="photobooth online, wednbooth, aplikasi foto, photobooth web, filter foto estetik">
+    <meta name="description" content="Photobooth Online Gratis | Abadikan momen serumu dengan layout asik, filter kreatif, dan langsung bisa di-download. Yuk, Tunjukkan gaya terbaikmu!">
+    <meta name="google-site-verification" content="_NyCSSTl3utaTkt9hZjL_MKQA5qwGN91B6APRuYbNRo" >
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="topper">
+        <h1 class="brand">wedn<span>bOOth</span></h1>
+        <h1 class="subtitle">Online Photobooth</h1>
+        <p class="desc">
+            Welcome! Capture your special moments with fun layouts,
+            creative filters, and instant downloads. Strike a pose and cheers!!
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="left-panel">
+            <div class="header">
+                <img src="wlogo.png" alt="logo" class="logo-header">
+            </div>
+
+            <div class="camera-box">
+            <video id="video" autoplay playsinline muted></video>                <div id="countdown"></div>
+            </div>
+
+            <div class="controls">
+                <button id="captureBtn" class="btn pink">◉ AMBIL FOTO</button>
+
+                <div class="btn-group">
+                    <button id="layoutBtn" class="btn" onclick="toggleMenu('layoutMenu')">⌗ Layout: 1 Foto</button>
+                    <div id="layoutMenu" class="dropdown layout-menu">
+                        <div class="layout-item" onclick="setLayout(1)">
+                                <img src="layout1.png">
+                                <span>1 Foto</span>
+                            </div>                        
+                        <div class="layout-item" onclick="setLayout(2)">
+                                <img src="layout2.png">
+                                <span>2 Foto</span>
+                            </div>
+                         <div class="layout-item" onclick="setLayout(3)">
+                                <img src="layout3.png">
+                                <span>3 Foto</span>
+                            </div>
+                         <div class="layout-item" onclick="setLayout(4)">
+                                <img src="layout4.png">
+                                <span>4 Foto</span>
+                            </div>
+                        <div class="layout-item" onclick="setLayout(6)">
+                                <img src="layout6.png">
+                                <span>6 Foto</span>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="filterBtn" class="btn" onclick="toggleMenu('filterMenu')">✦ Filter: Normal</button>
+                    <div id="filterMenu" class="dropdown grid-mode">
+<div class="filter-item" onclick="setFilter('none','Normal')">
+                            <div class="preview-box none"></div>
+                            <span>Normal</span>
+                        </div>
+<div class="filter-item" onclick="setFilter('bw','B&W')">
+                            <div class="preview-box bw"></div>
+                            <span>B&W</span>
+                        </div>
+<div class="filter-item" onclick="setFilter('sepia','Sepia')">
+                            <div class="preview-box sepia"></div>
+                            <span>Sepia</span>
+                        </div>
+<div class="filter-item" onclick="setFilter('bright','Bright')">
+                            <div class="preview-box bright"></div>
+                            <span>Bright</span>
+                        </div>
+<div class="filter-item" onclick="setFilter('contrast','Contrast')">
+                            <div class="preview-box contras"></div>
+                            <span>Contras</span>
+                        </div>
+<div class="filter-item" onclick="setFilter('vintage','Vintage')">
+                            <div class="preview-box vintage"></div>
+                            <span>Vintage</span>
+                        </div>
+<div class="filter-item" onclick="setFilter('soft','Soft')">                            <div class="preview-box soft"></div>
+                            <span>Soft</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="timerBtn" class="btn" onclick="toggleMenu('timerMenu')">⏱ Timer: Off</button>
+                    <div id="timerMenu" class="dropdown">
+                        <div onclick="setTimer(0,'Off')">Off</div>
+                        <div onclick="setTimer(3,'3s')">3s</div>
+                        <div onclick="setTimer(5,'5s')">5s</div>
+                    </div>
+                </div>
+
+                <div class="frame-color">
+                    <p>Frame Color</p>
+                    <input type="color" id="bgColor" value="#ffffff">
+                </div>
+
+                <button id="reset" class="btn">⟲ Reset</button>
+            </div>
+
+            <div class="info">
+                <p id="status">Ready</p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="machine">
+                <div class="camera-top">
+                    <div class="red-dot"></div>
+                    <div class="lens"></div>
+                </div>
+                <div class="output-slot"></div>
+            </div>
+
+            <div class="photo-result">
+                <div id="strip" class="strip">
+                    <div id="photosContainer"></div>
+                    <img src="LOGO.png" id="logoStrip" alt="Logo Strip">
+                </div>
+            </div>
+
+            <button id="downloadJPG" class="btn pink">🖼️ Download JPG</button>
+            <button id="downloadGIF" class="btn pink">🎞️ Download GIF</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+    <script src="script.js"></script>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 wednbOOth | All Rights Reserved</p>
+            <p>Made with <span>♡</span> for your special moments</p>
+        </div>
+    </footer>
+</body>
+</html>
