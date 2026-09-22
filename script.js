@@ -23,10 +23,6 @@ let photos = [];
 
 const shutter = new Audio("https://www.soundjay.com/mechanical/camera-shutter-click-01.mp3");
 
-/* --- CAMERA INITIALIZATION --- */
-navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => video.srcObject = stream);
-
 /* --- DROPDOWN CONTROL --- */
 function closeAllDropdowns() {
     document.querySelectorAll(".dropdown").forEach(d => d.style.display = "none");
@@ -463,3 +459,51 @@ resetBtn.onclick = () => {
     document.getElementById("photosContainer").innerHTML = "";
     statusText.innerText = "Reset selesai";
 };
+
+/* =========================================
+   HOMEPAGE → PHOTOBOOTH
+   ========================================= */
+
+const homePage = document.getElementById("homePage");
+const photoboothApp = document.getElementById("photoboothApp");
+const startBtn = document.getElementById("startBtn");
+
+let cameraStream = null;
+
+async function startCamera() {
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: true
+        });
+
+        video.srcObject = cameraStream;
+        statusText.innerText = "Camera ready";
+
+    } catch (error) {
+        console.error("Camera error:", error);
+
+        statusText.innerText = "Camera tidak dapat diakses";
+
+        alert(
+            "Kamera tidak dapat diakses. " +
+            "Pastikan kamu sudah memberikan izin kamera pada browser."
+        );
+    }
+}
+
+startBtn.addEventListener("click", async function () {
+
+    // Sembunyikan homepage
+    homePage.classList.add("hide");
+
+    // Tampilkan photobooth
+    setTimeout(async () => {
+
+        photoboothApp.classList.add("active");
+
+        // Baru aktifkan kamera setelah START
+        await startCamera();
+
+    }, 300);
+
+});

@@ -640,3 +640,702 @@ footer {
         font-size: 10px;
     }
 }
+/* =========================================
+   HOMEPAGE / WELCOME SCREEN
+   ========================================= */
+
+.home-page {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: url(inii.png);
+    background-size: cover;
+    background-position: center;
+
+    transition:
+        opacity 0.6s ease,
+        visibility 0.6s ease;
+}
+
+
+/* Soft pink overlay */
+.home-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: rgba(247, 213, 219, 0.35);
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+
+/* CONTENT */
+
+.home-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(90%, 500px);
+
+    padding: 45px 35px;
+
+    text-align: center;
+
+    background: rgba(255, 255, 255, 0.22);
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 30px;
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.10);
+
+    animation: homeAppear 0.9s ease;
+}
+
+
+/* LOGO */
+
+.home-logo {
+    width: 120px;
+    max-width: 40%;
+
+    margin-bottom: 15px;
+
+    object-fit: contain;
+}
+
+
+/* TITLE */
+
+.home-title {
+    margin: 0;
+
+    font-family: monospace;
+
+    font-size: 48px;
+
+    font-weight: bold;
+
+    color: #2f3e46;
+
+    letter-spacing: -2px;
+}
+
+.home-title span {
+    color: rgb(182, 139, 201);
+
+    font-family:
+        'Gill Sans',
+        'Gill Sans MT',
+        Calibri,
+        'Trebuchet MS',
+        sans-serif;
+}
+
+
+/* SUBTITLE */
+
+.home-subtitle {
+    margin: 10px 0 5px;
+
+    font-size: 22px;
+
+    font-family:
+        'Courier New',
+        Courier,
+        monospace;
+
+    color: rgb(182, 139, 201);
+
+    font-weight: normal;
+}
+
+
+/* DESCRIPTION */
+
+.home-desc {
+    position: relative;
+
+    margin: 18px 0 28px;
+
+    font-family: monospace;
+    font-size: 15px;
+    font-style: italic;
+
+    color: #2f3e46;
+
+    opacity: 0;
+
+    animation: textAppear 1.8s ease forwards;
+    animation-delay: 0.8s;
+}
+
+
+/* teks utama */
+.home-desc span {
+    position: relative;
+
+    display: inline-block;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   EFEK MUNCUL PERLAHAN
+========================================= */
+
+@keyframes textAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   KILAUAN "TRING ✨"
+========================================= */
+
+.home-desc {
+    margin: 18px 0 28px;
+    font-family: monospace;
+    font-size: 15px;
+    font-style: italic;
+    color: #2f3e46;
+    opacity: 0;
+    animation: descAppear 1.5s ease forwards;
+    animation-delay: 0.8s;
+}
+
+/* Tulisan */
+.shine-text {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+
+/* Kilauan yang melintas */
+.shine-text::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -80%;
+    width: 35%;
+    height: 200%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+
+    animation: shineMove 2.8s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+/* ✦ sparkle */
+.sparkle {
+    display: inline-block;
+    margin-left: 5px;
+    color: #d7a8df;
+    font-style: normal;
+
+    animation:
+        sparkleTwinkle 1.8s ease-in-out infinite,
+        sparkleRotate 2.5s ease-in-out infinite;
+
+    text-shadow:
+        0 0 4px rgba(255,255,255,0.8),
+        0 0 8px rgba(215,168,223,0.8),
+        0 0 14px rgba(255,255,255,0.7);
+}
+
+/* Tulisan muncul perlahan */
+@keyframes descAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Kilauan bergerak dari kiri → kanan */
+@keyframes shineMove {
+    0% {
+        left: -80%;
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    45% {
+        left: 120%;
+        opacity: 1;
+    }
+
+    50% {
+        left: 120%;
+        opacity: 0;
+    }
+
+    100% {
+        left: 120%;
+        opacity: 0;
+    }
+}
+
+/* ✦ membesar-mengecil */
+@keyframes sparkleTwinkle {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.35);
+    }
+}
+
+/* ✦ sedikit berputar */
+@keyframes sparkleRotate {
+    0%, 100% {
+        rotate: 0deg;
+    }
+
+    50% {
+        rotate: 15deg;
+    }
+}
+/* START BUTTON */
+
+.start-btn {
+    position: relative;
+
+    padding: 14px 55px;
+
+    border: none;
+
+    border-radius: 30px;
+
+    background: #f3b6c1;
+
+    color: #2f3e46;
+
+    font-family: monospace;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.10);
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.start-btn:hover {
+    filter: brightness(0.95);
+
+    transform: scale(1.06);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.start-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* SMALL TEXT */
+
+.home-footer {
+    margin: 25px 0 0;
+
+    font-family: monospace;
+
+    font-size: 13px;
+
+    font-style: italic;
+
+    color: #2f3e46;
+}
+
+
+/* =========================================
+   PHOTOBOOTH APP
+   ========================================= */
+
+.photobooth-app {
+    display: none;
+
+    animation: boothAppear 0.7s ease;
+}
+
+
+.photobooth-app.active {
+    display: block;
+}
+
+
+/* HOMEPAGE HIDE */
+
+.home-page.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   ANIMATION
+   ========================================= */
+
+@keyframes homeAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+@keyframes boothAppear {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+/* =========================================
+   HOMEPAGE
+========================================= */
+
+.home-page {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: url("inii.png");
+    background-size: cover;
+    background-position: center;
+
+    transition:
+        opacity 0.6s ease,
+        visibility 0.6s ease;
+}
+
+.home-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: rgba(247, 213, 219, 0.35);
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+
+/* CARD */
+
+.home-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(90%, 500px);
+
+    padding: 45px 35px;
+
+    text-align: center;
+
+    background: rgba(255, 255, 255, 0.22);
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 30px;
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.10);
+
+    animation: homeAppear 0.9s ease;
+}
+
+
+/* LOGO */
+
+.home-logo {
+    width: 120px;
+    max-width: 40%;
+
+    margin-bottom: 15px;
+
+    object-fit: contain;
+}
+
+
+/* TITLE */
+
+.home-title {
+    margin: 0;
+
+    font-family: monospace;
+    font-size: 48px;
+    font-weight: bold;
+
+    color: #2f3e46;
+
+    letter-spacing: -2px;
+}
+
+.home-title span {
+    color: rgb(182, 139, 201);
+
+    font-family:
+        "Gill Sans",
+        "Gill Sans MT",
+        Calibri,
+        "Trebuchet MS",
+        sans-serif;
+}
+
+
+/* SUBTITLE */
+
+.home-subtitle {
+    margin: 10px 0 5px;
+
+    font-size: 22px;
+    font-weight: normal;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    color: rgb(182, 139, 201);
+}
+
+
+/* DESCRIPTION */
+
+.home-desc {
+    margin: 15px 0 25px;
+
+    font-family: monospace;
+    font-size: 15px;
+    font-style: italic;
+
+    color: #2f3e46;
+}
+
+
+/* START BUTTON */
+
+.start-btn {
+    padding: 14px 55px;
+
+    border: none;
+    border-radius: 30px;
+
+    background: #f3b6c1;
+
+    color: #2f3e46;
+
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.10);
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.start-btn:hover {
+    filter: brightness(0.95);
+
+    transform: scale(1.06);
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.start-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* FOOTER TEXT */
+
+.home-footer {
+    margin: 25px 0 0;
+
+    font-family: monospace;
+    font-size: 13px;
+    font-style: italic;
+
+    color: #2f3e46;
+}
+
+
+/* PHOTOBOOTH HIDDEN */
+
+.photobooth-app {
+    display: none;
+
+    animation: boothAppear 0.7s ease;
+}
+
+.photobooth-app.active {
+    display: block;
+}
+
+
+/* HOMEPAGE DISAPPEAR */
+
+.home-page.hide {
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+}
+
+
+/* ANIMATION */
+
+@keyframes homeAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+@keyframes boothAppear {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+/* MOBILE */
+
+@media screen and (max-width: 768px) {
+
+    .home-content {
+        width: 85%;
+
+        padding: 35px 20px;
+
+        border-radius: 25px;
+    }
+
+    .home-logo {
+    width: 120px;
+    max-width: 40%;
+    margin-bottom: 15px;
+    object-fit: contain;
+
+    animation: logoShake 1.2s infinite ease-in-out !important;
+}
+
+@keyframes logoShake {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(8deg);
+    }
+
+    40% {
+        transform: rotate(-8deg);
+    }
+
+    60% {
+        transform: rotate(6deg);
+    }
+
+    80% {
+        transform: rotate(-6deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+}
