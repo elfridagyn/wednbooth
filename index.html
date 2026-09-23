@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>wednbOOth | Photobooth Online</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="keywords" content="photobooth online, wednbooth, aplikasi foto, photobooth web, filter foto estetik">
     <meta name="description" content="Photobooth Online Gratis | Abadikan momen serumu dengan layout asik, filter kreatif, dan langsung bisa di-download. Yuk, Tunjukkan gaya terbaikmu!">
     <meta name="google-site-verification" content="_NyCSSTl3utaTkt9hZjL_MKQA5qwGN91B6APRuYbNRo" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f3b6c1">
+    <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -59,7 +64,7 @@
             </div>
 
             <div class="camera-box">
-            <video id="video" autoplay playsinline muted></video>                <div id="countdown"></div>
+            <video id="video" autoplay playsinline webkit-playsinline="true" muted disablePictureInPicture disableRemotePlayback></video>                <div id="countdown"></div>
             </div>
 
             <div class="controls">
@@ -95,30 +100,30 @@
                     <button id="filterBtn" class="btn" onclick="toggleMenu('filterMenu')">✦ Filter: Normal</button>
                     <div id="filterMenu" class="dropdown grid-mode">
 <div class="filter-item" onclick="setFilter('none','Normal')">
-                            <div class="preview-box none"></div>
+                            <div class="preview-box" data-filter="none"></div>
                             <span>Normal</span>
                         </div>
 <div class="filter-item" onclick="setFilter('bw','B&W')">
-                            <div class="preview-box bw"></div>
+                            <div class="preview-box" data-filter="bw"></div>
                             <span>B&W</span>
                         </div>
 <div class="filter-item" onclick="setFilter('sepia','Sepia')">
-                            <div class="preview-box sepia"></div>
+                            <div class="preview-box" data-filter="sepia"></div>
                             <span>Sepia</span>
                         </div>
 <div class="filter-item" onclick="setFilter('bright','Bright')">
-                            <div class="preview-box bright"></div>
+                            <div class="preview-box" data-filter="bright"></div>
                             <span>Bright</span>
                         </div>
 <div class="filter-item" onclick="setFilter('contrast','Contrast')">
-                            <div class="preview-box contras"></div>
-                            <span>Contras</span>
+                            <div class="preview-box" data-filter="contrast"></div>
+                            <span>Contrast</span>
                         </div>
 <div class="filter-item" onclick="setFilter('vintage','Vintage')">
-                            <div class="preview-box vintage"></div>
+                            <div class="preview-box" data-filter="vintage"></div>
                             <span>Vintage</span>
                         </div>
-<div class="filter-item" onclick="setFilter('soft','Soft')">                            <div class="preview-box soft"></div>
+<div class="filter-item" onclick="setFilter('soft','Soft')">                            <div class="preview-box" data-filter="soft"></div>
                             <span>Soft</span>
                         </div>
                     </div>
@@ -133,10 +138,301 @@
                     </div>
                 </div>
 
-                <div class="frame-color">
-                    <p>Frame Color</p>
-                    <input type="color" id="bgColor" value="#ffffff">
-                </div>
+                <!-- =========================
+     FRAME
+     ========================= -->
+<div class="btn-group">
+
+    <button
+        id="frameBtn"
+        class="btn"
+        onclick="toggleMenu('frameMenu')">
+        🖼 Frame: White
+    </button>
+
+    <div id="frameMenu" class="dropdown frame-menu">
+
+        <!-- =========================
+             COLOR
+             ========================= -->
+        <div class="frame-category">
+
+            <p>Color</p>
+
+            <div class="frame-grid colors">
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#ffffff;"
+                    onclick="setFrameColor('#ffffff', 'White')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#f3b6c1;"
+                    onclick="setFrameColor('#f3b6c1', 'Pink')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#c8a1da;"
+                    onclick="setFrameColor('#c8a1da', 'Lilac')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#c8edf3;"
+                    onclick="setFrameColor('#c8edf3', 'Blue')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#fff5a8;"
+                    onclick="setFrameColor('#fff5a8', 'Yellow')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#93ad55;"
+                    onclick="setFrameColor('#93ad55', 'Green')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#dfc1a8;"
+                    onclick="setFrameColor('#dfc1a8', 'Cream')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#8b0000;"
+                    onclick="setFrameColor('#8b0000', 'Red')">
+                </button>
+
+                <button
+                    class="frame-option color-option"
+                    style="background:#000000;"
+                    onclick="setFrameColor('#000000', 'Black')">
+                </button>
+
+                <button
+                    id="customColorSwatch"
+                    class="frame-option color-option custom-color-option"
+                    title="Custom Color"
+                    onclick="toggleCustomColorPanel(event)">
+                </button>
+
+            </div>
+
+            <!-- =========================
+                 CUSTOM COLOR (geser)
+                 ========================= -->
+            <div id="customColorPanel" class="custom-color-panel">
+
+                <label>
+                    Hue
+                    <input
+                        type="range"
+                        id="hueSlider"
+                        class="hue-slider"
+                        min="0"
+                        max="360"
+                        value="330">
+                </label>
+
+                <label>
+                    Lightness
+                    <input
+                        type="range"
+                        id="lightSlider"
+                        class="light-slider"
+                        min="5"
+                        max="95"
+                        value="70">
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PATTERN
+             ========================= -->
+        <div class="frame-category">
+
+            <p>Pattern</p>
+
+            <div class="frame-grid patterns">
+
+                <!-- 1 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/kredacak.jpg', 'Kredacak')">
+                    <img src="frames/kredacak.jpg" alt="Kredacak">
+                </button>
+
+                <!-- 2 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/abstrakred.jpg', 'Abstrak Red')">
+                    <img src="frames/abstrakred.jpg" alt="Abstrak Red">
+                </button>
+
+                <!-- 3 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/beigepinkacak.jpg', 'Beige Pink')">
+                    <img src="frames/beigepinkacak.jpg" alt="Beige Pink">
+                </button>
+
+                <!-- 4 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/blueabstrak.jpg', 'Blue Abstrak')">
+                    <img src="frames/blueabstrak.jpg" alt="Blue Abstrak">
+                </button>
+
+                <!-- 5 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/blueorange.jpg', 'Blue Orange')">
+                    <img src="frames/blueorange.jpg" alt="Blue Orange">
+                </button>
+
+                <!-- 6 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/browncow.jpg', 'Brown Cow')">
+                    <img src="frames/browncow.jpg" alt="Brown Cow">
+                </button>
+
+                <!-- 7 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/cherrybows.jpg', 'Cherry Bows')">
+                    <img src="frames/cherrybows.jpg" alt="Cherry Bows">
+                </button>
+
+                <!-- 8 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/floweredcheckered.jpg', 'Flowered Checkered')">
+                    <img src="frames/floweredcheckered.jpg" alt="Flowered Checkered">
+                </button>
+
+                <!-- 9 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/flowwy.jpg', 'Flowwy')">
+                    <img src="frames/flowwy.jpg" alt="Flowwy">
+                </button>
+
+                <!-- 10 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/flowy.jpg', 'Flowy')">
+                    <img src="frames/flowy.jpg" alt="Flowy">
+                </button>
+
+                <!-- 11 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/leopard.jpg', 'Leopard')">
+                    <img src="frames/leopard.jpg" alt="Leopard">
+                </button>
+
+                <!-- 12 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/loveflowersgreen.jpg', 'Love Flowers Green')">
+                    <img src="frames/loveflowersgreen.jpg" alt="Love Flowers Green">
+                </button>
+
+                <!-- 13 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/maroonpard.jpg', 'Maroon Pard')">
+                    <img src="frames/maroonpard.jpg" alt="Maroon Pard">
+                </button>
+
+                <!-- 14 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/pardbrown.jpg', 'Pardown')">
+                    <img src="frames/pardbrown.jpg" alt="Pardown">
+                </button>
+
+                <!-- 15 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/pinkflowers.jpg', 'Pink Flowers')">
+                    <img src="frames/pinkflowers.jpg" alt="Pink Flowers">
+                </button>
+
+                <!-- 16 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/pinkredcheckered.jpg', 'Pink Red Checkered')">
+                    <img src="frames/pinkredcheckered.jpg" alt="Pink Red Checkered">
+                </button>
+
+                <!-- 17 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/purpleflowers.jpg', 'Purple Flowers')">
+                    <img src="frames/purpleflowers.jpg" alt="Purple Flowers">
+                </button>
+
+                <!-- 18 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/realisticflowers.jpg', 'Realistic Flowers')">
+                    <img src="frames/realisticflowers.jpg" alt="Realistic Flowers">
+                </button>
+
+                <!-- 19 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/redacakadut.jpg', 'Red Acakadut')">
+                    <img src="frames/redacakadut.jpg" alt="Red Acakadut">
+                </button>
+
+                <!-- 20 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/softpard.jpg', 'Soft Card')">
+                    <img src="frames/softpard.jpg" alt="Soft Card">
+                </button>
+
+                <!-- 21 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/star.jpg', 'Star')">
+                    <img src="frames/star.jpg" alt="Star">
+                </button>
+
+                <!-- 22 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/starpinkmaroon.jpg', 'Star Pink Maroon')">
+                    <img src="frames/starpinkmaroon.jpg" alt="Star Pink Maroon">
+                </button>
+
+                <!-- 23 -->
+                <button
+                    class="frame-option pattern-option"
+                    onclick="setFramePattern('frames/tigerblack.jpg', 'Tiger Black')">
+                    <img src="frames/tigerblack.jpg" alt="Tiger Black">
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
                 <button id="reset" class="btn">⟲ Reset</button>
             </div>

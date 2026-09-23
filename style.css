@@ -1,20 +1,72 @@
-/* --- GLOBAL STYLES --- */
-body {
-    background: url(inii.png);
-    font-family: Arial;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Memaksa body setinggi layar */
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
 }
 
-/* --- TOPPER / HEADER SECTION --- */
+html {
+    scroll-behavior: smooth;
+    height: -webkit-fill-available;
+}
+
+body {
+    background: url("inii.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    color: #2f3e46;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.dropdown div,
+.layout-item,
+.filter-item,
+.frame-option {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS Safari renders <input type="range"> with default chrome unless
+   appearance is reset; already handled below for the two sliders. */
+
+
+/* =========================================================
+   PHOTOBOOTH HEADER
+   ========================================================= */
+
 .topper {
     width: 100%;
     text-align: center;
-    background: rgba(247, 213, 219, 0.5); /* pink soft seperti gambar */
-    padding-top: 15px;
-    padding-bottom: 15px;
+    background: rgba(247, 213, 219, 0.5);
+    padding: 15px 15px;
+    padding-top: calc(15px + env(safe-area-inset-top, 0px));
     margin-bottom: 35px;
 }
 
@@ -28,14 +80,14 @@ body {
 
 .brand span {
     color: rgb(182, 139, 201);
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
 }
 
 .subtitle {
     margin: 10px 0;
     font-size: 25px;
     color: rgb(182, 139, 201);
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
 }
 
 .desc {
@@ -45,43 +97,65 @@ body {
     color: #2f3e46;
     line-height: 1.7;
     font-style: italic;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
 }
 
-/* --- MAIN LAYOUT --- */
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
 .container {
     display: flex;
     gap: 20px;
     padding: 20px;
-    flex: 1; /* Penting agar footer tetap di bawah */
+    flex: 1;
 }
 
-/* --- LEFT PANEL (CAMERA & VIDEO) --- */
+
+/* =========================================================
+   LEFT PANEL
+   ========================================================= */
+
 .left-panel {
     width: 50%;
     max-width: 700px;
     margin: 0 auto;
 
     background: rgba(255, 255, 255, 0.15);
-
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
 
-    border: 1px solid rgba(255,255,255,0.2);
-
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
     border-radius: 20px;
     padding: 20px;
-
     height: fit-content;
+
     font-style: italic;
+}
+
+/* Windows/older Android browsers without backdrop-filter support get a
+   solid fallback so panels stay readable instead of transparent. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .left-panel {
+        background: rgba(255, 255, 255, 0.85);
+    }
+
+    .dropdown,
+    .layout-menu,
+    .dropdown.grid-mode,
+    .frame-menu {
+        background: rgba(230, 200, 240, 0.92) !important;
+    }
 }
 
 .header {
     background: pink;
     padding: 10px;
     border-radius: 10px;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,6 +166,11 @@ body {
     width: auto;
 }
 
+
+/* =========================================================
+   CAMERA
+   ========================================================= */
+
 .camera-box {
     position: relative;
     width: 60%;
@@ -101,17 +180,18 @@ body {
 }
 
 video {
-     width: 100%;
+    width: 100%;
     height: 300px;
     object-fit: cover;
+
     border-radius: 15px;
+    background: #1a1a1a;
 
     transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
 
-    /* Safari iOS */
+    filter: none;
     -webkit-filter: none;
-
     will-change: transform, filter;
 }
 
@@ -119,27 +199,50 @@ video {
     position: absolute;
     top: 50%;
     left: 50%;
+
     transform: translate(-50%, -50%);
+
     font-size: 70px;
     color: white;
     font-weight: bold;
+
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
 }
 
-/* --- INTERACTIVE ELEMENTS (BUTTONS & DROPDOWNS) --- */
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
 .btn {
     margin: 5px;
     padding: 10px 15px;
-    border-radius: 20px;
+    min-height: 40px;
+
     border: none;
+    border-radius: 20px;
+
     cursor: pointer;
-    transition: 0.2s;
-    font-family: monospace;
+
     background: rgb(200, 161, 218);
+
+    font-family: monospace;
+
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .btn:hover {
     filter: brightness(0.9);
     transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+    transform: scale(0.97);
 }
 
 .pink {
@@ -149,21 +252,43 @@ video {
 .btn-group {
     position: relative;
     display: inline-block;
-    
 }
+
+
+/* =========================================================
+   DROPDOWN UMUM (GLASSMORPHISM)
+   ========================================================= */
 
 .dropdown {
     display: none;
+
     position: absolute;
-    background: white;
-    border-radius: 10px;
+    top: 110%;
+    left: 0;
+
+    background: rgba(200, 161, 218, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+    border-radius: 15px;
+
     overflow: hidden;
+
     opacity: 0;
     transform: translateY(-10px);
-    transition: 0.2s;
-    background:rgb(200, 161, 218) ;
-}
 
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+    z-index: 100;
+    max-height: 70vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
 .dropdown[style*="block"] {
     opacity: 1;
@@ -174,65 +299,468 @@ video {
     padding: 10px;
     cursor: pointer;
 }
-/* KHUSUS LAYOUT ITEM */
-.layout-item {
-    background: rgba(255,255,255,0.15) !important;
-    padding: 5px !important;
-}
 
 .dropdown div:hover {
-    background: #eee;
+    background: rgba(255, 255, 255, 0.25);
 }
 
-/* --- FRAME & COLOR PICKER --- */
-.frame-color {
-    margin: 5px;
-    padding: 10px 15px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-    font-family: monospace;
-    background: rgb(200, 161, 218);
-    display: inline-flex;
+
+/* =========================================================
+   LAYOUT DROPDOWN (GLASSMORPHISM)
+   ========================================================= */
+
+.layout-menu {
+    display: none;
+
+    flex-direction: row;
     align-items: center;
+
     gap: 10px;
+
+    width: fit-content;
+    max-width: 500px;
+
+    padding: 10px;
+
+    background: rgba(200, 161, 218, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+    border-radius: 15px;
+
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.frame-color:hover {
-    filter: brightness(0.9);
-    transform: scale(1.02);
+.layout-menu[style*="block"] {
+    display: flex !important;
 }
 
-.frame-color p {
-    margin: 0;
-    font-size: 14px;
-    color: #000;
+.layout-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-width: 65px;
+
+    padding: 5px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    transition: transform 0.2s ease,
+                background 0.2s ease;
 }
 
-#bgColor {
+.layout-item:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.layout-item img {
+    width: 55px;
+    height: 75px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+}
+
+.layout-item span {
+    margin-top: 5px;
+
+    font-size: 10px;
+    font-family: monospace;
+    font-style: italic;
+
+    color: black;
+}
+
+
+/* =========================================================
+   FILTER DROPDOWN (GLASSMORPHISM)
+   ========================================================= */
+
+.dropdown.grid-mode {
+    display: none;
+
+    position: absolute;
+    top: 110%;
+    left: 0;
+
+    background: rgba(200, 161, 218, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+
+    border-radius: 15px;
+
+    padding: 10px;
+
+    z-index: 100;
+
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+
+    min-width: 300px;
+}
+
+.dropdown.grid-mode[style*="block"] {
+    display: grid !important;
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    font-family: monospace;
+    font-style: italic;
+}
+
+.filter-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.preview-box {
+    width: 17.5px;
+    height: 17.5px;
+
+    border-radius: 6px;
+
+    background-image: url("https://picsum.photos/50");
+    background-size: cover;
+
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/*
+   Nilai filter tiap swatch TIDAK di-hardcode di sini lagi.
+   Sebelumnya nilainya beda dari filter asli di kamera/hasil foto
+   (mis. contrast 150% vs 120%, vintage sepia 60% vs 50%, soft
+   brightness 140% vs 130%). Sekarang diterapkan lewat JS
+   (initFilterPreviews() di script.js) dari filterCSSMap, sumber
+   kebenaran yang sama dipakai video preview & capture, supaya
+   swatch, tampilan live, dan hasil unduhan selalu identik.
+*/
+
+
+/* =========================================================
+   FRAME DROPDOWN (GLASSMORPHISM)
+   ========================================================= */
+
+.frame-menu {
+    display: none;
+
+    top: 110%;
+    left: 0;
+
+    width: 232px;
+
+    overflow: visible;
+
+    padding: 12px 30px 12px 8px;
+
+    background: rgba(255, 245, 248, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    border: 1px solid rgba(255, 255, 255, 0.5);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18);
+
+    z-index: 200;
+}
+
+.frame-menu[style*="block"] {
+    display: block;
+}
+
+
+/* CATEGORY */
+
+.frame-category {
+    margin-bottom: 12px;
+}
+
+.frame-category p {
+    margin: 0 0 6px;
+
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: bold;
+
+    color: #2f3e46;
+}
+
+
+/* FRAME GRID */
+
+.frame-grid {
+    display: grid;
+
+    grid-template-columns: repeat(6, 28px);
+    justify-content: start;
+
+    gap: 5px;
+}
+
+
+/* =========================================================
+   FRAME OPTION
+   Semua opsi frame (warna, motif, custom) sekarang berbentuk
+   lingkaran, biar konsisten satu gaya di seluruh dropdown Frame.
+   ========================================================= */
+
+.frame-option {
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 2px solid transparent;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    background: white;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.frame-option:hover {
+    transform: scale(1.1);
+
+    border-color: #b68bc9;
+
+    box-shadow:
+        0 4px 10px rgba(182, 139, 201, 0.4);
+}
+
+.frame-option:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================================
+   COLOR FRAME
+   ========================================================= */
+
+.color-option {
+    border: 2px solid rgba(0, 0, 0, 0.12);
+}
+
+.color-option:hover {
+    border-color: #8f5ca5;
+}
+
+
+/* =========================================================
+   PATTERN FRAME
+   ========================================================= */
+
+.pattern-option {
+    background: white;
+}
+
+.pattern-option img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CUSTOM COLOR SWATCH
+   Swatch terakhir di grid warna: lingkaran rainbow sebagai
+   ikon "pilih warna sendiri", background-nya nanti diganti JS
+   supaya mencerminkan warna custom yang lagi aktif.
+   ========================================================= */
+
+.custom-color-option {
+    background: conic-gradient(
+        from 0deg,
+        red, yellow, lime, cyan, blue, magenta, red
+    );
+
+    position: relative;
+}
+
+.custom-color-option::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 3px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.55);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CUSTOM COLOR PANEL (geser / drag)
+   Muncul tepat di bawah baris warna, jadi masih terasa
+   "nempel" sama pilihan warna, bukan section terpisah.
+   ========================================================= */
+
+.custom-color-panel {
+    display: none;
+
+    flex-direction: column;
+    gap: 8px;
+
+    margin-top: 10px;
+    padding: 8px;
+
+    background: rgba(182, 139, 201, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    border-radius: 12px;
+}
+
+.custom-color-panel[style*="flex"] {
+    display: flex;
+}
+
+.custom-color-panel label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: bold;
+
+    color: #2f3e46;
+}
+
+
+/* Slider track & thumb, dibuat lebar penuh supaya gampang digeser */
+
+.hue-slider,
+.light-slider {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+
+    width: 100%;
+    height: 10px;
+
+    border-radius: 5px;
+
+    outline: none;
+
+    cursor: pointer;
+    touch-action: pan-x;
+}
+
+.hue-slider {
+    background: linear-gradient(
+        to right,
+        red, yellow, lime, cyan, blue, magenta, red
+    );
+}
+
+.light-slider {
+    /* Default gradient, akan di-update via JS mengikuti Hue */
+    background: linear-gradient(to right, #000000, #b68bc9, #ffffff);
+}
+
+.hue-slider::-webkit-slider-thumb,
+.light-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+
     width: 20px;
     height: 20px;
-    background-color: transparent;
-    border: none;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+    border: 2px solid #2f3e46;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+
     cursor: pointer;
-    padding: 0;
 }
 
-#bgColor::-webkit-color-swatch {
+.hue-slider::-moz-range-thumb,
+.light-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+
     border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+
+    background: #ffffff;
+    border: 2px solid #2f3e46;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+
+    cursor: pointer;
 }
 
-#bgColor::-moz-color-swatch {
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+.hue-slider::-moz-range-track,
+.light-slider::-moz-range-track {
+    height: 10px;
+    border-radius: 5px;
 }
 
-/* --- RIGHT PANEL (MACHINE & OUTPUT) --- */
+
+/* =========================================================
+   FRAME SCROLLBAR
+   ========================================================= */
+
+.frame-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.frame-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.frame-menu::-webkit-scrollbar-thumb {
+    background: #c8a1da;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   RIGHT PANEL
+   ========================================================= */
+
 .right-panel {
     width: 40%;
     text-align: center;
@@ -245,22 +773,29 @@ video {
 
 .camera-top {
     background: rgb(200, 161, 218);
+
     padding: 15px;
+
     border-radius: 15px;
+
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .red-dot {
     width: 20px;
     height: 20px;
+
     background: red;
+
     border-radius: 50%;
 }
 
 .lens {
     width: 40px;
     height: 40px;
+
     border: 4px solid black;
     border-radius: 50%;
 }
@@ -268,21 +803,75 @@ video {
 .output-slot {
     width: 120px;
     height: 40px;
+
     background: #bfc7ce;
+
     margin: 10px auto;
+
     border-radius: 10px;
 }
 
-/* --- PHOTO STRIP & ANIMATION --- */
+
+/* =========================================================
+   PHOTO STRIP
+   ========================================================= */
+
+.photo-result {
+    overflow: hidden;
+}
+
 .strip {
     width: 180px;
+
     margin: auto;
-    padding: 15px;
+    padding: 8px;
+
     border-radius: 10px;
-    transform: translateY(-250px);
+
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.3s ease;
+}
+
+.strip.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.strip.printed {
+    animation: printOut 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes printOut {
+    from {
+        transform: translateY(-130px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+#photosContainer img {
+    animation: photoPop 0.35s ease;
+    -webkit-user-drag: none;
+}
+
+@keyframes photoPop {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 #photosContainer {
@@ -291,135 +880,104 @@ video {
 
 #logoStrip {
     width: 100px;
-    margin-top: 10px;
+
+    margin-top: 6px;
+
     opacity: 0.9;
 }
 
 .strip img {
     width: 100%;
-    margin-bottom: 12px;
+
+    margin-bottom: 6px;
+
     border-radius: 8px;
-}
-
-.strip.show {
-    animation: keluar 1s forwards;
-}
-
-@keyframes keluar {
-    from { transform: translateY(-250px); }
-    to { transform: translateY(0); }
 }
 
 .strip.grid-6 {
     width: 220px;
-    padding: 12px;
-    border-radius: 0;
 
+    padding: 8px;
+
+    border-radius: 0;
 }
+
 .strip.grid-6 #photosContainer {
     display: grid;
+
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
+
+    gap: 5px;
 }
+
 .strip.grid-6 img {
     width: 100%;
-    margin-bottom: 15px;
+
+    margin-bottom: 5px;
+
     border-radius: 5px;
 }
 
 .strip::after {
     content: "";
+
     display: block;
+
     height: 40px;
 }
 
 
+/* =========================================================
+   STATUS
+   ========================================================= */
 
-/* --- FILTER DROPDOWN GRID --- */
-.filter-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-family: monospace;
-    font-style: italic;
-}
-
-.filter-item:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.preview-box {
-    width: 17.5px;
-    height: 17.5px;
-    border-radius: 6px;
-    background-image: url('https://picsum.photos/50');
-    background-size: cover;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Filter States */
-.preview-box.none { filter: none; }
-.preview-box.bw { filter: grayscale(100%); }
-.preview-box.sepia { filter: sepia(100%); }
-.preview-box.bright { filter: brightness(150%); }
-.preview-box.contras { filter: contrast(150%); }
-.preview-box.vintage { filter: sepia(60%) brightness(105%) contrast(110%); }
-.preview-box.soft { filter: blur(2px) brightness(140%); }
-
-.dropdown.grid-mode {
-    display: none;
-    position: absolute;
-    top: 110%;
-    left: 0;
-    background: rgb(200, 161, 218);
-    border-radius: 15px;
-    padding: 10px;
-    z-index: 100;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    min-width: 300px;
-}
-
-.dropdown.grid-mode[style*="block"] {
-    display: grid !important;
-}
-
-/* --- STATUS & INFO --- */
 .info {
     padding: 10px;
     text-align: center;
 }
 
 #status {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
+
     font-style: italic;
+
     font-size: 14px;
-    color: #000000;
+
+    color: #000;
+
     margin: 0;
+
     font-weight: 500;
-    text-shadow: 0.5px 0.5px 0px rgba(255, 255, 255, 0.5);
+
+    text-shadow:
+        0.5px 0.5px 0 rgba(255, 255, 255, 0.5);
 }
 
-/* --- FOOTER --- */
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
 footer {
-    background: transparent;
     background-color: rgba(247, 213, 219, 0.5);
+
     color: #333;
+
     text-align: center;
+
     padding: 20px 0;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+
     margin-top: 30px;
+
     width: 100%;
 }
 
-
 .footer-content p {
     margin: 5px 0;
+
     font-size: 12px;
+
     font-family: monospace;
 }
 
@@ -427,233 +985,25 @@ footer {
     color: rgb(143, 92, 165);
 }
 
-/* ===== LAYOUT DROPDOWN ===== */
 
-.layout-menu {
-    
-    flex-direction: row !important;
-
-    align-items: center;
-    gap: 10px;
-
-    width: fit-content;
-    max-width: 500px;
-
-    padding: 10px;
-
-    background: rgb(200, 161, 218);
-
-    border-radius: 15px;
-
-    overflow-x: auto;
-}
-.layout-menu[style*="block"] {
-    display: flex !important;
-}
-
-/* CARD LAYOUT */
-.layout-item {
-    display: flex;
-    flex-direction: column;
-
-    align-items: center;
-
-    min-width: 65px;
-
-    padding: 5px;
-
-    border-radius: 10px;
-
-    background: rgba(255,255,255,0.15);
-
-    transition: 0.2s;
-}
-
-.layout-item:hover {
-    transform: scale(1.05);
-    background: rgba(255,255,255,0.25);
-}
-
-/* GAMBAR */
-.layout-item img {
-    width: 55px;
-    height: 75px;
-
-    object-fit: cover;
-
-    border-radius: 8px;
-}
-
-/* TEXT */
-.layout-item span {
-    margin-top: 5px;
-
-    font-size: 10px;
-
-    font-family: monospace;
-    font-style: italic;
-
-    color: black;
-}
-
-
-/* ============================= */
-/* MOBILE VERSION */
-/* ============================= */
-
-@media screen and (max-width: 768px) {
-
-    body {
-        overflow-x: hidden;
-    }
-
-    .container {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        gap: 10px;
-    }
-
-    /* TOP HEADER */
-    .topper {
-        padding: 12px;
-        margin-bottom: 15px;
-    }
-
-    .brand {
-        font-size: 28px;
-    }
-
-    .subtitle {
-        font-size: 18px;
-    }
-
-    .desc {
-        font-size: 11px;
-        padding: 0 10px;
-        line-height: 1.5;
-    }
-
-    /* LEFT PANEL */
-    .left-panel {
-        width: 90%;
-        padding: 15px;
-        border-radius: 18px;
-    }
-
-    .camera-box {
-        width: 100%;
-    }
-
-    video {
-        width: 100%;
-        height: 320px;
-    }
-
-    /* BUTTON AREA */
-    .controls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 6px;
-        margin-top: 10px;
-    }
-
-    .btn {
-        font-size: 11px;
-        padding: 8px 10px;
-        margin: 2px;
-    }
-
-    .frame-color {
-        font-size: 11px;
-        padding: 8px 10px;
-    }
-
-    /* RIGHT PANEL */
-    .right-panel {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .machine {
-        width: 150px;
-        margin-bottom: 10px;
-    }
-
-    .camera-top {
-        padding: 10px;
-    }
-
-    .lens {
-        width: 30px;
-        height: 30px;
-    }
-
-    .red-dot {
-        width: 15px;
-        height: 15px;
-    }
-
-    /* PHOTO STRIP */
-    .strip {
-        width: 150px;
-        padding: 10px;
-    }
-
-    .strip.grid-6 {
-        width: 180px;
-    }
-
-    #logoStrip {
-        width: 80px;
-    }
-
-    /* DROPDOWN */
-    .dropdown.grid-mode {
-        grid-template-columns: repeat(2, 1fr);
-        min-width: 220px;
-    }
-
-    .layout-menu {
-        max-width: 250px;
-        overflow-x: auto;
-    }
-
-    .layout-item img {
-        width: 45px;
-        height: 65px;
-    }
-
-    /* STATUS */
-    #status {
-        font-size: 11px;
-    }
-
-    /* FOOTER */
-    footer {
-        margin-top: 20px;
-        padding: 15px 10px;
-    }
-
-    .footer-content p {
-        font-size: 10px;
-    }
-}
-/* =========================================
-   HOMEPAGE / WELCOME SCREEN
-   ========================================= */
+/* =========================================================
+   HOMEPAGE
+   ========================================================= */
 
 .home-page {
     position: fixed;
+
     inset: 0;
+
     z-index: 9999;
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
-    background: url(inii.png);
+    background: url("inii.png");
+
     background-size: cover;
     background-position: center;
 
@@ -662,11 +1012,11 @@ footer {
         visibility 0.6s ease;
 }
 
-
-/* Soft pink overlay */
 .home-page::before {
     content: "";
+
     position: absolute;
+
     inset: 0;
 
     background: rgba(247, 213, 219, 0.35);
@@ -676,10 +1026,13 @@ footer {
 }
 
 
-/* CONTENT */
+/* =========================================================
+   HOMEPAGE CARD
+   ========================================================= */
 
 .home-content {
     position: relative;
+
     z-index: 2;
 
     width: min(90%, 500px);
@@ -698,13 +1051,15 @@ footer {
     -webkit-backdrop-filter: blur(15px);
 
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.10);
+        0 15px 40px rgba(0, 0, 0, 0.1);
 
     animation: homeAppear 0.9s ease;
 }
 
 
-/* LOGO */
+/* =========================================================
+   HOMEPAGE LOGO
+   ========================================================= */
 
 .home-logo {
     width: 120px;
@@ -713,10 +1068,40 @@ footer {
     margin-bottom: 15px;
 
     object-fit: contain;
+
+    transform-origin: center;
+
+    animation: logoShake 1.5s ease-in-out infinite;
+}
+
+@keyframes logoShake {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(7deg);
+    }
+
+    40% {
+        transform: rotate(-7deg);
+    }
+
+    60% {
+        transform: rotate(5deg);
+    }
+
+    80% {
+        transform: rotate(-5deg);
+    }
 }
 
 
-/* TITLE */
+/* =========================================================
+   HOMEPAGE TITLE
+   ========================================================= */
 
 .home-title {
     margin: 0;
@@ -736,33 +1121,37 @@ footer {
     color: rgb(182, 139, 201);
 
     font-family:
-        'Gill Sans',
-        'Gill Sans MT',
+        "Gill Sans",
+        "Gill Sans MT",
         Calibri,
-        'Trebuchet MS',
+        "Trebuchet MS",
         sans-serif;
 }
 
 
-/* SUBTITLE */
+/* =========================================================
+   HOMEPAGE SUBTITLE
+   ========================================================= */
 
 .home-subtitle {
     margin: 10px 0 5px;
 
     font-size: 22px;
 
+    font-weight: normal;
+
     font-family:
-        'Courier New',
+        "Courier New",
         Courier,
         monospace;
 
     color: rgb(182, 139, 201);
-
-    font-weight: normal;
 }
 
 
-/* DESCRIPTION */
+/* =========================================================
+   HOMEPAGE DESCRIPTION
+   ========================================================= */
 
 .home-desc {
     position: relative;
@@ -770,73 +1159,43 @@ footer {
     margin: 18px 0 28px;
 
     font-family: monospace;
+
     font-size: 15px;
+
     font-style: italic;
 
     color: #2f3e46;
 
     opacity: 0;
 
-    animation: textAppear 1.8s ease forwards;
+    animation:
+        descAppear 1.5s ease forwards;
+
     animation-delay: 0.8s;
 }
 
 
-/* teks utama */
-.home-desc span {
-    position: relative;
+/* Tulisan utama */
 
-    display: inline-block;
-
-    overflow: hidden;
-}
-
-
-/* =========================================
-   EFEK MUNCUL PERLAHAN
-========================================= */
-
-@keyframes textAppear {
-    0% {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* =========================================
-   KILAUAN "TRING ✨"
-========================================= */
-
-.home-desc {
-    margin: 18px 0 28px;
-    font-family: monospace;
-    font-size: 15px;
-    font-style: italic;
-    color: #2f3e46;
-    opacity: 0;
-    animation: descAppear 1.5s ease forwards;
-    animation-delay: 0.8s;
-}
-
-/* Tulisan */
 .shine-text {
     position: relative;
+
     display: inline-block;
+
     overflow: hidden;
 }
 
-/* Kilauan yang melintas */
+
+/* Kilauan bergerak */
+
 .shine-text::after {
     content: "";
+
     position: absolute;
+
     top: -50%;
     left: -80%;
+
     width: 35%;
     height: 200%;
 
@@ -851,15 +1210,24 @@ footer {
 
     transform: skewX(-20deg);
 
-    animation: shineMove 2.8s ease-in-out infinite;
+    animation:
+        shineMove 2.8s ease-in-out infinite;
+
     animation-delay: 2s;
 }
 
-/* ✦ sparkle */
+
+/* =========================================================
+   SPARKLE ✦
+   ========================================================= */
+
 .sparkle {
     display: inline-block;
+
     margin-left: 5px;
+
     color: #d7a8df;
+
     font-style: normal;
 
     animation:
@@ -867,13 +1235,44 @@ footer {
         sparkleRotate 2.5s ease-in-out infinite;
 
     text-shadow:
-        0 0 4px rgba(255,255,255,0.8),
-        0 0 8px rgba(215,168,223,0.8),
-        0 0 14px rgba(255,255,255,0.7);
+        0 0 4px rgba(255, 255, 255, 0.8),
+        0 0 8px rgba(215, 168, 223, 0.8),
+        0 0 14px rgba(255, 255, 255, 0.7);
 }
 
-/* Tulisan muncul perlahan */
+@keyframes sparkleTwinkle {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.35);
+    }
+}
+
+@keyframes sparkleRotate {
+
+    0%,
+    100% {
+        rotate: 0deg;
+    }
+
+    50% {
+        rotate: 15deg;
+    }
+}
+
+
+/* =========================================================
+   TEXT APPEAR
+   ========================================================= */
+
 @keyframes descAppear {
+
     0% {
         opacity: 0;
         transform: translateY(8px);
@@ -885,8 +1284,13 @@ footer {
     }
 }
 
-/* Kilauan bergerak dari kiri → kanan */
+
+/* =========================================================
+   SHINE
+   ========================================================= */
+
 @keyframes shineMove {
+
     0% {
         left: -80%;
         opacity: 0;
@@ -912,30 +1316,10 @@ footer {
     }
 }
 
-/* ✦ membesar-mengecil */
-@keyframes sparkleTwinkle {
-    0%, 100% {
-        opacity: 0.4;
-        transform: scale(0.8);
-    }
 
-    50% {
-        opacity: 1;
-        transform: scale(1.35);
-    }
-}
-
-/* ✦ sedikit berputar */
-@keyframes sparkleRotate {
-    0%, 100% {
-        rotate: 0deg;
-    }
-
-    50% {
-        rotate: 15deg;
-    }
-}
-/* START BUTTON */
+/* =========================================================
+   START BUTTON
+   ========================================================= */
 
 .start-btn {
     position: relative;
@@ -961,14 +1345,13 @@ footer {
     cursor: pointer;
 
     box-shadow:
-        0 6px 15px rgba(0, 0, 0, 0.10);
+        0 6px 15px rgba(0, 0, 0, 0.1);
 
     transition:
         transform 0.2s ease,
         filter 0.2s ease,
         box-shadow 0.2s ease;
 }
-
 
 .start-btn:hover {
     filter: brightness(0.95);
@@ -979,267 +1362,14 @@ footer {
         0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-
 .start-btn:active {
     transform: scale(0.97);
 }
 
 
-/* SMALL TEXT */
-
-.home-footer {
-    margin: 25px 0 0;
-
-    font-family: monospace;
-
-    font-size: 13px;
-
-    font-style: italic;
-
-    color: #2f3e46;
-}
-
-
-/* =========================================
-   PHOTOBOOTH APP
-   ========================================= */
-
-.photobooth-app {
-    display: none;
-
-    animation: boothAppear 0.7s ease;
-}
-
-
-.photobooth-app.active {
-    display: block;
-}
-
-
-/* HOMEPAGE HIDE */
-
-.home-page.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-
-/* =========================================
-   ANIMATION
-   ========================================= */
-
-@keyframes homeAppear {
-
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.96);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
-}
-
-
-@keyframes boothAppear {
-
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-
-}
-
-/* =========================================
-   HOMEPAGE
-========================================= */
-
-.home-page {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: url("inii.png");
-    background-size: cover;
-    background-position: center;
-
-    transition:
-        opacity 0.6s ease,
-        visibility 0.6s ease;
-}
-
-.home-page::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background: rgba(247, 213, 219, 0.35);
-
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-}
-
-
-/* CARD */
-
-.home-content {
-    position: relative;
-    z-index: 2;
-
-    width: min(90%, 500px);
-
-    padding: 45px 35px;
-
-    text-align: center;
-
-    background: rgba(255, 255, 255, 0.22);
-
-    border: 1px solid rgba(255, 255, 255, 0.35);
-
-    border-radius: 30px;
-
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.10);
-
-    animation: homeAppear 0.9s ease;
-}
-
-
-/* LOGO */
-
-.home-logo {
-    width: 120px;
-    max-width: 40%;
-
-    margin-bottom: 15px;
-
-    object-fit: contain;
-}
-
-
-/* TITLE */
-
-.home-title {
-    margin: 0;
-
-    font-family: monospace;
-    font-size: 48px;
-    font-weight: bold;
-
-    color: #2f3e46;
-
-    letter-spacing: -2px;
-}
-
-.home-title span {
-    color: rgb(182, 139, 201);
-
-    font-family:
-        "Gill Sans",
-        "Gill Sans MT",
-        Calibri,
-        "Trebuchet MS",
-        sans-serif;
-}
-
-
-/* SUBTITLE */
-
-.home-subtitle {
-    margin: 10px 0 5px;
-
-    font-size: 22px;
-    font-weight: normal;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    color: rgb(182, 139, 201);
-}
-
-
-/* DESCRIPTION */
-
-.home-desc {
-    margin: 15px 0 25px;
-
-    font-family: monospace;
-    font-size: 15px;
-    font-style: italic;
-
-    color: #2f3e46;
-}
-
-
-/* START BUTTON */
-
-.start-btn {
-    padding: 14px 55px;
-
-    border: none;
-    border-radius: 30px;
-
-    background: #f3b6c1;
-
-    color: #2f3e46;
-
-    font-family: monospace;
-    font-size: 16px;
-    font-weight: bold;
-
-    letter-spacing: 2px;
-
-    cursor: pointer;
-
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.10);
-
-    transition:
-        transform 0.2s ease,
-        filter 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.start-btn:hover {
-    filter: brightness(0.95);
-
-    transform: scale(1.06);
-
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.start-btn:active {
-    transform: scale(0.97);
-}
-
-
-/* FOOTER TEXT */
-
-.home-footer {
-    margin: 25px 0 0;
-
-    font-family: monospace;
-    font-size: 13px;
-    font-style: italic;
-
-    color: #2f3e46;
-}
-
-
-/* PHOTOBOOTH HIDDEN */
+/* =========================================================
+   PHOTOBOOTH SHOW / HIDE
+   ========================================================= */
 
 .photobooth-app {
     display: none;
@@ -1251,9 +1381,6 @@ footer {
     display: block;
 }
 
-
-/* HOMEPAGE DISAPPEAR */
-
 .home-page.hide {
     opacity: 0;
 
@@ -1262,21 +1389,23 @@ footer {
     pointer-events: none;
 }
 
-
-/* ANIMATION */
-
 @keyframes homeAppear {
 
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.96);
+
+        transform:
+            translateY(20px)
+            scale(0.96);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
-    }
 
+        transform:
+            translateY(0)
+            scale(1);
+    }
 }
 
 @keyframes boothAppear {
@@ -1288,13 +1417,18 @@ footer {
     to {
         opacity: 1;
     }
-
 }
 
 
-/* MOBILE */
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media screen and (max-width: 768px) {
+
+    body {
+        overflow-x: hidden;
+    }
 
     .home-content {
         width: 85%;
@@ -1305,37 +1439,193 @@ footer {
     }
 
     .home-logo {
-    width: 120px;
-    max-width: 40%;
-    margin-bottom: 15px;
-    object-fit: contain;
+        width: 100px;
+        max-width: 40%;
+    }
 
-    animation: logoShake 1.2s infinite ease-in-out !important;
+    .home-title {
+        font-size: 38px;
+    }
+
+    .home-subtitle {
+        font-size: 18px;
+    }
+
+    .home-desc {
+        font-size: 13px;
+    }
+
+    .start-btn {
+        padding: 13px 45px;
+
+        font-size: 14px;
+    }
+
+    .topper {
+        padding: 12px;
+
+        margin-bottom: 15px;
+    }
+
+    .brand {
+        font-size: 28px;
+    }
+
+    .subtitle {
+        font-size: 18px;
+    }
+
+    .desc {
+        font-size: 11px;
+
+        padding: 0 10px;
+
+        line-height: 1.5;
+    }
+
+    .container {
+        flex-direction: column;
+
+        align-items: center;
+
+        padding: 10px;
+
+        gap: 10px;
+    }
+
+    .left-panel {
+        width: 90%;
+
+        padding: 15px;
+
+        border-radius: 18px;
+    }
+
+    .camera-box {
+        width: 100%;
+    }
+
+    video {
+        width: 100%;
+
+        height: 320px;
+    }
+
+    .controls {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 6px;
+
+        margin-top: 10px;
+    }
+
+    .btn {
+        font-size: 11px;
+
+        padding: 8px 10px;
+
+        margin: 2px;
+    }
+
+    .right-panel {
+        width: 100%;
+
+        margin-top: 10px;
+    }
+
+    .machine {
+        width: 150px;
+
+        margin-bottom: 10px;
+    }
+
+    .camera-top {
+        padding: 10px;
+    }
+
+    .lens {
+        width: 30px;
+        height: 30px;
+    }
+
+    .red-dot {
+        width: 15px;
+        height: 15px;
+    }
+
+    .strip {
+        width: 150px;
+
+        padding: 6px;
+    }
+
+    .strip.grid-6 {
+        width: 180px;
+    }
+
+    #logoStrip {
+        width: 80px;
+    }
+
+    .dropdown.grid-mode {
+        grid-template-columns: repeat(2, 1fr);
+
+        min-width: 220px;
+    }
+
+    .layout-menu {
+        max-width: 250px;
+
+        overflow-x: auto;
+    }
+
+    .layout-item img {
+        width: 45px;
+        height: 65px;
+    }
+
+    .frame-menu {
+        width: 206px;
+
+        padding: 10px 26px 10px 6px;
+    }
+
+    .frame-grid {
+        grid-template-columns: repeat(6, 24px);
+        justify-content: start;
+
+        gap: 4px;
+    }
+
+    .frame-option {
+        width: 24px;
+        height: 24px;
+    }
+
+    #status {
+        font-size: 11px;
+    }
+
+    footer {
+        margin-top: 20px;
+
+        padding: 15px 10px;
+        padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .footer-content p {
+        font-size: 10px;
+    }
 }
 
-@keyframes logoShake {
-    0% {
-        transform: rotate(0deg);
+/* Landscape phones: camera preview taking the full viewport height can
+   push controls off-screen on iOS/Android, so shrink it a bit. */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+    video {
+        height: 220px;
     }
-
-    20% {
-        transform: rotate(8deg);
-    }
-
-    40% {
-        transform: rotate(-8deg);
-    }
-
-    60% {
-        transform: rotate(6deg);
-    }
-
-    80% {
-        transform: rotate(-6deg);
-    }
-
-    100% {
-        transform: rotate(0deg);
-    }
-}
 }
