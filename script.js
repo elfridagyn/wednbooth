@@ -44,8 +44,9 @@ shutter.preload = "auto";
 
    Dipakai untuk dua hal yang perilakunya beda-beda di iOS,
    Android, dan Windows: (1) fallback saat backdrop-filter/
-   getUserMedia constraint lanjutan gagal, dan (2) cara
-   men-download hasil foto/GIF (lihat downloadDataUrl()).
+   getUserMedia constraint lanjutan gagal / ctx.filter tidak
+   didukung, dan (2) cara men-download hasil foto/GIF (lihat
+   downloadDataUrl()).
    ========================================================= */
 
 function isIOS() {
@@ -78,7 +79,9 @@ const isSecureOrigin =
    Dipakai untuk:
    - preview swatch di dropdown Filter (lihat initFilterPreviews())
    - preview realtime di kamera (video.style.filter)
-   - hasil capture di canvas (ctx.filter)
+   - hasil capture di canvas (ctx.filter, ATAU fallback manual pixel
+     manipulation lewat applyManualFilter() kalau ctx.filter tidak
+     didukung browser -- lihat CANVAS_FILTER_SUPPORTED di bawah)
 
    Sebelumnya nilai di sini beda dengan filter yang di-hardcode lewat
    class CSS .preview-box.contrast / .vintage / .soft di style.css
@@ -86,7 +89,8 @@ const isSecureOrigin =
    brightness 130% vs 140%), jadi swatch di menu Filter menampilkan
    preview yang TIDAK SAMA dengan hasil asli di kamera & foto.
    Sekarang cuma ada satu tempat (object ini) yang menentukan nilai
-   filter, dipakai ulang di tiga tempat itu, supaya selalu konsisten.
+   filter, dipakai ulang di beberapa tempat itu, supaya selalu
+   konsisten.
 */
 const filterCSSMap = {
     none: "none",
@@ -124,6 +128,241 @@ function initFilterPreviews() {
 }
 
 initFilterPreviews();
+
+
+/* =========================================================
+   CANVAS FILTER SUPPORT DETECTION
+
+   Preview kamera pakai CSS "filter" (video.style.filter), yang
+   sudah lama didukung semua browser modern termasuk Safari/iOS.
+
+   Tapi hasil JEPRETAN dibakar lewat Canvas 2D "ctx.filter", dan di
+   banyak versi Safari/iOS/WebView lama ctx.filter DIABAIKAN secara
+   DIAM-DIAM -- tidak error, cuma tidak berefek. Efeknya: preview
+   kamera kelihatan sudah pakai filter, tapi begitu foto diambil,
+   hasilnya keluar polos tanpa filter sama sekali.
+
+   Fungsi ini mengetes SEKALI di awal apakah ctx.filter beneran
+   berefek di browser yang sedang dipakai (dengan menggambar piksel
+   merah murni lalu grayscale-kannya -- kalau ctx.filter jalan,
+   piksel itu harus berubah jadi abu-abu, bukan tetap merah). Hasil
+   tesnya disimpan di CANVAS_FILTER_SUPPORTED dan dipakai di
+   capture() untuk memutuskan pakai ctx.filter langsung ATAU fallback
+   ke applyManualFilter() (manipulasi piksel manual yang tidak
+   bergantung pada dukungan browser).
+   ========================================================= */
+
+function supportsCanvasFilter() {
+
+    try {
+
+        const c = document.createElement("canvas");
+
+        c.width = 2;
+        c.height = 2;
+
+        const cx = c.getContext("2d");
+
+        cx.filter = "grayscale(1)";
+
+        cx.fillStyle = "rgb(255,0,0)";
+
+        cx.fillRect(0, 0, 2, 2);
+
+        const d = cx.getImageData(0, 0, 1, 1).data;
+
+        // Merah murni (255,0,0) yang di-grayscale-kan seharusnya
+        // jadi abu-abu gelap (~54,54,54), BUKAN tetap merah (255).
+        // Kalau channel merahnya masih tinggi, berarti ctx.filter
+        // diabaikan browser.
+        return d[0] < 200;
+
+    } catch (e) {
+
+        return false;
+
+    }
+
+}
+
+const CANVAS_FILTER_SUPPORTED = supportsCanvasFilter();
+
+
+/*
+   FALLBACK: terapkan filter secara manual lewat manipulasi piksel
+   (ImageData), dipakai kalau CANVAS_FILTER_SUPPORTED === false.
+
+   Rumus-rumus di bawah (grayscale luminance, sepia matrix, brightness,
+   contrast) dipilih supaya hasilnya sedekat mungkin secara visual
+   dengan nilai CSS yang sama di filterCSSMap, walau tentu tidak akan
+   1:1 identik piksel demi piksel dengan implementasi CSS filter asli
+   browser -- ini best-effort supaya foto di iOS lama tetap kelihatan
+   ada filternya, bukan polos.
+*/
+
+function clampChannel(v) {
+
+    return v < 0 ? 0 : (v > 255 ? 255 : v);
+
+}
+
+
+function applyManualFilter(ctx, width, height, key) {
+
+    if (key === "none") return;
+
+    const imgData = ctx.getImageData(0, 0, width, height);
+
+    const d = imgData.data;
+
+    for (let i = 0; i < d.length; i += 4) {
+
+        let r = d[i];
+        let g = d[i + 1];
+        let b = d[i + 2];
+
+        // --- Grayscale (bw + komponen dari vintage) ---
+        if (key === "bw" || key === "vintage") {
+
+            const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+            const amt = (key === "vintage") ? 0.5 : 1;
+
+            r += (gray - r) * amt;
+            g += (gray - g) * amt;
+            b += (gray - b) * amt;
+
+        }
+
+        // --- Sepia (sepia + komponen dari vintage) ---
+        if (key === "sepia" || key === "vintage") {
+
+            const tr = 0.393 * r + 0.769 * g + 0.189 * b;
+            const tg = 0.349 * r + 0.686 * g + 0.168 * b;
+            const tb = 0.272 * r + 0.534 * g + 0.131 * b;
+
+            const amt = (key === "vintage") ? 0.5 : 1;
+
+            r += (tr - r) * amt;
+            g += (tg - g) * amt;
+            b += (tb - b) * amt;
+
+        }
+
+        // --- Brightness ---
+        if (key === "bright") {
+
+            r *= 1.5;
+            g *= 1.5;
+            b *= 1.5;
+
+        }
+
+        if (key === "vintage") {
+
+            r *= 1.05;
+            g *= 1.05;
+            b *= 1.05;
+
+        }
+
+        if (key === "soft") {
+
+            r *= 1.3;
+            g *= 1.3;
+            b *= 1.3;
+
+        }
+
+        // --- Contrast (contrast + komponen dari vintage) ---
+        if (key === "contrast" || key === "vintage") {
+
+            const factor = (key === "vintage") ? 1.10 : 1.20;
+
+            r = (r - 128) * factor + 128;
+            g = (g - 128) * factor + 128;
+            b = (b - 128) * factor + 128;
+
+        }
+
+        d[i] = clampChannel(r);
+        d[i + 1] = clampChannel(g);
+        d[i + 2] = clampChannel(b);
+
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+
+    // "soft" di CSS juga pakai blur(2px) -- tambahkan box blur ringan
+    // sebagai pendekatan manualnya.
+    if (key === "soft") {
+
+        boxBlur(ctx, width, height, 2);
+
+    }
+
+}
+
+
+/*
+   Box blur sederhana, dipakai sebagai fallback manual untuk filter
+   "soft" (yang di CSS aslinya pakai blur(2px)). Radius kecil (2px)
+   supaya tetap ringan di device lama.
+*/
+
+function boxBlur(ctx, width, height, radius) {
+
+    const src = ctx.getImageData(0, 0, width, height);
+
+    const out = ctx.createImageData(width, height);
+
+    const sd = src.data;
+    const od = out.data;
+
+    for (let y = 0; y < height; y++) {
+
+        for (let x = 0; x < width; x++) {
+
+            let r = 0, g = 0, b = 0, a = 0, count = 0;
+
+            for (let dy = -radius; dy <= radius; dy++) {
+
+                for (let dx = -radius; dx <= radius; dx++) {
+
+                    const nx = x + dx;
+                    const ny = y + dy;
+
+                    if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+
+                        const idx = (ny * width + nx) * 4;
+
+                        r += sd[idx];
+                        g += sd[idx + 1];
+                        b += sd[idx + 2];
+                        a += sd[idx + 3];
+
+                        count++;
+
+                    }
+
+                }
+
+            }
+
+            const oi = (y * width + x) * 4;
+
+            od[oi] = r / count;
+            od[oi + 1] = g / count;
+            od[oi + 2] = b / count;
+            od[oi + 3] = a / count;
+
+        }
+
+    }
+
+    ctx.putImageData(out, 0, 0);
+
+}
 
 
 /* =========================================================
@@ -348,6 +587,12 @@ function setFilter(val, name) {
        sama persis dipakai swatch (initFilterPreviews) dan capture().
        Diset lewat dua properti (filter & webkitFilter) supaya tetap
        jalan di WebView Android/Windows lama yang masih butuh prefix.
+
+       CATATAN: ini cuma preview (CSS filter di elemen <video>), yang
+       memang didukung luas termasuk di iOS. Yang TIDAK didukung
+       konsisten di iOS adalah ctx.filter di Canvas -- makanya
+       capture() punya jalur fallback terpisah (applyManualFilter),
+       lihat CANVAS_FILTER_SUPPORTED di atas.
     */
     const cssValue = filterCSSMap[val] || "none";
 
@@ -802,6 +1047,16 @@ function capture() {
        filter (tanpa transform apa pun di langkah ini). Filter dan
        transform jadi tidak pernah digabung di operasi yang sama,
        sehingga konsisten di Chrome, Android WebView, maupun Safari.
+
+       LAPIS FIX TAMBAHAN (iOS lama): beberapa versi Safari/iOS
+       mengabaikan ctx.filter SAMA SEKALI, walau sudah dipisah dari
+       transform seperti di atas -- bukan cuma soal digabung dengan
+       transform. Makanya sebelum dipakai, dukungan ctx.filter
+       dites SEKALI di awal (CANVAS_FILTER_SUPPORTED). Kalau tidak
+       didukung, filter diterapkan lewat manipulasi piksel manual
+       (applyManualFilter) setelah gambar di-drawImage tanpa filter
+       apa pun, supaya hasil foto tetap ada filternya di device iOS
+       manapun.
     */
 
     const mirrored = document.createElement("canvas");
@@ -831,11 +1086,21 @@ function capture() {
 
     mctx.restore();
 
-    ctx.filter = filterCSSMap[currentFilter] || "none";
+    if (CANVAS_FILTER_SUPPORTED) {
 
-    ctx.drawImage(mirrored, 0, 0);
+        ctx.filter = filterCSSMap[currentFilter] || "none";
 
-    ctx.filter = "none";
+        ctx.drawImage(mirrored, 0, 0);
+
+        ctx.filter = "none";
+
+    } else {
+
+        ctx.drawImage(mirrored, 0, 0);
+
+        applyManualFilter(ctx, canvas.width, canvas.height, currentFilter);
+
+    }
 
 
     /*
@@ -1168,9 +1433,12 @@ async function createStrip() {
    berfungsi normal.
 
    Solusinya:
-   - iOS  -> buka hasil di tab baru; pengguna tekan & tahan
-             gambar lalu "Simpan ke Foto" (perilaku native iOS,
-             paling konsisten di semua versi Safari).
+   - iOS  -> buka tab kosong LEBIH DULU (synchronous, di dalam
+             gesture klik), lalu isi tab itu dengan sebuah BLOB URL
+             (bukan data URL mentah -- lihat catatan panjang di
+             bawah kenapa ini penting), supaya pengguna bisa tekan
+             & tahan gambar lalu "Simpan ke Foto" (perilaku native
+             iOS, paling konsisten di semua versi Safari).
    - lainnya (Android, Windows, desktop) -> pakai Blob + elemen
              <a download>, yang lebih hemat memori daripada data
              URL raksasa untuk GIF dan lebih konsisten daripada
@@ -1202,23 +1470,71 @@ function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
     if (isIOS()) {
 
         /*
-           PENTING: di iOS Safari, window.open() cuma diizinkan kalau
-           dipanggil LANGSUNG (synchronous) di dalam event klik user.
-           Kalau fungsi ini dipanggil setelah beberapa "await" (nunggu
+           PENTING #1 -- TIMING window.open():
+
+           Di iOS Safari, window.open() cuma diizinkan kalau dipanggil
+           LANGSUNG (synchronous) di dalam event klik user. Kalau
+           fungsi ini dipanggil setelah beberapa "await" (nunggu
            createStrip() / gifshot selesai duluan), Safari sudah tidak
            menganggap itu bagian dari gesture klik lagi, jadi
            window.open() di-BLOCK DIAM-DIAM -- tidak ada error, tidak
            ada alert, kelihatan kayak tombol download-nya tidak
            ngapa-ngapain.
 
-           Makanya sekarang tab kosong (preOpenedWindow) dibuka LEBIH
-           DULU, tepat di awal handler onclick, SEBELUM ada await
-           apa pun (lihat downloadJPG.onclick & downloadGIF.onclick).
-           Di sini kita tinggal MENGISI tab yang sudah terbuka itu
-           dengan hasilnya, alih-alih membuka tab baru.
+           Makanya tab kosong (preOpenedWindow) dibuka LEBIH DULU,
+           tepat di awal handler onclick, SEBELUM ada await apa pun
+           (lihat downloadJPG.onclick & downloadGIF.onclick). Di sini
+           kita tinggal MENGISI tab yang sudah terbuka itu dengan
+           hasilnya.
+
+           PENTING #2 -- KENAPA BLOB, BUKAN DATA URL LANGSUNG:
+
+           Sebelumnya tab kosong itu diisi dengan
+           `win.location.href = dataUrl` memakai data URL base64
+           MENTAH. Untuk hasil foto (apalagi GIF beberapa frame),
+           data URL ini bisa sangat panjang (ratusan KB - beberapa MB
+           dalam bentuk teks base64). Safari (dan WebKit pada
+           umumnya) punya batas panjang URL untuk NAVIGASI
+           (location.href / window.open ke url) yang jauh lebih kecil
+           daripada, misalnya, batas ukuran <img src="data:...">.
+           Begitu data URL kepanjangan, navigasinya GAGAL DIAM-DIAM:
+           tidak ada error di console, tab yang sudah terbuka cuma
+           tetap menampilkan "about:blank" karena location.href
+           dianggap tidak valid/ditolak.
+
+           Fixnya: data URL selalu dikonversi dulu ke BLOB, lalu blob
+           itu dijadikan `blob:` URL lewat URL.createObjectURL(). Blob
+           URL itu cuma referensi pendek (bukan berisi data base64-nya
+           sama sekali di dalam string URL-nya), jadi tidak kena batas
+           panjang URL, dan aman dipakai untuk window.open() /
+           location.href di iOS berapa pun besar ukuran gambarnya.
         */
 
-        const win = preOpenedWindow || window.open(dataUrl, "_blank");
+        let blobUrl;
+
+        try {
+
+            const blob = dataUrlToBlob(dataUrl);
+
+            blobUrl = URL.createObjectURL(blob);
+
+        } catch (blobError) {
+
+            console.error("Gagal membuat blob untuk iOS:", blobError);
+
+            if (preOpenedWindow) {
+                preOpenedWindow.close();
+            }
+
+            alert(
+                "Gagal menyiapkan gambar untuk didownload. Coba lagi."
+            );
+
+            return;
+
+        }
+
+        const win = preOpenedWindow || window.open(blobUrl, "_blank");
 
         if (!win) {
 
@@ -1227,31 +1543,38 @@ function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
                 "coba download lagi, atau screenshot hasilnya."
             );
 
-        } else {
+            URL.revokeObjectURL(blobUrl);
 
-            if (preOpenedWindow) {
+            return;
 
-                try {
+        }
 
-                    win.location.href = dataUrl;
+        if (preOpenedWindow) {
 
-                } catch (navError) {
+            try {
 
-                    console.warn(
-                        "Gagal mengisi tab yang sudah dibuka, fallback ke window.open:",
-                        navError
-                    );
+                win.location.href = blobUrl;
 
-                    window.open(dataUrl, "_blank");
+            } catch (navError) {
 
-                }
+                console.warn(
+                    "Gagal mengisi tab yang sudah dibuka, fallback ke window.open:",
+                    navError
+                );
+
+                window.open(blobUrl, "_blank");
 
             }
 
-            statusText.innerText =
-                "Tekan & tahan gambar, lalu pilih \"Simpan ke Foto\"";
-
         }
+
+        statusText.innerText =
+            "Tekan & tahan gambar, lalu pilih \"Simpan ke Foto\"";
+
+        // Revoke agak lama (60 detik) supaya browser sempat benar-benar
+        // memuat halaman & pengguna sempat tekan-tahan gambarnya dulu
+        // sebelum blob URL dicabut dari memori.
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
 
         return;
 
