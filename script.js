@@ -738,9 +738,53 @@ function capture() {
 
     const ctx = canvas.getContext("2d");
 
-    canvas.width = video.videoWidth;
 
-    canvas.height = video.videoHeight;
+    /*
+       FORCE LANDSCAPE OUTPUT.
+
+       Di HP Android, kamera depan yang dipegang portrait sering
+       ngasih stream video yang portrait juga (mis. 720x1280),
+       walaupun constraint yang diminta di startCamera() sudah
+       width:1280/height:720. Preview di layar kelihatan landscape
+       cuma karena CSS "object-fit: cover" motong tampilannya --
+       tapi video.videoWidth/videoHeight aslinya tetap portrait,
+       jadi kalau digambar mentah-mentah ke canvas, hasil foto
+       ikut portrait.
+
+       Solusinya: crop area TENGAH dari video asli ke rasio target
+       (16:9 landscape) SEBELUM digambar ke canvas, apa pun
+       orientasi videoWidth/videoHeight aslinya. Ini menjamin hasil
+       jepretan selalu landscape, konsisten di iOS/Android/Windows.
+    */
+
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+
+    const targetRatio = 16 / 9;
+
+    let sx, sy, sw, sh;
+
+    if (vw / vh > targetRatio) {
+
+        // Frame lebih lebar dari target -> crop kiri-kanan.
+        sh = vh;
+        sw = vh * targetRatio;
+        sx = (vw - sw) / 2;
+        sy = 0;
+
+    } else {
+
+        // Frame lebih tinggi dari target (kasus umum di Android saat
+        // dipegang portrait) -> crop atas-bawah supaya jadi landscape.
+        sw = vw;
+        sh = vw / targetRatio;
+        sx = 0;
+        sy = (vh - sh) / 2;
+
+    }
+
+    canvas.width = sw;
+    canvas.height = sh;
 
 
     /*
@@ -762,6 +806,10 @@ function capture() {
 
     ctx.drawImage(
         video,
+        sx,
+        sy,
+        sw,
+        sh,
         0,
         0,
         canvas.width,
