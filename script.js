@@ -788,23 +788,36 @@ function capture() {
 
 
     /*
-       MIRROR CAMERA + TERAPKAN FILTER.
+       MIRROR CAMERA + TERAPKAN FILTER -- DIPISAH JADI 2 LANGKAH.
 
-       ctx.filter memakai string yang SAMA PERSIS dengan filterCSSMap
-       (satu-satunya sumber kebenaran, dipakai juga oleh video preview
-       dan swatch di dropdown Filter), jadi hasil foto selalu sesuai
-       dengan yang dilihat di kamera dan di preview filter.
+       Sebelumnya ctx.filter dipasang BARENGAN dengan ctx.translate()
+       + ctx.scale(-1,1) (buat mirror) di context yang sama. Di
+       Chrome/Android ini jalan normal, tapi di Safari/iOS ada bug
+       lama: ctx.filter sering DIABAIKAN kalau digabung langsung
+       dengan transform kayak gitu, jadi hasil foto keluar TANPA
+       filter walau preview kamera sudah kelihatan pakai filter.
+
+       Fix: mirror dulu ke canvas sementara (tanpa filter), baru
+       canvas sementara itu digambar ulang ke canvas final DENGAN
+       filter (tanpa transform apa pun di langkah ini). Filter dan
+       transform jadi tidak pernah digabung di operasi yang sama,
+       sehingga konsisten di Chrome, Android WebView, maupun Safari.
     */
 
-    ctx.save();
+    const mirrored = document.createElement("canvas");
 
-    ctx.translate(canvas.width, 0);
+    mirrored.width = sw;
+    mirrored.height = sh;
 
-    ctx.scale(-1, 1);
+    const mctx = mirrored.getContext("2d");
 
-    ctx.filter = filterCSSMap[currentFilter] || "none";
+    mctx.save();
 
-    ctx.drawImage(
+    mctx.translate(mirrored.width, 0);
+
+    mctx.scale(-1, 1);
+
+    mctx.drawImage(
         video,
         sx,
         sy,
@@ -812,11 +825,17 @@ function capture() {
         sh,
         0,
         0,
-        canvas.width,
-        canvas.height
+        mirrored.width,
+        mirrored.height
     );
 
-    ctx.restore();
+    mctx.restore();
+
+    ctx.filter = filterCSSMap[currentFilter] || "none";
+
+    ctx.drawImage(mirrored, 0, 0);
+
+    ctx.filter = "none";
 
 
     /*
@@ -1178,11 +1197,28 @@ function dataUrlToBlob(dataUrl) {
 
 }
 
-function downloadDataUrl(dataUrl, filename) {
+function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
 
     if (isIOS()) {
 
-        const win = window.open(dataUrl, "_blank");
+        /*
+           PENTING: di iOS Safari, window.open() cuma diizinkan kalau
+           dipanggil LANGSUNG (synchronous) di dalam event klik user.
+           Kalau fungsi ini dipanggil setelah beberapa "await" (nunggu
+           createStrip() / gifshot selesai duluan), Safari sudah tidak
+           menganggap itu bagian dari gesture klik lagi, jadi
+           window.open() di-BLOCK DIAM-DIAM -- tidak ada error, tidak
+           ada alert, kelihatan kayak tombol download-nya tidak
+           ngapa-ngapain.
+
+           Makanya sekarang tab kosong (preOpenedWindow) dibuka LEBIH
+           DULU, tepat di awal handler onclick, SEBELUM ada await
+           apa pun (lihat downloadJPG.onclick & downloadGIF.onclick).
+           Di sini kita tinggal MENGISI tab yang sudah terbuka itu
+           dengan hasilnya, alih-alih membuka tab baru.
+        */
+
+        const win = preOpenedWindow || window.open(dataUrl, "_blank");
 
         if (!win) {
 
@@ -1192,6 +1228,25 @@ function downloadDataUrl(dataUrl, filename) {
             );
 
         } else {
+
+            if (preOpenedWindow) {
+
+                try {
+
+                    win.location.href = dataUrl;
+
+                } catch (navError) {
+
+                    console.warn(
+                        "Gagal mengisi tab yang sudah dibuka, fallback ke window.open:",
+                        navError
+                    );
+
+                    window.open(dataUrl, "_blank");
+
+                }
+
+            }
 
             statusText.innerText =
                 "Tekan & tahan gambar, lalu pilih \"Simpan ke Foto\"";
@@ -1267,6 +1322,15 @@ downloadJPG.onclick = async () => {
     }
 
 
+    /*
+       Buka tab kosong SEKARANG JUGA, sebelum ada "await" apa pun,
+       supaya masih dianggap Safari sebagai bagian dari klik user
+       (lihat komentar panjang di downloadDataUrl()). Untuk browser
+       lain (Android/Windows) ini tidak dipakai sama sekali.
+    */
+    const iosPreOpenedWindow = isIOS() ? window.open("", "_blank") : null;
+
+
     statusText.innerText =
         "Generating image...";
 
@@ -1296,7 +1360,8 @@ downloadJPG.onclick = async () => {
 
         downloadDataUrl(
             canvas.toDataURL("image/jpeg", 0.92),
-            `wednbooth_${Date.now()}.jpg`
+            `wednbooth_${Date.now()}.jpg`,
+            iosPreOpenedWindow
         );
 
 
@@ -1305,6 +1370,12 @@ downloadJPG.onclick = async () => {
     catch (err) {
 
         console.error(err);
+
+        // Tab kosong yang sudah kadung dibuka tapi gagal diisi --
+        // tutup lagi supaya tidak menggantung sebagai tab kosong.
+        if (iosPreOpenedWindow) {
+            iosPreOpenedWindow.close();
+        }
 
         alert(
             "Download Failed: " +
@@ -1332,6 +1403,14 @@ downloadGIF.onclick = async () => {
         return;
 
     }
+
+
+    /*
+       Sama seperti downloadJPG: buka tab kosong SEKARANG, sebelum
+       ada await/callback apa pun (proses GIF di gifshot itu async),
+       supaya Safari masih menganggapnya bagian dari klik user.
+    */
+    const iosPreOpenedWindow = isIOS() ? window.open("", "_blank") : null;
 
 
     statusText.innerText =
@@ -1418,7 +1497,7 @@ downloadGIF.onclick = async () => {
 
             if (!obj.error) {
 
-                downloadDataUrl(obj.image, "wednbooth.gif");
+                downloadDataUrl(obj.image, "wednbooth.gif", iosPreOpenedWindow);
 
                 statusText.innerText = isIOS()
                     ? statusText.innerText
@@ -1432,6 +1511,12 @@ downloadGIF.onclick = async () => {
                     obj.error
                 );
 
+                // Gagal bikin GIF -- tab kosong yang sudah dibuka
+                // ditutup lagi supaya tidak menggantung.
+                if (iosPreOpenedWindow) {
+                    iosPreOpenedWindow.close();
+                }
+
                 statusText.innerText =
                     "Failed to create GIF";
 
@@ -1444,6 +1529,10 @@ downloadGIF.onclick = async () => {
     catch (error) {
 
         console.error(error);
+
+        if (iosPreOpenedWindow) {
+            iosPreOpenedWindow.close();
+        }
 
         statusText.innerText =
             "GIF failed";
