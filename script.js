@@ -1,7 +1,3 @@
-/* =========================================================
-   VARIABLES & ELEMENTS
-   ========================================================= */
-
 const video = document.getElementById("video");
 const strip = document.getElementById("strip");
 const countdownEl = document.getElementById("countdown");
@@ -39,21 +35,11 @@ const shutter = new Audio(
 );
 shutter.preload = "auto";
 
-/* =========================================================
-   PLATFORM DETECTION
 
-   Dipakai untuk dua hal yang perilakunya beda-beda di iOS,
-   Android, dan Windows: (1) fallback saat backdrop-filter/
-   getUserMedia constraint lanjutan gagal / ctx.filter tidak
-   didukung, dan (2) cara men-download hasil foto/GIF (lihat
-   downloadDataUrl()).
-   ========================================================= */
 
 function isIOS() {
 
-    // iPhone/iPod/iPad "klasik", plus iPadOS 13+ yang menyamar
-    // sebagai "MacIntel" tapi punya touch points (beda dari Mac
-    // asli yang maxTouchPoints-nya 0).
+   
     return (
         /iP(hone|od|ad)/.test(navigator.userAgent) ||
         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
@@ -73,25 +59,7 @@ const isSecureOrigin =
     location.hostname === "127.0.0.1";
 
 
-/*
-   SATU-SATUNYA SUMBER KEBENARAN untuk semua filter.
 
-   Dipakai untuk:
-   - preview swatch di dropdown Filter (lihat initFilterPreviews())
-   - preview realtime di kamera (video.style.filter)
-   - hasil capture di canvas (ctx.filter, ATAU fallback manual pixel
-     manipulation lewat applyManualFilter() kalau ctx.filter tidak
-     didukung browser -- lihat CANVAS_FILTER_SUPPORTED di bawah)
-
-   Sebelumnya nilai di sini beda dengan filter yang di-hardcode lewat
-   class CSS .preview-box.contrast / .vintage / .soft di style.css
-   (mis. contrast 120% vs 150%, vintage sepia 50% vs 60%, soft
-   brightness 130% vs 140%), jadi swatch di menu Filter menampilkan
-   preview yang TIDAK SAMA dengan hasil asli di kamera & foto.
-   Sekarang cuma ada satu tempat (object ini) yang menentukan nilai
-   filter, dipakai ulang di beberapa tempat itu, supaya selalu
-   konsisten.
-*/
 const filterCSSMap = {
     none: "none",
     bw: "grayscale(100%)",
@@ -103,13 +71,7 @@ const filterCSSMap = {
 };
 
 
-/*
-   Terapkan filterCSSMap ke setiap swatch preview di dropdown Filter
-   (elemen .preview-box dengan atribut data-filter="..."), supaya
-   swatch-nya otomatis selalu sama persis dengan filter yang benar-
-   benar dipakai di video & hasil foto. Kalau suatu saat nilai filter
-   di filterCSSMap diubah, swatch ikut berubah tanpa perlu sentuh CSS.
-*/
+
 function initFilterPreviews() {
 
     document
@@ -130,27 +92,6 @@ function initFilterPreviews() {
 initFilterPreviews();
 
 
-/* =========================================================
-   CANVAS FILTER SUPPORT DETECTION
-
-   Preview kamera pakai CSS "filter" (video.style.filter), yang
-   sudah lama didukung semua browser modern termasuk Safari/iOS.
-
-   Tapi hasil JEPRETAN dibakar lewat Canvas 2D "ctx.filter", dan di
-   banyak versi Safari/iOS/WebView lama ctx.filter DIABAIKAN secara
-   DIAM-DIAM -- tidak error, cuma tidak berefek. Efeknya: preview
-   kamera kelihatan sudah pakai filter, tapi begitu foto diambil,
-   hasilnya keluar polos tanpa filter sama sekali.
-
-   Fungsi ini mengetes SEKALI di awal apakah ctx.filter beneran
-   berefek di browser yang sedang dipakai (dengan menggambar piksel
-   merah murni lalu grayscale-kannya -- kalau ctx.filter jalan,
-   piksel itu harus berubah jadi abu-abu, bukan tetap merah). Hasil
-   tesnya disimpan di CANVAS_FILTER_SUPPORTED dan dipakai di
-   capture() untuk memutuskan pakai ctx.filter langsung ATAU fallback
-   ke applyManualFilter() (manipulasi piksel manual yang tidak
-   bergantung pada dukungan browser).
-   ========================================================= */
 
 function supportsCanvasFilter() {
 
@@ -171,10 +112,6 @@ function supportsCanvasFilter() {
 
         const d = cx.getImageData(0, 0, 1, 1).data;
 
-        // Merah murni (255,0,0) yang di-grayscale-kan seharusnya
-        // jadi abu-abu gelap (~54,54,54), BUKAN tetap merah (255).
-        // Kalau channel merahnya masih tinggi, berarti ctx.filter
-        // diabaikan browser.
         return d[0] < 200;
 
     } catch (e) {
@@ -188,17 +125,6 @@ function supportsCanvasFilter() {
 const CANVAS_FILTER_SUPPORTED = supportsCanvasFilter();
 
 
-/*
-   FALLBACK: terapkan filter secara manual lewat manipulasi piksel
-   (ImageData), dipakai kalau CANVAS_FILTER_SUPPORTED === false.
-
-   Rumus-rumus di bawah (grayscale luminance, sepia matrix, brightness,
-   contrast) dipilih supaya hasilnya sedekat mungkin secara visual
-   dengan nilai CSS yang sama di filterCSSMap, walau tentu tidak akan
-   1:1 identik piksel demi piksel dengan implementasi CSS filter asli
-   browser -- ini best-effort supaya foto di iOS lama tetap kelihatan
-   ada filternya, bukan polos.
-*/
 
 function clampChannel(v) {
 
@@ -221,7 +147,6 @@ function applyManualFilter(ctx, width, height, key) {
         let g = d[i + 1];
         let b = d[i + 2];
 
-        // --- Grayscale (bw + komponen dari vintage) ---
         if (key === "bw" || key === "vintage") {
 
             const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -234,7 +159,6 @@ function applyManualFilter(ctx, width, height, key) {
 
         }
 
-        // --- Sepia (sepia + komponen dari vintage) ---
         if (key === "sepia" || key === "vintage") {
 
             const tr = 0.393 * r + 0.769 * g + 0.189 * b;
@@ -249,7 +173,6 @@ function applyManualFilter(ctx, width, height, key) {
 
         }
 
-        // --- Brightness ---
         if (key === "bright") {
 
             r *= 1.5;
@@ -274,7 +197,6 @@ function applyManualFilter(ctx, width, height, key) {
 
         }
 
-        // --- Contrast (contrast + komponen dari vintage) ---
         if (key === "contrast" || key === "vintage") {
 
             const factor = (key === "vintage") ? 1.10 : 1.20;
@@ -293,8 +215,6 @@ function applyManualFilter(ctx, width, height, key) {
 
     ctx.putImageData(imgData, 0, 0);
 
-    // "soft" di CSS juga pakai blur(2px) -- tambahkan box blur ringan
-    // sebagai pendekatan manualnya.
     if (key === "soft") {
 
         boxBlur(ctx, width, height, 2);
@@ -304,11 +224,6 @@ function applyManualFilter(ctx, width, height, key) {
 }
 
 
-/*
-   Box blur sederhana, dipakai sebagai fallback manual untuk filter
-   "soft" (yang di CSS aslinya pakai blur(2px)). Radius kecil (2px)
-   supaya tetap ringan di device lama.
-*/
 
 function boxBlur(ctx, width, height, radius) {
 
@@ -364,10 +279,7 @@ function boxBlur(ctx, width, height, radius) {
 
 }
 
-
-/* =========================================================
-   HOMEPAGE → PHOTOBOOTH
-   ========================================================= */
+//homepage
 
 const homePage = document.getElementById("homePage");
 const photoboothApp = document.getElementById("photoboothApp");
@@ -405,9 +317,6 @@ async function startCamera() {
 
     try {
 
-        // Preferensi: kamera depan, resolusi ideal 16:9. Kalau device/
-        // browser (terutama Android lama & beberapa webcam Windows)
-        // menolak constraint selengkap ini, fallback ke video: true.
         const preferredConstraints = {
             video: {
                 facingMode: "user",
@@ -439,8 +348,6 @@ async function startCamera() {
 
         video.srcObject = cameraStream;
 
-        // Safari (iOS & desktop) kadang butuh play() eksplisit setelah
-        // srcObject di-set, walau ada atribut autoplay di HTML.
         video.onloadedmetadata = () => {
             video.play().catch(() => {});
         };
@@ -486,9 +393,7 @@ if (startBtn) {
 
     startBtn.addEventListener("click", async function () {
 
-        // Buka "kunci" autoplay audio di iOS Safari & beberapa browser
-        // Android dengan memutar (lalu langsung menjeda) suara shutter
-        // di dalam gesture klik pengguna yang pertama.
+        
         shutter
             .play()
             .then(() => {
@@ -512,9 +417,6 @@ if (startBtn) {
 }
 
 
-/* =========================================================
-   DROPDOWN CONTROL
-   ========================================================= */
 
 function closeAllDropdowns() {
 
@@ -551,10 +453,7 @@ window.addEventListener("click", function (e) {
 });
 
 
-/* =========================================================
-   LAYOUT
-   ========================================================= */
-
+//layout
 function setLayout(val) {
 
     layout = val;
@@ -574,26 +473,11 @@ function setLayout(val) {
 }
 
 
-/* =========================================================
-   FILTER
-   ========================================================= */
-
+//filter
 function setFilter(val, name) {
 
     currentFilter = val;
 
-    /*
-       Preview realtime di kamera, diambil dari filterCSSMap yang
-       sama persis dipakai swatch (initFilterPreviews) dan capture().
-       Diset lewat dua properti (filter & webkitFilter) supaya tetap
-       jalan di WebView Android/Windows lama yang masih butuh prefix.
-
-       CATATAN: ini cuma preview (CSS filter di elemen <video>), yang
-       memang didukung luas termasuk di iOS. Yang TIDAK didukung
-       konsisten di iOS adalah ctx.filter di Canvas -- makanya
-       capture() punya jalur fallback terpisah (applyManualFilter),
-       lihat CANVAS_FILTER_SUPPORTED di atas.
-    */
     const cssValue = filterCSSMap[val] || "none";
 
     video.style.filter = cssValue;
@@ -606,10 +490,6 @@ function setFilter(val, name) {
 }
 
 
-/* =========================================================
-   TIMER
-   ========================================================= */
-
 function setTimer(val, name) {
 
     timer = val;
@@ -621,15 +501,7 @@ function setTimer(val, name) {
 }
 
 
-/* =========================================================
-   FRAME SYSTEM
-   ========================================================= */
 
-
-/*
-   Apply frame ke preview HTML.
-   Ini hanya untuk tampilan di website.
-*/
 
 function applyFramePreview() {
 
@@ -643,11 +515,7 @@ function applyFramePreview() {
         strip.style.backgroundImage =
             `url("${currentFramePattern}")`;
 
-        // Sebelumnya "repeat" + "auto" -> motif di-tile berulang dan
-        // kelihatan "dobel"/terpotong kalau gambar polanya kecil
-        // dibanding ukuran strip. Sekarang di-zoom (cover) supaya
-        // satu motif utuh menutupi seluruh strip, sama seperti hasil
-        // download (lihat drawFrameBackground()).
+        
         strip.style.backgroundRepeat = "no-repeat";
 
         strip.style.backgroundSize = "cover";
@@ -688,15 +556,6 @@ function setFrameColor(color, name) {
 }
 
 
-/*
-   Custom color
-
-   Sebelumnya custom color pakai <input type="color"> bawaan browser,
-   yang cuma bisa dibuka lewat klik (harus klik lagi tiap mau ganti
-   warna, tidak bisa "digeser-geser" cari warna yang pas). Sekarang
-   diganti dua slider (Hue + Lightness) yang bisa digeser langsung
-   di dalam dropdown Frame, live update warnanya sambil di-drag.
-*/
 
 function hslToHex(h, s, l) {
 
@@ -718,11 +577,7 @@ function hslToHex(h, s, l) {
 }
 
 
-/*
-   Sinkronkan warna terpilih (dari mana pun sumbernya) ke swatch
-   "Custom" di grid warna, supaya selalu ada preview lingkaran
-   yang menunjukkan warna aktif saat ini.
-*/
+
 
 function syncCustomSwatch(color) {
 
@@ -733,11 +588,7 @@ function syncCustomSwatch(color) {
 }
 
 
-/*
-   Update gradasi slider Lightness supaya mengikuti Hue yang lagi
-   dipilih (dari hitam -> warna hue -> putih), jadi lebih gampang
-   nyari warna yang pas.
-*/
+
 
 function updateLightSliderGradient() {
 
@@ -751,10 +602,6 @@ function updateLightSliderGradient() {
 }
 
 
-/*
-   Dipanggil tiap slider digeser (live, tanpa menutup dropdown
-   supaya proses geser tidak terputus).
-*/
 
 function applyCustomColorFromSliders() {
 
@@ -781,10 +628,6 @@ function applyCustomColorFromSliders() {
 }
 
 
-/*
-   Buka/tutup panel slider. Ditaruh langsung di sebelah pilihan
-   warna (bukan section terpisah lagi).
-*/
 
 function toggleCustomColorPanel(event) {
 
@@ -809,10 +652,6 @@ if (hueSlider) {
 
     hueSlider.addEventListener("click", e => e.stopPropagation());
 
-    // touchstart dicegat juga: di iOS/Android, tap pertama di slider
-    // kadang ikut kebaca sebagai klik di window (lihat listener
-    // window "click" di atas) dan menutup dropdown Frame sebelum
-    // sempat menggeser slider.
     hueSlider.addEventListener("touchstart", e => e.stopPropagation());
 
 }
@@ -830,9 +669,6 @@ if (lightSlider) {
 updateLightSliderGradient();
 
 
-/*
-   Frame motif
-*/
 
 function setFramePattern(pattern, name) {
 
@@ -847,11 +683,6 @@ function setFramePattern(pattern, name) {
     closeAllDropdowns();
 
 }
-
-
-/* =========================================================
-   CAPTURE PROCESS
-   ========================================================= */
 
 captureBtn.onclick = async () => {
 
@@ -874,11 +705,6 @@ captureBtn.onclick = async () => {
     captureBtn.disabled = true;
 
 
-    /*
-       Terapkan frame & layout grid SEBELUM foto pertama diambil,
-       supaya begitu foto pertama muncul, tampilan strip (warna/
-       motif frame, grid 2 kolom untuk layout 6) sudah rapi dari awal.
-    */
 
     applyFramePreview();
 
@@ -900,11 +726,6 @@ captureBtn.onclick = async () => {
             }
 
 
-            /* Shutter sound. Sudah "di-unlock" sejak tombol START
-               ditekan, jadi play() di sini seharusnya jalan normal
-               di iOS/Android; kalau tetap gagal (mis. mode senyap
-               di iOS Safari lama), diamkan saja tanpa mengganggu
-               proses capture. */
 
             shutter.currentTime = 0;
 
@@ -916,14 +737,6 @@ captureBtn.onclick = async () => {
 
             capture();
 
-
-            /*
-               Tampilkan strip begitu foto PERTAMA selesai diambil
-               (fade-in biasa lewat class "show"). Foto ke-2, ke-3,
-               dst langsung menyusul muncul satu-satu di strip yang
-               sudah kelihatan, masing-masing dengan animasi pop kecil
-               (lihat #photosContainer img di style.css).
-            */
 
             if (!strip.classList.contains("show")) {
 
@@ -940,12 +753,6 @@ captureBtn.onclick = async () => {
 
         }
 
-
-        /*
-           Animasi "keluar dari kamera / keprint" baru dimainkan
-           SEKARANG, setelah SEMUA foto pada layout ini selesai
-           di-preview -- bukan di foto pertama.
-        */
 
         strip.classList.add("printed");
 
@@ -973,34 +780,12 @@ captureBtn.onclick = async () => {
 };
 
 
-/* =========================================================
-   CAPTURE PHOTO
-   ========================================================= */
-
 function capture() {
 
     const canvas = document.createElement("canvas");
 
     const ctx = canvas.getContext("2d");
 
-
-    /*
-       FORCE LANDSCAPE OUTPUT.
-
-       Di HP Android, kamera depan yang dipegang portrait sering
-       ngasih stream video yang portrait juga (mis. 720x1280),
-       walaupun constraint yang diminta di startCamera() sudah
-       width:1280/height:720. Preview di layar kelihatan landscape
-       cuma karena CSS "object-fit: cover" motong tampilannya --
-       tapi video.videoWidth/videoHeight aslinya tetap portrait,
-       jadi kalau digambar mentah-mentah ke canvas, hasil foto
-       ikut portrait.
-
-       Solusinya: crop area TENGAH dari video asli ke rasio target
-       (16:9 landscape) SEBELUM digambar ke canvas, apa pun
-       orientasi videoWidth/videoHeight aslinya. Ini menjamin hasil
-       jepretan selalu landscape, konsisten di iOS/Android/Windows.
-    */
 
     const vw = video.videoWidth;
     const vh = video.videoHeight;
@@ -1011,7 +796,6 @@ function capture() {
 
     if (vw / vh > targetRatio) {
 
-        // Frame lebih lebar dari target -> crop kiri-kanan.
         sh = vh;
         sw = vh * targetRatio;
         sx = (vw - sw) / 2;
@@ -1019,8 +803,7 @@ function capture() {
 
     } else {
 
-        // Frame lebih tinggi dari target (kasus umum di Android saat
-        // dipegang portrait) -> crop atas-bawah supaya jadi landscape.
+       
         sw = vw;
         sh = vw / targetRatio;
         sx = 0;
@@ -1031,33 +814,6 @@ function capture() {
     canvas.width = sw;
     canvas.height = sh;
 
-
-    /*
-       MIRROR CAMERA + TERAPKAN FILTER -- DIPISAH JADI 2 LANGKAH.
-
-       Sebelumnya ctx.filter dipasang BARENGAN dengan ctx.translate()
-       + ctx.scale(-1,1) (buat mirror) di context yang sama. Di
-       Chrome/Android ini jalan normal, tapi di Safari/iOS ada bug
-       lama: ctx.filter sering DIABAIKAN kalau digabung langsung
-       dengan transform kayak gitu, jadi hasil foto keluar TANPA
-       filter walau preview kamera sudah kelihatan pakai filter.
-
-       Fix: mirror dulu ke canvas sementara (tanpa filter), baru
-       canvas sementara itu digambar ulang ke canvas final DENGAN
-       filter (tanpa transform apa pun di langkah ini). Filter dan
-       transform jadi tidak pernah digabung di operasi yang sama,
-       sehingga konsisten di Chrome, Android WebView, maupun Safari.
-
-       LAPIS FIX TAMBAHAN (iOS lama): beberapa versi Safari/iOS
-       mengabaikan ctx.filter SAMA SEKALI, walau sudah dipisah dari
-       transform seperti di atas -- bukan cuma soal digabung dengan
-       transform. Makanya sebelum dipakai, dukungan ctx.filter
-       dites SEKALI di awal (CANVAS_FILTER_SUPPORTED). Kalau tidak
-       didukung, filter diterapkan lewat manipulasi piksel manual
-       (applyManualFilter) setelah gambar di-drawImage tanpa filter
-       apa pun, supaya hasil foto tetap ada filternya di device iOS
-       manapun.
-    */
 
     const mirrored = document.createElement("canvas");
 
@@ -1103,20 +859,12 @@ function capture() {
     }
 
 
-    /*
-       Convert image
-    */
-
     const finalImage =
         canvas.toDataURL("image/png");
 
 
     photos.push(finalImage);
 
-
-    /*
-       Preview
-    */
 
     const img =
         document.createElement("img");
@@ -1128,9 +876,8 @@ function capture() {
 }
 
 
-/* =========================================================
-   COUNTDOWN
-   ========================================================= */
+//   COUNTDOWN
+
 
 function countdown(sec) {
 
@@ -1165,9 +912,6 @@ function countdown(sec) {
 }
 
 
-/* =========================================================
-   WAIT
-   ========================================================= */
 
 function wait(ms) {
 
@@ -1178,29 +922,8 @@ function wait(ms) {
 }
 
 
-/* =========================================================
-   LOAD IMAGE
-   ========================================================= */
-
 function loadImage(src) {
 
-    /*
-       PENTING: jangan set img.crossOrigin = "anonymous" di sini.
-
-       Semua gambar yang dimuat lewat fungsi ini (foto hasil capture
-       berupa data URL, DAN gambar pattern frame di folder frames/)
-       adalah aset lokal / satu origin, bukan gambar dari domain lain.
-
-       Kalau crossOrigin dipaksa "anonymous", browser memperlakukan
-       pemuatan gambar itu sebagai request CORS. Untuk gambar lokal
-       (apalagi kalau file HTML dibuka langsung lewat file:// tanpa
-       server), request CORS ini akan GAGAL total (img.onerror
-       terpicu), padahal gambar yang sama tampil normal kalau dipakai
-       biasa lewat tag <img> di halaman (seperti thumbnail pattern di
-       menu Frame). Inilah sebab "Download Failed" muncul khusus saat
-       frame pattern dipilih, sementara frame warna solid (yang tidak
-       perlu memuat gambar apa pun) tetap berhasil.
-    */
 
     return new Promise((resolve, reject) => {
 
@@ -1225,9 +948,6 @@ function loadImage(src) {
 }
 
 
-/* =========================================================
-   ROUNDED IMAGE
-   ========================================================= */
 
 function drawRoundedImage(
     ctx,
@@ -1264,15 +984,9 @@ function drawRoundedImage(
 }
 
 
-/* =========================================================
-   DRAW FRAME BACKGROUND
-   ========================================================= */
 
 async function drawFrameBackground(ctx, width, height) {
 
-    /*
-       SOLID COLOR
-    */
 
     if (!currentFramePattern) {
 
@@ -1285,13 +999,7 @@ async function drawFrameBackground(ctx, width, height) {
     }
 
 
-    /*
-       PATTERN
-
-       Gambar di-zoom & crop dari tengah supaya satu motif utuh
-       menutupi seluruh kanvas tanpa diulang (repeat) -- persis
-       seperti CSS "background-size: cover" yang dipakai di preview.
-    */
+    //PATTERN
 
     const patternImage = await loadImage(currentFramePattern);
 
@@ -1311,22 +1019,7 @@ async function drawFrameBackground(ctx, width, height) {
 }
 
 
-/* =========================================================
-   CREATE PHOTO STRIP (sama persis dengan preview)
-
-   Percobaan sebelumnya pakai html2canvas untuk "memotret" elemen
-   #strip langsung -- tapi untuk foto beresolusi tinggi dari kamera,
-   html2canvas kadang diam-diam GAGAL menggambar ulang <img>-nya
-   (kena timeout decode), sehingga hasil akhirnya cuma bingkai +
-   logo tanpa foto sama sekali.
-
-   Sekarang posisi & ukuran tiap foto (dan logo) DIUKUR LANGSUNG dari
-   elemen yang sedang tampil di preview (getBoundingClientRect),
-   lalu diskalakan ke resolusi asli kamera dan digambar manual ke
-   kanvas. Ini menjamin proporsi hasil download identik dengan
-   preview (karena diukur dari DOM yang sama), tanpa bergantung pada
-   proses decode-ulang gambar oleh library luar yang bisa gagal.
-   ========================================================= */
+//   CREATE PHOTO STRIP 
 
 async function createStrip() {
 
@@ -1340,9 +1033,6 @@ async function createStrip() {
     }
 
 
-    // Skala pembesar: dari ukuran tampilan di layar (kecil, mis.
-    // 150px) ke resolusi asli kamera (mis. 1280px), supaya foto
-    // tetap tajam saat di-download.
     const nativeWidth =
         displayedPhotoImgs[0].naturalWidth ||
         displayedPhotoImgs[0].width;
@@ -1364,16 +1054,9 @@ async function createStrip() {
     const ctx = canvas.getContext("2d");
 
 
-    // Bingkai (warna solid / motif cover) mengisi seluruh kanvas,
-    // sama seperti background elemen #strip di preview.
     await drawFrameBackground(ctx, canvas.width, canvas.height);
 
 
-    // Tiap foto digambar TEPAT di posisi & ukuran yang terlihat di
-    // layar (relatif terhadap strip), hanya diskalakan lebih besar.
-    // Digambar langsung dari elemen <img> yang sudah termuat di
-    // halaman -- bukan dimuat ulang -- jadi tidak ada risiko gagal
-    // decode seperti pada html2canvas.
     displayedPhotoImgs.forEach(imgEl => {
 
         const r = imgEl.getBoundingClientRect();
@@ -1390,9 +1073,6 @@ async function createStrip() {
 
     });
 
-
-    // Logo di bagian bawah strip -- diukur & digambar dengan cara
-    // yang sama, termasuk opacity-nya, supaya identik dengan preview.
     const logoEl = document.getElementById("logoStrip");
 
     if (logoEl && logoEl.complete && logoEl.naturalWidth > 0) {
@@ -1423,27 +1103,7 @@ async function createStrip() {
 
 }
 
-/* =========================================================
-   DOWNLOAD HELPER (cross-platform)
 
-   Masalahnya: atribut <a download> TIDAK bisa diandalkan di
-   Safari iOS untuk data URL (dan di banyak versi lama malah
-   membuka gambar di tab baru alih-alih menyimpan). Di Android
-   Chrome dan Windows (Chrome/Edge/Firefox) atribut download
-   berfungsi normal.
-
-   Solusinya:
-   - iOS  -> buka tab kosong LEBIH DULU (synchronous, di dalam
-             gesture klik), lalu isi tab itu dengan sebuah BLOB URL
-             (bukan data URL mentah -- lihat catatan panjang di
-             bawah kenapa ini penting), supaya pengguna bisa tekan
-             & tahan gambar lalu "Simpan ke Foto" (perilaku native
-             iOS, paling konsisten di semua versi Safari).
-   - lainnya (Android, Windows, desktop) -> pakai Blob + elemen
-             <a download>, yang lebih hemat memori daripada data
-             URL raksasa untuk GIF dan lebih konsisten daripada
-             data URL langsung di beberapa WebView Android.
-   ========================================================= */
 
 function dataUrlToBlob(dataUrl) {
 
@@ -1469,47 +1129,7 @@ function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
 
     if (isIOS()) {
 
-        /*
-           PENTING #1 -- TIMING window.open():
-
-           Di iOS Safari, window.open() cuma diizinkan kalau dipanggil
-           LANGSUNG (synchronous) di dalam event klik user. Kalau
-           fungsi ini dipanggil setelah beberapa "await" (nunggu
-           createStrip() / gifshot selesai duluan), Safari sudah tidak
-           menganggap itu bagian dari gesture klik lagi, jadi
-           window.open() di-BLOCK DIAM-DIAM -- tidak ada error, tidak
-           ada alert, kelihatan kayak tombol download-nya tidak
-           ngapa-ngapain.
-
-           Makanya tab kosong (preOpenedWindow) dibuka LEBIH DULU,
-           tepat di awal handler onclick, SEBELUM ada await apa pun
-           (lihat downloadJPG.onclick & downloadGIF.onclick). Di sini
-           kita tinggal MENGISI tab yang sudah terbuka itu dengan
-           hasilnya.
-
-           PENTING #2 -- KENAPA BLOB, BUKAN DATA URL LANGSUNG:
-
-           Sebelumnya tab kosong itu diisi dengan
-           `win.location.href = dataUrl` memakai data URL base64
-           MENTAH. Untuk hasil foto (apalagi GIF beberapa frame),
-           data URL ini bisa sangat panjang (ratusan KB - beberapa MB
-           dalam bentuk teks base64). Safari (dan WebKit pada
-           umumnya) punya batas panjang URL untuk NAVIGASI
-           (location.href / window.open ke url) yang jauh lebih kecil
-           daripada, misalnya, batas ukuran <img src="data:...">.
-           Begitu data URL kepanjangan, navigasinya GAGAL DIAM-DIAM:
-           tidak ada error di console, tab yang sudah terbuka cuma
-           tetap menampilkan "about:blank" karena location.href
-           dianggap tidak valid/ditolak.
-
-           Fixnya: data URL selalu dikonversi dulu ke BLOB, lalu blob
-           itu dijadikan `blob:` URL lewat URL.createObjectURL(). Blob
-           URL itu cuma referensi pendek (bukan berisi data base64-nya
-           sama sekali di dalam string URL-nya), jadi tidak kena batas
-           panjang URL, dan aman dipakai untuk window.open() /
-           location.href di iOS berapa pun besar ukuran gambarnya.
-        */
-
+     
         let blobUrl;
 
         try {
@@ -1571,9 +1191,6 @@ function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
         statusText.innerText =
             "Tekan & tahan gambar, lalu pilih \"Simpan ke Foto\"";
 
-        // Revoke agak lama (60 detik) supaya browser sempat benar-benar
-        // memuat halaman & pengguna sempat tekan-tahan gambarnya dulu
-        // sebelum blob URL dicabut dari memori.
         setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
 
         return;
@@ -1598,8 +1215,6 @@ function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
 
         document.body.removeChild(link);
 
-        // Beri sedikit jeda sebelum revoke supaya browser (terutama
-        // beberapa versi Android WebView) sempat memulai unduhan.
         setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
 
         statusText.innerText = "Download success!";
@@ -1630,9 +1245,8 @@ function downloadDataUrl(dataUrl, filename, preOpenedWindow) {
 }
 
 
-/* =========================================================
-   DOWNLOAD JPG
-   ========================================================= */
+//   DOWNLOAD JPG
+
 
 downloadJPG.onclick = async () => {
 
@@ -1645,12 +1259,6 @@ downloadJPG.onclick = async () => {
     }
 
 
-    /*
-       Buka tab kosong SEKARANG JUGA, sebelum ada "await" apa pun,
-       supaya masih dianggap Safari sebagai bagian dari klik user
-       (lihat komentar panjang di downloadDataUrl()). Untuk browser
-       lain (Android/Windows) ini tidak dipakai sama sekali.
-    */
     const iosPreOpenedWindow = isIOS() ? window.open("", "_blank") : null;
 
 
@@ -1660,26 +1268,11 @@ downloadJPG.onclick = async () => {
 
     try {
 
-        /*
-           Ambil layout persis dari elemen #strip yang sedang tampil
-           di preview -- lihat komentar di createStrip() untuk alasan
-           kenapa ini menggantikan pendekatan html2canvas yang
-           sebelumnya gagal menggambar foto beresolusi besar.
-        */
 
         const canvas =
             await createStrip();
 
 
-        /*
-           Download
-
-           Sebelumnya tombol ini bertuliskan "Download JPG" tapi
-           file yang diunduh sebenarnya PNG (image/png, ekstensi
-           .png). Sekarang benar-benar diekspor sebagai JPEG, dan
-           proses unduhnya lewat downloadDataUrl() supaya berjalan
-           benar juga di iOS Safari (lihat komentar di helper itu).
-        */
 
         downloadDataUrl(
             canvas.toDataURL("image/jpeg", 0.92),
@@ -1694,8 +1287,6 @@ downloadJPG.onclick = async () => {
 
         console.error(err);
 
-        // Tab kosong yang sudah kadung dibuka tapi gagal diisi --
-        // tutup lagi supaya tidak menggantung sebagai tab kosong.
         if (iosPreOpenedWindow) {
             iosPreOpenedWindow.close();
         }
@@ -1712,10 +1303,7 @@ downloadJPG.onclick = async () => {
 
 };
 
-
-/* =========================================================
-   DOWNLOAD GIF
-   ========================================================= */
+//   DOWNLOAD GIF
 
 downloadGIF.onclick = async () => {
 
@@ -1727,12 +1315,6 @@ downloadGIF.onclick = async () => {
 
     }
 
-
-    /*
-       Sama seperti downloadJPG: buka tab kosong SEKARANG, sebelum
-       ada await/callback apa pun (proses GIF di gifshot itu async),
-       supaya Safari masih menganggapnya bagian dari klik user.
-    */
     const iosPreOpenedWindow = isIOS() ? window.open("", "_blank") : null;
 
 
@@ -1870,15 +1452,7 @@ downloadGIF.onclick = async () => {
 };
 
 
-/* =========================================================
-   RESET
-
-   Sebelumnya bagian ini menduplikasi logic yang sudah ada di
-   setFrameColor(), setFilter(), setLayout(), dan setTimer(),
-   jadi kalau salah satu fungsi itu diubah, reset bisa jadi
-   tidak sinkron. Sekarang reset cukup memanggil ulang
-   fungsi-fungsi tersebut supaya satu sumber kebenaran.
-   ========================================================= */
+//RESET
 
 resetBtn.onclick = () => {
 
@@ -1906,15 +1480,6 @@ resetBtn.onclick = () => {
 };
 
 
-/* =========================================================
-   CLEANUP SAAT TAB DITUTUP / DI-REFRESH
-
-   Melepas track kamera secara eksplisit. Di beberapa browser
-   Android & Windows, kamera bisa "nyangkut aktif" (lampu
-   indikator tetap menyala) kalau stream tidak di-stop manual
-   sebelum halaman ditinggalkan.
-   ========================================================= */
-
 window.addEventListener("pagehide", () => {
 
     if (cameraStream) {
@@ -1925,9 +1490,5 @@ window.addEventListener("pagehide", () => {
 
 });
 
-
-/* =========================================================
-   INITIAL FRAME
-   ========================================================= */
 
 applyFramePreview();
