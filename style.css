@@ -1,15 +1,12 @@
-/* =========================================================
-   GLOBAL
-   ========================================================= */
-
-* {
-    box-sizing: border-box;
+:root {
+    --ink: #2f3e46;
+    --purple: rgb(182, 139, 201);
+    --purple-deep: rgb(143, 92, 165);
+    --font: "Bricolage Grotesque", "Avenir Next", "Trebuchet MS", system-ui, sans-serif;
 }
 
-html {
-    scroll-behavior: smooth;
-    height: -webkit-fill-available;
-}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
     background: url("inii.png");
@@ -19,46 +16,21 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     min-height: 100vh;
-    min-height: -webkit-fill-available;
-    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     color: #2f3e46;
-    overflow-x: hidden;
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    padding-left: env(safe-area-inset-left, 0px);
-    padding-right: env(safe-area-inset-right, 0px);
 }
 
-button,
-input {
-    font-family: inherit;
-}
+button, input { font-family: inherit; }
 
-button {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-.dropdown div,
-.layout-item,
-.filter-item,
-.frame-option {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-}
-
+/* =========================================================
+   PHOTOBOOTH HEADER
+   ========================================================= */
 .topper {
     width: 100%;
     text-align: center;
     background: rgba(247, 213, 219, 0.5);
-    padding: 15px 15px;
-    padding-top: calc(15px + env(safe-area-inset-top, 0px));
+    padding: 15px;
     margin-bottom: 35px;
 }
 
@@ -92,11 +64,9 @@ button {
     font-family: "Courier New", Courier, monospace;
 }
 
-
 /* =========================================================
    MAIN LAYOUT
    ========================================================= */
-
 .container {
     display: flex;
     gap: 20px;
@@ -104,48 +74,26 @@ button {
     flex: 1;
 }
 
-
-/* =========================================================
-   LEFT PANEL
-   ========================================================= */
-
+/* LEFT PANEL */
 .left-panel {
     width: 50%;
     max-width: 700px;
     margin: 0 auto;
-
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
     border-radius: 20px;
     padding: 20px;
     height: fit-content;
-
     font-style: italic;
-}
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .left-panel {
-        background: rgba(255, 255, 255, 0.85);
-    }
-
-    .dropdown,
-    .layout-menu,
-    .dropdown.grid-mode,
-    .frame-menu {
-        background: rgba(230, 200, 240, 0.92) !important;
-    }
 }
 
 .header {
     background: pink;
     padding: 10px;
     border-radius: 10px;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -156,11 +104,9 @@ button {
     width: auto;
 }
 
-
 /* =========================================================
    CAMERA
    ========================================================= */
-
 .camera-box {
     position: relative;
     width: 60%;
@@ -173,14 +119,9 @@ video {
     width: 100%;
     height: 300px;
     object-fit: cover;
-
     border-radius: 15px;
-    background: #1a1a1a;
-
     transform: scaleX(-1);
     -webkit-transform: scaleX(-1);
-
-    filter: none;
     -webkit-filter: none;
     will-change: transform, filter;
 }
@@ -189,40 +130,25 @@ video {
     position: absolute;
     top: 50%;
     left: 50%;
-
     transform: translate(-50%, -50%);
-
     font-size: 70px;
     color: white;
     font-weight: bold;
-
     text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    pointer-events: none;
 }
-
 
 /* =========================================================
    BUTTONS
    ========================================================= */
-
 .btn {
     margin: 5px;
     padding: 10px 15px;
-    min-height: 40px;
-
     border: none;
     border-radius: 20px;
-
     cursor: pointer;
-
     background: rgb(200, 161, 218);
-
     font-family: monospace;
-
-    transition:
-        transform 0.2s ease,
-        filter 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn:hover {
@@ -244,40 +170,21 @@ video {
     display: inline-block;
 }
 
-
 /* =========================================================
-   DROPDOWN UMUM (GLASSMORPHISM)
+   DROPDOWN UMUM
    ========================================================= */
-
 .dropdown {
     display: none;
-
     position: absolute;
     top: 110%;
     left: 0;
-
-    background: rgba(200, 161, 218, 0.35);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-
+    background: rgb(200, 161, 218);
     border-radius: 15px;
-
     overflow: hidden;
-
     opacity: 0;
     transform: translateY(-10px);
-
-    transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
-
+    transition: opacity 0.2s ease, transform 0.2s ease;
     z-index: 100;
-    max-height: 70vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
 .dropdown[style*="block"] {
@@ -290,39 +197,25 @@ video {
     cursor: pointer;
 }
 
+/* Hilangkan kotak/background saat hover */
 .dropdown div:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: transparent;
 }
 
-
 /* =========================================================
-   LAYOUT DROPDOWN (GLASSMORPHISM)
+   LAYOUT DROPDOWN
    ========================================================= */
-
 .layout-menu {
     display: none;
-
     flex-direction: row;
     align-items: center;
-
     gap: 10px;
-
     width: fit-content;
     max-width: 500px;
-
     padding: 10px;
-
-    background: rgba(200, 161, 218, 0.35);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-
+    background: rgb(200, 161, 218);
     border-radius: 15px;
-
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
 .layout-menu[style*="block"] {
@@ -333,72 +226,48 @@ video {
     display: flex;
     flex-direction: column;
     align-items: center;
-
     min-width: 65px;
-
     padding: 5px;
-
     border-radius: 10px;
-
     background: rgba(255, 255, 255, 0.15);
-
-    transition: transform 0.2s ease,
-                background 0.2s ease;
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .layout-item:hover {
     transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.3);
+    background: transparent;
 }
 
 .layout-item img {
     width: 55px;
     height: 75px;
-
     object-fit: cover;
-
     border-radius: 8px;
 }
 
 .layout-item span {
     margin-top: 5px;
-
     font-size: 10px;
     font-family: monospace;
     font-style: italic;
-
     color: black;
 }
 
-
 /* =========================================================
-   FILTER DROPDOWN (GLASSMORPHISM)
+   FILTER DROPDOWN
    ========================================================= */
-
 .dropdown.grid-mode {
     display: none;
-
     position: absolute;
     top: 110%;
     left: 0;
-
-    background: rgba(200, 161, 218, 0.35);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    border: 1px solid rgba(255, 255, 255, 0.4);
-
+    background: rgb(200, 161, 218);
     border-radius: 15px;
-
     padding: 10px;
-
     z-index: 100;
-
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-
     min-width: 300px;
 }
 
@@ -409,64 +278,48 @@ video {
 .filter-item {
     display: flex;
     align-items: center;
-
     gap: 12px;
-
     padding: 10px;
-
     cursor: pointer;
-
     transition: 0.2s;
-
     font-family: monospace;
     font-style: italic;
 }
 
 .filter-item:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: transparent;
 }
 
 .preview-box {
     width: 17.5px;
     height: 17.5px;
-
     border-radius: 6px;
-
     background-image: url("https://picsum.photos/50");
     background-size: cover;
-
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-
+.preview-box.none { filter: none; }
+.preview-box.bw { filter: grayscale(100%); }
+.preview-box.sepia { filter: sepia(100%); }
+.preview-box.bright { filter: brightness(150%); }
+.preview-box.contrast { filter: contrast(150%); }
+.preview-box.vintage { filter: sepia(60%) brightness(105%) contrast(110%); }
+.preview-box.soft { filter: blur(2px) brightness(140%); }
 
 /* =========================================================
-   FRAME DROPDOWN (GLASSMORPHISM)
+   FRAME DROPDOWN
    ========================================================= */
-
 .frame-menu {
     display: none;
-
     top: 110%;
     left: 0;
-
     width: 232px;
-
     overflow: visible;
-
     padding: 12px 30px 12px 8px;
-
-    background: rgba(255, 245, 248, 0.4);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-
-    border: 1px solid rgba(255, 255, 255, 0.5);
-
+    background: rgb(200, 161, 218);
     border-radius: 18px;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.18);
-
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
     z-index: 200;
 }
 
@@ -474,74 +327,70 @@ video {
     display: block;
 }
 
-
-/* CATEGORY */
-
 .frame-category {
     margin-bottom: 12px;
 }
 
 .frame-category p {
     margin: 0 0 6px;
-
     font-family: monospace;
     font-size: 11px;
     font-weight: bold;
-
     color: #2f3e46;
 }
 
-
-/* FRAME GRID */
-
 .frame-grid {
     display: grid;
-
     grid-template-columns: repeat(6, 28px);
     justify-content: start;
-
     gap: 5px;
 }
 
+.frame-grid.patterns {
+    max-height: 190px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    align-content: start;
+}
 
+.frame-grid.patterns::-webkit-scrollbar {
+    width: 5px;
+}
+
+.frame-grid.patterns::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.frame-grid.patterns::-webkit-scrollbar-thumb {
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+/* Pattern / color button */
 .frame-option {
     width: 28px;
     height: 28px;
-
     padding: 0;
-
     border: 2px solid transparent;
     border-radius: 50%;
-
     cursor: pointer;
-
     overflow: hidden;
-
-    background: white;
-
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    background: transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
+/* Tidak ada kotak putih ketika cursor diarahkan */
 .frame-option:hover {
     transform: scale(1.1);
-
     border-color: #b68bc9;
-
-    box-shadow:
-        0 4px 10px rgba(182, 139, 201, 0.4);
+    box-shadow: none;
+    background: transparent;
 }
 
 .frame-option:active {
     transform: scale(0.95);
 }
-
-
-/* =========================================================
-   COLOR FRAME
-   ========================================================= */
 
 .color-option {
     border: 2px solid rgba(0, 0, 0, 0.12);
@@ -549,75 +398,70 @@ video {
 
 .color-option:hover {
     border-color: #8f5ca5;
+    background: transparent;
 }
 
-
-/* =========================================================
-   PATTERN FRAME
-   ========================================================= */
-
 .pattern-option {
-    background: white;
+    background: transparent;
+}
+
+.pattern-option:hover {
+    background: transparent;
 }
 
 .pattern-option img {
     display: block;
-
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-    -webkit-user-drag: none;
-    pointer-events: none;
 }
 
-
 /* =========================================================
-   CUSTOM COLOR SWATCH
-   Swatch terakhir di grid warna: lingkaran rainbow sebagai
-   ikon "pilih warna sendiri", background-nya nanti diganti JS
-   supaya mencerminkan warna custom yang lagi aktif.
+   CUSTOM COLOR
    ========================================================= */
-
 .custom-color-option {
     background: conic-gradient(
         from 0deg,
-        red, yellow, lime, cyan, blue, magenta, red
+        red,
+        yellow,
+        lime,
+        cyan,
+        blue,
+        magenta,
+        red
     );
-
     position: relative;
+}
+
+.custom-color-option:hover {
+    background: conic-gradient(
+        from 0deg,
+        red,
+        yellow,
+        lime,
+        cyan,
+        blue,
+        magenta,
+        red
+    );
 }
 
 .custom-color-option::after {
     content: "";
-
     position: absolute;
-
     inset: 3px;
-
     border-radius: 50%;
-
     background: rgba(255, 255, 255, 0.55);
-
     pointer-events: none;
 }
 
-
 .custom-color-panel {
     display: none;
-
     flex-direction: column;
     gap: 8px;
-
     margin-top: 10px;
     padding: 8px;
-
-    background: rgba(182, 139, 201, 0.15);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    border: 1px solid rgba(255, 255, 255, 0.35);
-
+    background: rgba(182, 139, 201, 0.1);
     border-radius: 12px;
 }
 
@@ -629,72 +473,65 @@ video {
     display: flex;
     flex-direction: column;
     gap: 4px;
-
     font-family: monospace;
     font-size: 10px;
     font-weight: bold;
-
     color: #2f3e46;
 }
-
 
 .hue-slider,
 .light-slider {
     -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
-
     width: 100%;
     height: 10px;
-
     border-radius: 5px;
-
     outline: none;
-
     cursor: pointer;
-    touch-action: pan-x;
 }
 
 .hue-slider {
     background: linear-gradient(
         to right,
-        red, yellow, lime, cyan, blue, magenta, red
+        red,
+        yellow,
+        lime,
+        cyan,
+        blue,
+        magenta,
+        red
     );
 }
 
 .light-slider {
-    background: linear-gradient(to right, #000000, #b68bc9, #ffffff);
+    background: linear-gradient(
+        to right,
+        #000000,
+        #b68bc9,
+        #ffffff
+    );
 }
 
 .hue-slider::-webkit-slider-thumb,
 .light-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-
-    width: 20px;
-    height: 20px;
-
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-
     background: #ffffff;
     border: 2px solid #2f3e46;
-
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
-
     cursor: pointer;
 }
 
 .hue-slider::-moz-range-thumb,
 .light-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-
     background: #ffffff;
     border: 2px solid #2f3e46;
-
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
-
     cursor: pointer;
 }
 
@@ -703,11 +540,6 @@ video {
     height: 10px;
     border-radius: 5px;
 }
-
-
-/* =========================================================
-   FRAME SCROLLBAR
-   ========================================================= */
 
 .frame-menu::-webkit-scrollbar {
     width: 6px;
@@ -718,15 +550,13 @@ video {
 }
 
 .frame-menu::-webkit-scrollbar-thumb {
-    background: #c8a1da;
+    background: #ffffff;
     border-radius: 10px;
 }
-
 
 /* =========================================================
    RIGHT PANEL
    ========================================================= */
-
 .right-panel {
     width: 40%;
     text-align: center;
@@ -739,11 +569,8 @@ video {
 
 .camera-top {
     background: rgb(200, 161, 218);
-
     padding: 15px;
-
     border-radius: 15px;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -752,16 +579,13 @@ video {
 .red-dot {
     width: 20px;
     height: 20px;
-
     background: red;
-
     border-radius: 50%;
 }
 
 .lens {
     width: 40px;
     height: 40px;
-
     border: 4px solid black;
     border-radius: 50%;
 }
@@ -769,19 +593,14 @@ video {
 .output-slot {
     width: 120px;
     height: 40px;
-
     background: #bfc7ce;
-
     margin: 10px auto;
-
     border-radius: 10px;
 }
-
 
 /* =========================================================
    PHOTO STRIP
    ========================================================= */
-
 .photo-result {
     overflow: hidden;
 }
@@ -861,11 +680,11 @@ video {
 }
 
 .strip.grid-6 {
-    width: 220px;
+    width: 20px;
 
-    padding: 8px;
+    padding: px;
 
-    border-radius: 0;
+    border-radius: 10;
 }
 
 .strip.grid-6 #photosContainer {
@@ -889,14 +708,12 @@ video {
 
     display: block;
 
-    height: 40px;
+    height: 20px;
 }
-
 
 /* =========================================================
    STATUS
    ========================================================= */
-
 .info {
     padding: 10px;
     text-align: center;
@@ -904,46 +721,29 @@ video {
 
 #status {
     font-family: "Courier New", Courier, monospace;
-
     font-style: italic;
-
     font-size: 14px;
-
     color: #000;
-
     margin: 0;
-
     font-weight: 500;
-
-    text-shadow:
-        0.5px 0.5px 0 rgba(255, 255, 255, 0.5);
+    text-shadow: 0.5px 0.5px 0 rgba(255, 255, 255, 0.5);
 }
-
 
 /* =========================================================
    FOOTER
    ========================================================= */
-
 footer {
     background-color: rgba(247, 213, 219, 0.5);
-
     color: #333;
-
     text-align: center;
-
     padding: 20px 0;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-
     margin-top: 30px;
-
     width: 100%;
 }
 
 .footer-content p {
     margin: 5px 0;
-
     font-size: 12px;
-
     font-family: monospace;
 }
 
@@ -951,253 +751,153 @@ footer {
     color: rgb(143, 92, 165);
 }
 
-
 /* =========================================================
    HOMEPAGE
    ========================================================= */
-
 .home-page {
     position: fixed;
-
     inset: 0;
-
     z-index: 9999;
-
     display: flex;
-
     justify-content: center;
     align-items: center;
-
-    background: url("inii.png");
-
-    background-size: cover;
-    background-position: center;
-
-    transition:
-        opacity 0.6s ease,
-        visibility 0.6s ease;
+    background: url("inii.png") center/cover;
+    font-family: var(--font);
+    transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
 .home-page::before {
     content: "";
-
     position: absolute;
-
     inset: 0;
-
     background: rgba(247, 213, 219, 0.35);
-
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
 }
 
-
-/* =========================================================
-   HOMEPAGE CARD
-   ========================================================= */
-
 .home-content {
     position: relative;
-
     z-index: 2;
-
-    width: min(90%, 500px);
-
-    padding: 45px 35px;
-
+    width: min(94%, 920px);
+    padding: 20px;
     text-align: center;
-
-    background: rgba(255, 255, 255, 0.22);
-
-    border: 1px solid rgba(255, 255, 255, 0.35);
-
-    border-radius: 30px;
-
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-
-    box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.1);
-
     animation: homeAppear 0.9s ease;
 }
 
-
-/* =========================================================
-   HOMEPAGE LOGO
-   ========================================================= */
-
-.home-logo {
-    width: 120px;
-    max-width: 40%;
-
-    margin-bottom: 15px;
-
-    object-fit: contain;
-
-    transform-origin: center;
-
-    animation: logoShake 1.5s ease-in-out infinite;
-}
-
-@keyframes logoShake {
-
-    0%,
-    100% {
-        transform: rotate(0deg);
-    }
-
-    20% {
-        transform: rotate(7deg);
-    }
-
-    40% {
-        transform: rotate(-7deg);
-    }
-
-    60% {
-        transform: rotate(5deg);
-    }
-
-    80% {
-        transform: rotate(-5deg);
-    }
-}
-
-
-/* =========================================================
-   HOMEPAGE TITLE
-   ========================================================= */
-
 .home-title {
     margin: 0;
-
-    font-family: monospace;
-
-    font-size: 48px;
-
-    font-weight: bold;
-
-    color: #2f3e46;
-
-    letter-spacing: -2px;
+    font-size: clamp(52px, 14.5vw, 152px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-variation-settings: "opsz" 96;
+    white-space: nowrap;
+    color: var(--ink);
+    text-shadow: 0 2px 24px rgba(255, 255, 255, 0.55);
 }
 
-.home-title span {
-    color: rgb(182, 139, 201);
-
-    font-family:
-        "Gill Sans",
-        "Gill Sans MT",
-        Calibri,
-        "Trebuchet MS",
-        sans-serif;
+.home-title .hl {
+    color: var(--purple);
 }
 
+.eye {
+    position: relative;
+    display: inline-block;
+    width: 0.56em;
+    height: 0.56em;
+    margin: 0 0.02em;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    box-shadow:
+        inset 0 0 0 0.04em var(--purple-deep),
+        0 0.03em 0.08em rgba(47, 62, 70, 0.25);
+    transition: transform 0.14s ease;
+}
 
-/* =========================================================
-   HOMEPAGE SUBTITLE
-   ========================================================= */
+.eye.blink {
+    transform: scaleY(0.08);
+}
+
+.eye i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.26em;
+    height: 0.26em;
+    margin: -0.13em 0 0 -0.13em;
+    border-radius: 50%;
+    background: var(--ink);
+    transform: translate(
+        calc(var(--gx, 0) * 0.12em),
+        calc(var(--gy, 0) * 0.12em)
+    );
+    transition: transform 0.28s ease-out;
+}
+
+.eye i::after {
+    content: "";
+    position: absolute;
+    top: 16%;
+    left: 22%;
+    width: 28%;
+    height: 28%;
+    border-radius: 50%;
+    background: #fff;
+}
 
 .home-subtitle {
-    margin: 10px 0 5px;
-
-    font-size: 22px;
-
-    font-weight: normal;
-
-    font-family:
-        "Courier New",
-        Courier,
-        monospace;
-
-    color: rgb(182, 139, 201);
+    margin: 18px 0 4px;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--purple);
 }
-
-
-/* =========================================================
-   HOMEPAGE DESCRIPTION
-   ========================================================= */
 
 .home-desc {
     position: relative;
-
-    margin: 18px 0 28px;
-
-    font-family: monospace;
-
-    font-size: 15px;
-
-    font-style: italic;
-
-    color: #2f3e46;
-
+    margin: 16px 0 34px;
+    font-size: 16px;
+    color: var(--ink);
     opacity: 0;
-
-    animation:
-        descAppear 1.5s ease forwards;
-
+    animation: descAppear 1.5s ease forwards;
     animation-delay: 0.8s;
 }
 
-
-
 .shine-text {
     position: relative;
-
     display: inline-block;
-
     overflow: hidden;
 }
 
-
-
 .shine-text::after {
     content: "";
-
     position: absolute;
-
     top: -50%;
     left: -80%;
-
     width: 35%;
     height: 200%;
-
     background: linear-gradient(
         90deg,
         transparent,
         rgba(255, 255, 255, 0.2),
-        rgba(255, 255, 255, 1),
+        #fff,
         rgba(255, 255, 255, 0.2),
         transparent
     );
-
     transform: skewX(-20deg);
-
-    animation:
-        shineMove 2.8s ease-in-out infinite;
-
+    animation: shineMove 2.8s ease-in-out infinite;
     animation-delay: 2s;
 }
 
-
-/* =========================================================
-   SPARKLE ✦
-   ========================================================= */
-
 .sparkle {
     display: inline-block;
-
     margin-left: 5px;
-
     color: #d7a8df;
-
     font-style: normal;
-
     animation:
         sparkleTwinkle 1.8s ease-in-out infinite,
         sparkleRotate 2.5s ease-in-out infinite;
-
     text-shadow:
         0 0 4px rgba(255, 255, 255, 0.8),
         0 0 8px rgba(215, 168, 223, 0.8),
@@ -1205,9 +905,7 @@ footer {
 }
 
 @keyframes sparkleTwinkle {
-
-    0%,
-    100% {
+    0%, 100% {
         opacity: 0.4;
         transform: scale(0.8);
     }
@@ -1219,9 +917,7 @@ footer {
 }
 
 @keyframes sparkleRotate {
-
-    0%,
-    100% {
+    0%, 100% {
         rotate: 0deg;
     }
 
@@ -1230,13 +926,7 @@ footer {
     }
 }
 
-
-/* =========================================================
-   TEXT APPEAR
-   ========================================================= */
-
 @keyframes descAppear {
-
     0% {
         opacity: 0;
         transform: translateY(8px);
@@ -1248,13 +938,7 @@ footer {
     }
 }
 
-
-/* =========================================================
-   SHINE
-   ========================================================= */
-
 @keyframes shineMove {
-
     0% {
         left: -80%;
         opacity: 0;
@@ -1269,48 +953,24 @@ footer {
         opacity: 1;
     }
 
-    50% {
-        left: 120%;
-        opacity: 0;
-    }
-
-    100% {
+    50%, 100% {
         left: 120%;
         opacity: 0;
     }
 }
 
-
-/* =========================================================
-   START BUTTON
-   ========================================================= */
-
 .start-btn {
-    position: relative;
-
-    padding: 14px 55px;
-
+    padding: 17px 68px;
     border: none;
-
-    border-radius: 30px;
-
+    border-radius: 34px;
     background: #f3b6c1;
-
-    color: #2f3e46;
-
-    font-family: monospace;
-
-    font-size: 16px;
-
-    font-weight: bold;
-
-    letter-spacing: 2px;
-
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     cursor: pointer;
-
-    box-shadow:
-        0 6px 15px rgba(0, 0, 0, 0.1);
-
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     transition:
         transform 0.2s ease,
         filter 0.2s ease,
@@ -1319,25 +979,19 @@ footer {
 
 .start-btn:hover {
     filter: brightness(0.95);
-
     transform: scale(1.06);
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .start-btn:active {
     transform: scale(0.97);
 }
 
-
 /* =========================================================
    PHOTOBOOTH SHOW / HIDE
    ========================================================= */
-
 .photobooth-app {
     display: none;
-
     animation: boothAppear 0.7s ease;
 }
 
@@ -1347,33 +1001,23 @@ footer {
 
 .home-page.hide {
     opacity: 0;
-
     visibility: hidden;
-
     pointer-events: none;
 }
 
 @keyframes homeAppear {
-
     from {
         opacity: 0;
-
-        transform:
-            translateY(20px)
-            scale(0.96);
+        transform: translateY(20px) scale(0.96);
     }
 
     to {
         opacity: 1;
-
-        transform:
-            translateY(0)
-            scale(1);
+        transform: translateY(0) scale(1);
     }
 }
 
 @keyframes boothAppear {
-
     from {
         opacity: 0;
     }
@@ -1383,11 +1027,9 @@ footer {
     }
 }
 
-
 /* =========================================================
    MOBILE
    ========================================================= */
-
 @media screen and (max-width: 768px) {
 
     body {
@@ -1395,39 +1037,17 @@ footer {
     }
 
     .home-content {
-        width: 85%;
-
-        padding: 35px 20px;
-
-        border-radius: 25px;
-    }
-
-    .home-logo {
-        width: 100px;
-        max-width: 40%;
-    }
-
-    .home-title {
-        font-size: 38px;
-    }
-
-    .home-subtitle {
-        font-size: 18px;
-    }
-
-    .home-desc {
-        font-size: 13px;
+        width: 100%;
+        padding: 12px;
     }
 
     .start-btn {
-        padding: 13px 45px;
-
-        font-size: 14px;
+        padding: 15px 52px;
+        font-size: 16px;
     }
 
     .topper {
         padding: 12px;
-
         margin-bottom: 15px;
     }
 
@@ -1441,27 +1061,20 @@ footer {
 
     .desc {
         font-size: 11px;
-
         padding: 0 10px;
-
         line-height: 1.5;
     }
 
     .container {
         flex-direction: column;
-
         align-items: center;
-
         padding: 10px;
-
         gap: 10px;
     }
 
     .left-panel {
         width: 90%;
-
         padding: 15px;
-
         border-radius: 18px;
     }
 
@@ -1471,39 +1084,30 @@ footer {
 
     video {
         width: 100%;
-
         height: 320px;
     }
 
     .controls {
         display: flex;
-
         flex-wrap: wrap;
-
         justify-content: center;
-
         gap: 6px;
-
         margin-top: 10px;
     }
 
     .btn {
         font-size: 11px;
-
         padding: 8px 10px;
-
         margin: 2px;
     }
 
     .right-panel {
         width: 100%;
-
         margin-top: 10px;
     }
 
     .machine {
         width: 150px;
-
         margin-bottom: 10px;
     }
 
@@ -1523,8 +1127,7 @@ footer {
 
     .strip {
         width: 150px;
-
-        padding: 6px;
+        padding: 10px;
     }
 
     .strip.grid-6 {
@@ -1537,13 +1140,11 @@ footer {
 
     .dropdown.grid-mode {
         grid-template-columns: repeat(2, 1fr);
-
         min-width: 220px;
     }
 
     .layout-menu {
         max-width: 250px;
-
         overflow-x: auto;
     }
 
@@ -1554,15 +1155,17 @@ footer {
 
     .frame-menu {
         width: 206px;
-
         padding: 10px 26px 10px 6px;
     }
 
     .frame-grid {
         grid-template-columns: repeat(6, 24px);
         justify-content: start;
-
         gap: 4px;
+    }
+
+    .frame-grid.patterns {
+        max-height: 165px;
     }
 
     .frame-option {
@@ -1576,9 +1179,7 @@ footer {
 
     footer {
         margin-top: 20px;
-
         padding: 15px 10px;
-        padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
     }
 
     .footer-content p {
@@ -1586,8 +1187,9 @@ footer {
     }
 }
 
-@media screen and (max-width: 900px) and (orientation: landscape) {
-    video {
-        height: 220px;
+@media (prefers-reduced-motion: reduce) {
+    .sparkle,
+    .shine-text::after {
+        animation: none;
     }
 }

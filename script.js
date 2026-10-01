@@ -1492,3 +1492,90 @@ window.addEventListener("pagehide", () => {
 
 
 applyFramePreview();
+
+/* =========================================================
+   BOLA MATA HOMEPAGE
+   Pupil mengikuti kursor/sentuhan, melirik acak saat diam,
+   dan berkedip sesekali.
+   ========================================================= */
+
+(function initEyes() {
+
+    const eyes = Array.from(document.querySelectorAll(".home-title .eye"));
+
+    if (!eyes.length || !homePage) return;
+
+    let lastMove = 0;
+
+    function setGaze(eye, gx, gy) {
+        eye.style.setProperty("--gx", gx.toFixed(3));
+        eye.style.setProperty("--gy", gy.toFixed(3));
+    }
+
+    function lookAt(x, y) {
+
+        eyes.forEach(eye => {
+
+            const r = eye.getBoundingClientRect();
+
+            const dx = x - (r.left + r.width / 2);
+            const dy = y - (r.top + r.height / 2);
+
+            const dist = Math.hypot(dx, dy) || 1;
+            const power = Math.min(dist / 150, 1);
+
+            setGaze(eye, (dx / dist) * power, (dy / dist) * power);
+
+        });
+
+    }
+
+    function onPointer(e) {
+
+        const p = e.touches ? e.touches[0] : e;
+
+        if (!p) return;
+
+        lastMove = Date.now();
+
+        lookAt(p.clientX, p.clientY);
+
+    }
+
+    window.addEventListener("pointermove", onPointer);
+    window.addEventListener("touchmove", onPointer, { passive: true });
+
+    // Melirik acak kalau tidak ada gerakan
+    setInterval(() => {
+
+        if (homePage.classList.contains("hide")) return;
+
+        if (Date.now() - lastMove < 2500) return;
+
+        const gx = Math.random() * 2 - 1;
+        const gy = Math.random() * 2 - 1;
+
+        eyes.forEach(eye => setGaze(eye, gx, gy));
+
+    }, 1400);
+
+    // Berkedip
+    function blink() {
+
+        if (!homePage.classList.contains("hide")) {
+
+            eyes.forEach(eye => eye.classList.add("blink"));
+
+            setTimeout(() => {
+                eyes.forEach(eye => eye.classList.remove("blink"));
+            }, 140);
+
+        }
+
+        setTimeout(blink, 2500 + Math.random() * 2500);
+
+    }
+
+    setTimeout(blink, 2000);
+
+})();
