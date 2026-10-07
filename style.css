@@ -680,11 +680,11 @@ video {
 }
 
 .strip.grid-6 {
-    width: 20px;
+    width: 220px;
 
-    padding: px;
+    padding: 8px;
 
-    border-radius: 10;
+    border-radius: 10px;
 }
 
 .strip.grid-6 #photosContainer {
