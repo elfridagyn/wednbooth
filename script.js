@@ -19,6 +19,103 @@ const hueSlider = document.getElementById("hueSlider");
 const lightSlider = document.getElementById("lightSlider");
 
 const photosContainer = document.getElementById("photosContainer");
+const faqPanel = document.getElementById("faqPanel");
+const helpMenu = document.getElementById("helpMenu");
+const faqView = document.getElementById("faqView");
+const requestFrameView = document.getElementById("requestFrameView");
+const requestFrameForm = document.getElementById("requestFrameForm");
+const requestTopic = document.getElementById("requestTopic");
+const topicSelectButton = document.getElementById("topicSelectButton");
+const topicSelectLabel = document.getElementById("topicSelectLabel");
+const topicOptions = document.getElementById("topicOptions");
+
+function closeTopicOptions() {
+    topicOptions.hidden = true;
+    topicSelectButton.setAttribute("aria-expanded", "false");
+}
+
+topicSelectButton.addEventListener("click", () => {
+    const isOpening = topicOptions.hidden;
+    topicOptions.hidden = !isOpening;
+    topicSelectButton.setAttribute("aria-expanded", String(isOpening));
+
+    if (isOpening) {
+        topicOptions.querySelector("[role='option']").focus();
+    }
+});
+
+topicOptions.querySelectorAll("[role='option']").forEach(option => {
+    option.addEventListener("click", () => {
+        requestTopic.value = option.dataset.topic;
+        topicSelectLabel.textContent = option.dataset.topic;
+        topicOptions.querySelectorAll("[role='option']").forEach(item => {
+            item.setAttribute("aria-selected", String(item === option));
+        });
+        closeTopicOptions();
+        topicSelectButton.focus();
+    });
+});
+
+topicSelectButton.addEventListener("keydown", event => {
+    if (event.key === "ArrowDown") {
+        event.preventDefault();
+        topicOptions.hidden = false;
+        topicSelectButton.setAttribute("aria-expanded", "true");
+        topicOptions.querySelector("[role='option']").focus();
+    }
+});
+
+topicOptions.addEventListener("keydown", event => {
+    const options = Array.from(topicOptions.querySelectorAll("[role='option']"));
+    const index = options.indexOf(document.activeElement);
+
+    if (event.key === "Escape") {
+        closeTopicOptions();
+        topicSelectButton.focus();
+    } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const direction = event.key === "ArrowDown" ? 1 : -1;
+        options[(index + direction + options.length) % options.length].focus();
+    }
+});
+
+document.addEventListener("click", event => {
+    if (!event.target.closest(".topic-select")) closeTopicOptions();
+});
+
+document.querySelectorAll("[data-help-view]").forEach(button => {
+    button.addEventListener("click", () => {
+        const showFaq = button.dataset.helpView === "faq";
+        helpMenu.hidden = true;
+        faqView.hidden = !showFaq;
+        requestFrameView.hidden = showFaq;
+        faqPanel.classList.remove("is-menu");
+    });
+});
+
+document.querySelectorAll(".help-back").forEach(button => {
+    button.addEventListener("click", () => {
+        faqView.hidden = true;
+        requestFrameView.hidden = true;
+        helpMenu.hidden = false;
+        faqPanel.classList.add("is-menu");
+    });
+});
+
+requestFrameForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (!requestFrameForm.reportValidity()) return;
+
+    const formData = new FormData(requestFrameForm);
+    const topic = formData.get("topic");
+    const subject = encodeURIComponent(`${topic} from ${formData.get("name")}`);
+    const body = encodeURIComponent(
+        `Topic: ${topic}\nName: ${formData.get("name")}\nEmail: ${formData.get("email")}\n\n${formData.get("message")}`
+    );
+
+    window.location.href = `mailto:wednbooth@gmail.com?subject=${subject}&body=${body}`;
+});
 
 let currentFrameColor = "#ffffff";
 let currentFramePattern = null;
@@ -418,11 +515,35 @@ if (startBtn) {
 
 
 
+function updateFrameDropdownClearance() {
+
+    const frameMenu = document.getElementById("frameMenu");
+    const container = document.querySelector(".container");
+
+    if (!frameMenu || !container) return;
+
+    container.style.removeProperty("margin-bottom");
+
+    if (frameMenu.style.display !== "block") return;
+
+    const menuBottom = frameMenu.getBoundingClientRect().bottom;
+    const containerBottom = container.getBoundingClientRect().bottom;
+    const clearance = Math.max(0, menuBottom - containerBottom + 20);
+
+    if (clearance > 0) {
+        container.style.marginBottom = `${clearance}px`;
+    }
+
+}
+
+
 function closeAllDropdowns() {
 
     document.querySelectorAll(".dropdown").forEach(menu => {
         menu.style.display = "none";
     });
+
+    updateFrameDropdownClearance();
 
 }
 
@@ -441,7 +562,12 @@ function toggleMenu(id) {
         menu.style.display = "block";
     }
 
+    updateFrameDropdownClearance();
+
 }
+
+
+window.addEventListener("resize", updateFrameDropdownClearance);
 
 
 window.addEventListener("click", function (e) {
@@ -1501,7 +1627,7 @@ applyFramePreview();
 
 (function initEyes() {
 
-    const eyes = Array.from(document.querySelectorAll(".home-title .eye"));
+    const eyes = Array.from(document.querySelectorAll(".eye"));
 
     if (!eyes.length || !homePage) return;
 

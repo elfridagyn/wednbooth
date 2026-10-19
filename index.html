@@ -42,12 +42,102 @@
     <!-- PHOTOBOOTH APP -->
     <div id="photoboothApp" class="photobooth-app">
         <div class="topper">
-            <h1 class="brand">wedn<span>bOOth</span></h1>
-            <h1 class="subtitle">Online Photobooth</h1>
-            <p class="desc">
-                Welcome! Capture your special moments with fun layouts,
-                creative filters, and instant downloads. Strike a pose and cheers!!
-            </p>
+            <h1 class="brand" aria-label="wednbOOth">
+                <span aria-hidden="true">wedn<span class="brand-mark">b<span class="eye"><i></i></span><span class="eye"><i></i></span>th</span></span>
+            </h1>
+            <button class="faq-trigger" type="button" popovertarget="faqPanel" aria-label="Buka FAQ & Contact" title="FAQ & Contact">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <div id="faqPanel" class="faq-panel is-menu" popover="auto" aria-label="Bantuan wednbOOth">
+                <div id="helpMenu" class="help-menu">
+                    <button class="help-option" type="button" data-help-view="faq">FAQ</button>
+                    <button class="help-option" type="button" data-help-view="request">CONTACT US</button>
+                </div>
+
+                <section id="faqView" class="help-view" hidden>
+                    <div class="help-heading">
+                        <button class="help-back" type="button" aria-label="Kembali ke menu bantuan">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
+                            </svg>
+                        </button>
+                        <h2>Frequently Ask Question</h2>
+                    </div>
+                    <h3>How do I use this site?</h3>
+                    <ol class="faq-steps">
+                        <li><span>Izinkan akses kamera agar situs dapat menggunakan kamera perangkatmu.</span></li>
+                        <li><span>Atur sesi foto dengan memilih layout, filter, timer, dan frame yang kamu inginkan.</span></li>
+                        <li><span>Ambil foto dengan menekan tombol "AMBIL FOTO". Ulangi hingga semua slot foto pada layout terisi.</span></li>
+                        <li><span>Periksa hasil foto dan ambil ulang jika ada foto yang ingin diganti.</span></li>
+                        <li><span>Unduh hasil foto dengan memilih format JPG untuk gambar biasa atau GIF untuk foto bergerak di bawah hasil foto.</span></li>
+                    </ol>
+                    <details>
+                        <summary>Can I change the frame after taking photos?</summary>
+                        <p>Bisa! Kamu tetap bisa mengganti frame setelah sesi foto selesai tanpa perlu mengambil foto ulang.</p>
+                    </details>
+                    <details>
+                        <summary>Can I change the filter after taking photos?</summary>
+                        <p>Tidak. Filter hanya bisa dipilih sebelum mengambil foto. Setelah foto diambil, filter tidak dapat diubah, jadi pastikan kamu sudah memilih filter yang diinginkan sebelum memulai sesi foto.</p>
+                    </details>
+                    <details>
+                        <summary>Want to start a new session?</summary>
+                        <p>Tekan tombol Reset untuk menghapus hasil foto dan memulai sesi baru dari awal.</p>
+                    </details>
+                </section>
+
+                <section id="requestFrameView" class="help-view" hidden>
+                    <div class="help-heading">
+                        <button class="help-back" type="button" aria-label="Kembali ke menu bantuan">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
+                            </svg>
+                        </button>
+                        <h2>Contact Us</h2>
+                    </div>
+                    <form id="requestFrameForm" class="help-form">
+                        <label>Nama
+                            <input name="name" type="text" autocomplete="name" required>
+                        </label>
+                        <label>Email
+                            <input name="email" type="email" autocomplete="email" required>
+                        </label>
+                        <label>Topik
+                            <span class="topic-select">
+                                <input id="requestTopic" name="topic" type="hidden" value="Frame Request">
+                                <button id="topicSelectButton" class="topic-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="topicOptions">
+                                    <span id="topicSelectLabel">Frame Request</span>
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                        <path d="m7 10 5 5 5-5" />
+                                    </svg>
+                                </button>
+                                <span id="topicOptions" class="topic-options" role="listbox" aria-label="Pilih topik" hidden>
+                                    <button class="topic-option" type="button" role="option" aria-selected="true" data-topic="Frame Request">Frame Request</button>
+                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="General Questions">General Questions</button>
+                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="Technical Issues">Technical Issues</button>
+                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="Others">Others</button>
+                                </span>
+                            </span>
+                        </label>
+                        <label>Pesan
+                            <textarea name="message" rows="4" required></textarea>
+                        </label>
+                        <button class="help-submit" type="submit">Kirim permintaan</button>
+                    </form>
+                    <div class="help-contact">
+                        <p class="help-contact-title">SAY HI ON SOCIALS</p>
+                        <a class="help-contact-button" href="https://instagram.com/wednbooth" target="_blank" rel="noreferrer">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <rect x="3" y="3" width="18" height="18" rx="5" />
+                                <circle cx="12" cy="12" r="4" />
+                                <circle class="instagram-dot" cx="17.5" cy="6.5" r="1" />
+                            </svg>
+                            <span>@wednbooth</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
         </div>
 
         <div class="container">
@@ -146,13 +236,8 @@
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/flowwy.jpg', 'Flowwy')"><img src="frames/flowwy.jpg" alt="Flowwy"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/flowy.jpg', 'Flowy')"><img src="frames/flowy.jpg" alt="Flowy"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/leopard.jpg', 'Leopard')"><img src="frames/leopard.jpg" alt="Leopard"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/loveflowersgreen.jpg', 'Love Flowers Green')"><img src="frames/loveflowersgreen.jpg" alt="Love Flowers Green"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/maroonpard.jpg', 'Maroon Pard')"><img src="frames/maroonpard.jpg" alt="Maroon Pard"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/pardbrown.jpg', 'Pardown')"><img src="frames/pardbrown.jpg" alt="Pardown"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/pinkflowers.jpg', 'Pink Flowers')"><img src="frames/pinkflowers.jpg" alt="Pink Flowers"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/pinkredcheckered.jpg', 'Pink Red Checkered')"><img src="frames/pinkredcheckered.jpg" alt="Pink Red Checkered"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/purpleflowers.jpg', 'Purple Flowers')"><img src="frames/purpleflowers.jpg" alt="Purple Flowers"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/realisticflowers.jpg', 'Realistic Flowers')"><img src="frames/realisticflowers.jpg" alt="Realistic Flowers"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/redacakadut.jpg', 'Red Acakadut')"><img src="frames/redacakadut.jpg" alt="Red Acakadut"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/softpard.jpg', 'Soft Card')"><img src="frames/softpard.jpg" alt="Soft Card"></button>
                                 <button class="frame-option pattern-option" onclick="setFramePattern('frames/star.jpg', 'Star')"><img src="frames/star.jpg" alt="Star"></button>
@@ -226,8 +311,20 @@
                     </div>
                 </div>
 
-                <button id="downloadJPG" class="btn pink">🖼️ Download JPG</button>
-                <button id="downloadGIF" class="btn pink">🎞️ Download GIF</button>
+                <div class="download-actions">
+                    <button id="downloadJPG" class="btn download-button download-primary">
+                        <svg class="download-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 16v4h14v-4" />
+                        </svg>
+                        <span>JPG</span>
+                    </button>
+                    <button id="downloadGIF" class="btn download-button download-secondary">
+                        <svg class="download-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 16v4h14v-4" />
+                        </svg>
+                        <span>GIF</span>
+                    </button>
+                </div>
             </div>
         </div>
 
