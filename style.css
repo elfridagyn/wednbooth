@@ -631,6 +631,27 @@ video {
 /* =========================================================
    BUTTONS
    ========================================================= */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.controls > .btn,
+.controls .btn-group > .btn {
+    min-height: 36px;
+    margin: 0;
+    padding: 8px 12px;
+    white-space: nowrap;
+}
+
+.controls .btn-group {
+    display: inline-flex;
+}
+
 .btn {
     margin: 5px;
     padding: 10px 15px;
@@ -1819,17 +1840,18 @@ footer {
     }
 
     .controls {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
         gap: 6px;
-        margin-top: 10px;
     }
 
     .btn {
         font-size: 11px;
         padding: 8px 10px;
         margin: 2px;
+    }
+
+    .controls > .btn,
+    .controls .btn-group > .btn {
+        padding: 8px 10px;
     }
 
     .right-panel {
