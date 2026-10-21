@@ -571,6 +571,7 @@ video {
 #countdown {
     --ring-size: 112px;
     position: absolute;
+    z-index: 3;
     top: 50%;
     left: 50%;
     width: var(--ring-size);
