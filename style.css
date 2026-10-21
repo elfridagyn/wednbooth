@@ -398,6 +398,23 @@ button, input { font-family: inherit; }
     background: #75478c;
 }
 
+.help-submit:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+}
+
+.form-submit-status {
+    min-height: 1.2em;
+    margin: 0;
+    color: var(--purple-deep);
+    font-size: 12px;
+}
+
+.form-submit-status.is-error {
+    color: #a12642;
+}
+
 .help-contact {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -506,7 +523,7 @@ button, input { font-family: inherit; }
    ========================================================= */
 .camera-box {
     position: relative;
-    width: 60%;
+    width: 100%;
     margin: 0 auto;
     padding-top: 10px;
     border-radius: 15px;
@@ -523,15 +540,91 @@ video {
     will-change: transform, filter;
 }
 
+.noise-overlay {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 1;
+}
+
+.camera-box.noise-active .noise-overlay {
+    opacity: 0.42;
+}
+
+.head-effect-canvas {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
 #countdown {
+    --ring-size: 112px;
     position: absolute;
     top: 50%;
     left: 50%;
+    width: var(--ring-size);
+    height: var(--ring-size);
     transform: translate(-50%, -50%);
-    font-size: 70px;
+    display: grid;
+    place-items: center;
     color: white;
-    font-weight: bold;
-    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+}
+
+#countdown.is-active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.countdown-ring {
+    position: absolute;
+    inset: 0;
+}
+
+.countdown-tick {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 1.5px);
+    width: 3px;
+    height: 8px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.32);
+    transform: rotate(var(--tick-angle));
+    transform-origin: 50% calc(var(--ring-size) / 2);
+    transition: background-color 0.22s ease, opacity 0.22s ease;
+}
+
+.countdown-tick.is-major {
+    height: 11px;
+}
+
+.countdown-tick.is-active {
+    background: #fff;
+    opacity: 1;
+}
+
+.countdown-number {
+    position: relative;
+    z-index: 1;
+    font-size: 54px;
+    line-height: 1;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
 }
 
 /* =========================================================
@@ -546,6 +639,26 @@ video {
     background: rgb(200, 161, 218);
     font-family: monospace;
     transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.layout-button,
+.frame-button,
+.timer-button,
+.effect-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+}
+
+.layout-button img,
+.frame-button img,
+.timer-button img,
+.effect-button img {
+    display: block;
+    width: 1.15em;
+    height: 1.15em;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%);
 }
 
 .btn:hover {
@@ -638,6 +751,19 @@ video {
     display: inline-block;
 }
 
+.head-effect-menu {
+    min-width: 150px;
+}
+
+.head-effect-menu > div {
+    font-size: 13px;
+}
+
+#timerMenu > div,
+#filterMenu .filter-item {
+    font-size: 13px;
+}
+
 /* =========================================================
    DROPDOWN UMUM
    ========================================================= */
@@ -668,6 +794,18 @@ video {
 /* Hilangkan kotak/background saat hover */
 .dropdown div:hover {
     background: transparent;
+}
+
+.head-effect-menu > div,
+#timerMenu > div {
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.head-effect-menu > div:hover,
+#timerMenu > div:hover {
+    color: var(--purple-deep);
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateX(2px);
 }
 
 /* =========================================================
@@ -779,14 +917,17 @@ video {
     align-items: center;
     gap: 12px;
     padding: 10px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
     font-family: monospace;
     font-style: italic;
 }
 
 .filter-item:hover {
-    background: transparent;
+    color: var(--purple-deep);
+    background: rgba(255, 255, 255, 0.28);
+    transform: scale(1.03);
 }
 
 .preview-box {
@@ -805,6 +946,10 @@ video {
 .preview-box.contrast { filter: contrast(150%); }
 .preview-box.vintage { filter: sepia(60%) brightness(105%) contrast(110%); }
 .preview-box.soft { filter: blur(2px) brightness(140%); }
+.preview-box.noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: cover;
+}
 
 /* =========================================================
    FRAME DROPDOWN
@@ -1180,6 +1325,23 @@ video {
     overflow: hidden;
 }
 
+.print-animation-viewport {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.printed-strip-canvas {
+    position: absolute;
+    display: block;
+    max-width: none;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(36, 31, 48, 0.2);
+    transform-origin: top center;
+}
+
 .strip {
     width: 180px;
 
@@ -1203,18 +1365,8 @@ video {
     pointer-events: auto;
 }
 
-.strip.printed {
-    animation: printOut 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes printOut {
-    from {
-        transform: translateY(-130px);
-    }
-
-    to {
-        transform: translateY(0);
-    }
+.strip.is-printing {
+    visibility: hidden;
 }
 
 #photosContainer img {
@@ -1656,6 +1808,10 @@ footer {
 
     video {
         width: 100%;
+        height: 320px;
+    }
+
+    .noise-overlay {
         height: 320px;
     }
 

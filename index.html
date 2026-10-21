@@ -68,7 +68,7 @@
                     <h3>How do I use this site?</h3>
                     <ol class="faq-steps">
                         <li><span>Izinkan akses kamera agar situs dapat menggunakan kamera perangkatmu.</span></li>
-                        <li><span>Atur sesi foto dengan memilih layout, filter, timer, dan frame yang kamu inginkan.</span></li>
+                        <li><span>Atur sesi foto dengan memilih layout, filter, efek, timer, dan frame yang kamu inginkan.</span></li>
                         <li><span>Ambil foto dengan menekan tombol "AMBIL FOTO". Ulangi hingga semua slot foto pada layout terisi.</span></li>
                         <li><span>Periksa hasil foto dan ambil ulang jika ada foto yang ingin diganti.</span></li>
                         <li><span>Unduh hasil foto dengan memilih format JPG untuk gambar biasa atau GIF untuk foto bergerak di bawah hasil foto.</span></li>
@@ -96,7 +96,8 @@
                         </button>
                         <h2>Contact Us</h2>
                     </div>
-                    <form id="requestFrameForm" class="help-form">
+                    <form id="requestFrameForm" class="help-form" name="contact-request" method="POST" data-netlify="true">
+                        <input type="hidden" name="form-name" value="contact-request">
                         <label>Nama
                             <input name="name" type="text" autocomplete="name" required>
                         </label>
@@ -124,6 +125,7 @@
                             <textarea name="message" rows="4" required></textarea>
                         </label>
                         <button class="help-submit" type="submit">Kirim permintaan</button>
+                        <p id="formSubmitStatus" class="form-submit-status" role="status" aria-live="polite"></p>
                     </form>
                     <div class="help-contact">
                         <p class="help-contact-title">SAY HI ON SOCIALS</p>
@@ -148,14 +150,22 @@
 
                 <div class="camera-box">
                     <video id="video" autoplay playsinline webkit-playsinline="true" muted disablePictureInPicture disableRemotePlayback></video>
-                    <div id="countdown"></div>
+                    <div class="noise-overlay" aria-hidden="true"></div>
+                    <canvas id="headEffectCanvas" class="head-effect-canvas" aria-hidden="true"></canvas>
+                    <div id="countdown" aria-live="polite" aria-atomic="true">
+                        <div class="countdown-ring" aria-hidden="true"></div>
+                        <span class="countdown-number"></span>
+                    </div>
                 </div>
 
                 <div class="controls">
                     <button id="captureBtn" class="btn pink">◉ AMBIL FOTO</button>
 
                     <div class="btn-group">
-                        <button id="layoutBtn" class="btn" onclick="toggleMenu('layoutMenu')">⌗ Layout: 1 Foto</button>
+                        <button id="layoutBtn" class="btn layout-button" onclick="toggleMenu('layoutMenu')">
+                            <img src="assets/layout-icon.png" alt="" aria-hidden="true">
+                            <span id="layoutLabel">Layout: 1 Foto</span>
+                        </button>
                         <div id="layoutMenu" class="dropdown layout-menu">
                             <div class="layout-options">
                                 <div class="layout-item" onclick="setLayout(1)"><img src="layout1.png"><span>1 Foto</span></div>
@@ -177,11 +187,29 @@
                         <div class="filter-item" onclick="setFilter('contrast','Contrast')"><div class="preview-box" data-filter="contrast"></div><span>Contrast</span></div>
                         <div class="filter-item" onclick="setFilter('vintage','Vintage')"><div class="preview-box" data-filter="vintage"></div><span>Vintage</span></div>
                         <div class="filter-item" onclick="setFilter('soft','Soft')"><div class="preview-box" data-filter="soft"></div><span>Soft</span></div>
+                        <div class="filter-item" onclick="setFilter('noise','Noise')"><div class="preview-box noise" data-filter="noise"></div><span>Noise</span></div>
                         </div>
                     </div>
 
                     <div class="btn-group">
-                        <button id="timerBtn" class="btn" onclick="toggleMenu('timerMenu')">⏱ Timer: Off</button>
+                        <button id="headEffectBtn" class="btn effect-button" onclick="toggleMenu('headEffectMenu')">
+                            <img src="assets/effects-icon.png" alt="" aria-hidden="true">
+                            <span id="headEffectLabel">Efek: Off</span>
+                        </button>
+                        <div id="headEffectMenu" class="dropdown head-effect-menu">
+                            <div onclick="setHeadEffect('none', 'Off')">Off</div>
+                            <div onclick="setHeadEffect('hearts', 'Love Hearts')">Love Hearts</div>
+                            <div onclick="setHeadEffect('puppy', 'Puppy')">Puppy</div>
+                            <div onclick="setHeadEffect('doggy', 'Doggy')">Doggy</div>
+                            <div onclick="setHeadEffect('rabbit', 'Rabbit')">Rabbit</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="timerBtn" class="btn timer-button" onclick="toggleMenu('timerMenu')">
+                            <img src="assets/timer-icon.png" alt="" aria-hidden="true">
+                            <span id="timerLabel">Timer: Off</span>
+                        </button>
                         <div id="timerMenu" class="dropdown">
                             <div onclick="setTimer(0,'Off')">Off</div>
                             <div onclick="setTimer(3,'3s')">3s</div>
@@ -190,7 +218,10 @@
                     </div>
 
                     <div class="btn-group">
-                        <button id="frameBtn" class="btn" onclick="toggleMenu('frameMenu')">♡ Frame: White</button>
+                        <button id="frameBtn" class="btn frame-button" onclick="toggleMenu('frameMenu')">
+                            <img src="assets/frame-icon.png" alt="" aria-hidden="true">
+                            <span id="frameLabel">Frame: White</span>
+                        </button>
 
                         <div id="frameMenu" class="dropdown frame-menu">
 
@@ -312,6 +343,7 @@
                         <img src="LOGO.png" id="logoStrip" alt="Logo Strip">
                     </div>
                 </div>
+                <div id="printAnimationViewport" class="print-animation-viewport" aria-hidden="true"></div>
 
                 <div class="download-actions">
                     <button id="downloadJPG" class="btn download-button download-primary">
