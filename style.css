@@ -675,19 +675,50 @@ video {
    ========================================================= */
 .layout-menu {
     display: none;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
     width: fit-content;
     max-width: 500px;
     padding: 10px;
     background: rgb(200, 161, 218);
     border-radius: 15px;
+    overflow: hidden;
+}
+
+.layout-menu .layout-options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0 8px;
     overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-color: var(--purple-deep) transparent;
+    scrollbar-width: thin;
 }
 
 .layout-menu[style*="block"] {
     display: flex !important;
+}
+
+.layout-options::-webkit-scrollbar {
+    height: 5px;
+}
+
+.layout-options::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.layout-options::-webkit-scrollbar-thumb {
+    background: var(--purple-deep);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+}
+
+.layout-menu .layout-item {
+    flex: 0 0 auto;
+    padding: 5px;
 }
 
 .layout-item {
@@ -784,7 +815,7 @@ video {
     left: 0;
     width: 232px;
     overflow: visible;
-    padding: 12px 30px 12px 8px;
+    padding: 12px 12px 12px 8px;
     background: rgb(200, 161, 218);
     border-radius: 18px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
@@ -817,13 +848,19 @@ video {
 }
 
 .frame-grid.patterns {
+    grid-template-columns: repeat(5, 28px);
     max-height: 190px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-right: 4px;
+    padding-right: 10px;
     align-content: start;
     scrollbar-color: var(--purple-deep) transparent;
     scrollbar-width: thin;
+}
+
+.frame-grid.patterns .frame-option {
+    width: 28px;
+    height: 28px;
 }
 
 .frame-grid.patterns::-webkit-scrollbar {
@@ -1609,6 +1646,8 @@ footer {
         width: 90%;
         padding: 15px;
         border-radius: 18px;
+        position: relative;
+        z-index: 1;
     }
 
     .camera-box {
@@ -1664,7 +1703,6 @@ footer {
 
     .layout-menu {
         max-width: 250px;
-        overflow-x: auto;
     }
 
     .layout-item img {
@@ -1674,7 +1712,7 @@ footer {
 
     .frame-menu {
         width: 206px;
-        padding: 10px 26px 10px 6px;
+        padding: 10px 12px 10px 6px;
     }
 
     .frame-grid {
@@ -1684,7 +1722,13 @@ footer {
     }
 
     .frame-grid.patterns {
+        grid-template-columns: repeat(5, 24px);
         max-height: 165px;
+    }
+
+    .frame-grid.patterns .frame-option {
+        width: 24px;
+        height: 24px;
     }
 
     .frame-option {
