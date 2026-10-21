@@ -1067,13 +1067,23 @@ async function animatePrintedStrip(sourceCanvas) {
     const startTop = slotRect.bottom - revealHeight;
     const translateX = slotRect.left + (slotRect.width - targetRect.width) / 2 - targetRect.left;
     const translateY = startTop - targetRect.top;
+    const startTransform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+    const startClipPath = "inset(0 0 94% 0 round 8px)";
+    canvas.style.transform = startTransform;
+    canvas.style.clipPath = startClipPath;
     let animation;
     try {
+        strip.classList.add("is-printing");
+        await new Promise(resolve => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+        });
+        if (animationToken !== printAnimationToken) return false;
+
         animation = canvas.animate(
             [
                 {
-                    transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
-                    clipPath: "inset(0 0 94% 0 round 8px)",
+                    transform: startTransform,
+                    clipPath: startClipPath,
                     opacity: 0.82
                 },
                 {
@@ -1084,17 +1094,17 @@ async function animatePrintedStrip(sourceCanvas) {
             ],
             {
                 duration: 1200,
-                easing: "cubic-bezier(0.18, 0.72, 0.22, 1)",
+                easing: "cubic-bezier(0.22, 0.61, 0.36, 1)",
                 fill: "forwards"
             }
         );
     } catch (error) {
         canvas.remove();
         activePrintCanvas = null;
+        strip.classList.remove("is-printing");
         throw error;
     }
     activePrintAnimation = animation;
-    strip.classList.add("is-printing");
 
     try {
         await animation.finished.catch(() => {});
