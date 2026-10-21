@@ -1082,11 +1082,25 @@ async function animatePrintedStrip(sourceCanvas) {
         animation = canvas.animate(
             [
                 {
+                    offset: 0,
                     transform: startTransform,
                     clipPath: startClipPath,
-                    opacity: 0.82
+                    opacity: 0.96
                 },
                 {
+                    offset: 0.14,
+                    transform: `translate3d(${translateX}px, ${translateY * 0.9}px, 0)`,
+                    clipPath: "inset(0 0 86% 0 round 8px)",
+                    opacity: 1
+                },
+                {
+                    offset: 0.82,
+                    transform: `translate3d(${translateX}px, ${translateY * 0.12}px, 0)`,
+                    clipPath: "inset(0 0 16% 0 round 8px)",
+                    opacity: 1
+                },
+                {
+                    offset: 1,
                     transform: "translate3d(0, 0, 0)",
                     clipPath: "inset(0 0 0 0 round 8px)",
                     opacity: 1
@@ -1094,7 +1108,7 @@ async function animatePrintedStrip(sourceCanvas) {
             ],
             {
                 duration: 1200,
-                easing: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+                easing: "cubic-bezier(0.25, 0.1, 0.25, 1)",
                 fill: "forwards"
             }
         );
