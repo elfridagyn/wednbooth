@@ -530,6 +530,8 @@ button, input { font-family: inherit; }
 }
 
 video {
+    display: block;
+    margin: 0 auto;
     width: 100%;
     height: 300px;
     object-fit: cover;
@@ -543,7 +545,7 @@ video {
 .noise-overlay {
     position: absolute;
     top: 10px;
-    left: 0;
+    left: 50%;
     width: 100%;
     height: 300px;
     border-radius: 15px;
@@ -554,6 +556,7 @@ video {
     pointer-events: none;
     transition: opacity 0.15s ease;
     z-index: 1;
+    transform: translateX(-50%);
 }
 
 .camera-box.noise-active .noise-overlay {
@@ -563,9 +566,10 @@ video {
 .head-effect-canvas {
     position: absolute;
     top: 10px;
-    left: 0;
+    left: 50%;
     z-index: 2;
     pointer-events: none;
+    transform: translateX(-50%);
 }
 
 #countdown {
@@ -753,7 +757,7 @@ video {
 }
 
 .download-secondary:hover {
-    background: #ffffff;
+    background: rgb(200, 161, 218);
     box-shadow: 0 5px 12px rgba(65, 46, 87, 0.16);
 }
 
@@ -774,11 +778,68 @@ video {
 }
 
 .head-effect-menu {
-    min-width: 150px;
+    display: none;
+    left: 50%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    width: min(160px, calc(100vw - 24px));
+    min-width: 0;
+    max-height: var(--effect-menu-max-height, calc(100dvh - 16px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 8px;
 }
 
-.head-effect-menu > div {
-    font-size: 13px;
+.head-effect-menu[style*="block"] {
+    display: grid !important;
+}
+
+.dropdown.head-effect-menu {
+    transform: translate(-50%, -10px);
+}
+
+.dropdown.head-effect-menu[style*="block"] {
+    transform: translate(-50%, 0);
+}
+
+.head-effect-menu.opens-up {
+    top: auto;
+    bottom: calc(100% + 8px);
+}
+
+.head-effect-option {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 4px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.head-effect-option:hover,
+.head-effect-option[aria-pressed="true"] {
+    border-color: var(--purple-deep);
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.head-effect-option:hover {
+    transform: scale(1.05);
+}
+
+.head-effect-option img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.head-effect-option .head-effect-preview-hearts {
+    object-fit: cover;
 }
 
 #timerMenu > div,
@@ -818,12 +879,10 @@ video {
     background: transparent;
 }
 
-.head-effect-menu > div,
 #timerMenu > div {
     transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
 
-.head-effect-menu > div:hover,
 #timerMenu > div:hover {
     color: var(--purple-deep);
     background: rgba(255, 255, 255, 0.28);
@@ -1846,7 +1905,6 @@ footer {
     .btn {
         font-size: 11px;
         padding: 8px 10px;
-        margin: 2px;
     }
 
     .controls > .btn,

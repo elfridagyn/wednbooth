@@ -173,10 +173,7 @@ let faceEffectAssetsPromise = null;
 let faceEffectAssets = null;
 let faceEffectFrame = null;
 let faceEffectLoading = false;
-let smoothedFace = null;
-let heartParticles = [];
-let nextHeartSpawnAt = 0;
-let lastHeartUpdateAt = 0;
+let smoothedFaces = [];
 let lastDetectionTime = -1;
 let lastVideoTime = -1;
 let faceEffectLastFrame = 0;
@@ -652,6 +649,7 @@ function toggleMenu(id) {
 
     if (!isOpen) {
         menu.style.display = "block";
+        if (id === "headEffectMenu") positionHeadEffectMenu();
     }
 
     updateFrameDropdownClearance();
@@ -659,7 +657,27 @@ function toggleMenu(id) {
 }
 
 
-window.addEventListener("resize", updateFrameDropdownClearance);
+function positionHeadEffectMenu() {
+    const menu = document.getElementById("headEffectMenu");
+    if (!menu || menu.style.display !== "block") return;
+
+    menu.style.setProperty("--effect-menu-max-height", "calc(100dvh - 16px)");
+    const anchor = menu.parentElement.getBoundingClientRect();
+    const spaceAbove = Math.max(0, anchor.top - 8);
+    const spaceBelow = Math.max(0, window.innerHeight - anchor.bottom - 8);
+    const openAbove = menu.offsetHeight > spaceBelow && spaceAbove > spaceBelow;
+    const availableSpace = openAbove ? spaceAbove : spaceBelow;
+
+    menu.classList.toggle("opens-up", openAbove);
+    menu.style.setProperty("--effect-menu-max-height", `${Math.max(0, availableSpace)}px`);
+}
+
+
+window.addEventListener("resize", () => {
+    updateFrameDropdownClearance();
+    positionHeadEffectMenu();
+});
+window.addEventListener("scroll", positionHeadEffectMenu, true);
 
 
 window.addEventListener("click", function (e) {
@@ -676,15 +694,9 @@ function setLayout(val) {
 
     layout = val;
 
-    let text = "";
+    if (![1, 2, 3, 4, 6].includes(layout)) return;
 
-    if (val === 1) text = "1 Foto";
-    else if (val === 2) text = "2 Foto";
-    else if (val === 3) text = "3 Foto";
-    else if (val === 4) text = "4 Foto";
-    else if (val === 6) text = "6 Foto";
-
-    document.getElementById("layoutLabel").innerText = "Layout: " + text;
+    document.getElementById("layoutLabel").innerText = "Layout: " + layout + " Foto";
 
     closeAllDropdowns();
 
@@ -713,6 +725,9 @@ function setHeadEffect(effect, name) {
     if (currentHeadEffect !== effect) resetHeartParticles();
     currentHeadEffect = effect;
     document.getElementById("headEffectLabel").innerText = "Efek: " + name;
+    document.querySelectorAll(".head-effect-option").forEach(option => {
+        option.setAttribute("aria-pressed", String(option.dataset.effect === effect));
+    });
 
     if (effect === "none") {
         stopFaceEffectLoop();
@@ -930,29 +945,33 @@ captureBtn.onclick = async () => {
     }
 
     const sessionId = ++captureSessionId;
+    const captureCount = layout;
     photosContainer.innerHTML = "";
 
-    strip.classList.remove("show", "grid-6");
+    strip.classList.remove(
+        "show",
+        "grid-6"
+    );
     clearPrintAnimation();
 
     photos = [];
 
+    strip.appendChild(document.getElementById("logoStrip"));
 
     captureBtn.disabled = true;
+    layoutBtn.disabled = true;
 
 
 
     applyFramePreview();
 
     if (layout === 6) {
-
         strip.classList.add("grid-6");
-
     }
 
     try {
 
-        for (let i = 0; i < layout; i++) {
+        for (let i = 0; i < captureCount; i++) {
 
             if (timer > 0) {
 
@@ -980,9 +999,9 @@ captureBtn.onclick = async () => {
             }
 
             statusText.innerText =
-                `${i + 1}/${layout} photo(s) captured`;
+                `${i + 1}/${captureCount} photo(s) captured`;
 
-            if (i < layout - 1) {
+            if (i < captureCount - 1) {
                 await wait(800);
             }
 
@@ -1005,7 +1024,7 @@ captureBtn.onclick = async () => {
         }
 
         statusText.innerText =
-            `${layout} photo(s) ready!`;
+            `${captureCount} photo(s) ready!`;
 
     }
 
@@ -1021,6 +1040,7 @@ captureBtn.onclick = async () => {
     finally {
 
         captureBtn.disabled = false;
+        layoutBtn.disabled = false;
 
     }
 
@@ -1293,7 +1313,7 @@ function loadFaceLandmarker() {
             faceLandmarker = await vision.FaceLandmarker.createFromOptions(files, {
                 baseOptions: { modelAssetPath: FACE_LANDMARKER_MODEL_URL },
                 runningMode: "VIDEO",
-                numFaces: 1
+                numFaces: 5
             });
             return faceLandmarker;
         })().catch(error => {
@@ -1323,15 +1343,17 @@ function startFaceEffectLoop() {
 function stopFaceEffectLoop() {
     if (faceEffectFrame !== null) cancelAnimationFrame(faceEffectFrame);
     faceEffectFrame = null;
-    smoothedFace = null;
+    smoothedFaces = [];
     resetHeartParticles();
     faceEffectContext.clearRect(0, 0, headEffectCanvas.width, headEffectCanvas.height);
 }
 
 function resetHeartParticles() {
-    heartParticles = [];
-    nextHeartSpawnAt = 0;
-    lastHeartUpdateAt = 0;
+    smoothedFaces.forEach(face => {
+        face.heartParticles = [];
+        face.nextHeartSpawnAt = 0;
+        face.lastHeartUpdateAt = 0;
+    });
 }
 
 function resizeFaceEffectCanvas() {
@@ -1398,42 +1420,74 @@ function renderFaceEffect(timestamp) {
         lastVideoTime = video.currentTime;
         try {
             const result = faceLandmarker.detectForVideo(video, timestamp);
-            const detectedFace = result.faceLandmarks.length
-                ? getFaceMeasurements(result.faceLandmarks[0])
-                : null;
+            const detectedFaces = result.faceLandmarks
+                .map(getFaceMeasurements)
+                .filter(Boolean);
+            const elapsed = lastDetectionTime < 0 ? 0 : Math.min(timestamp - lastDetectionTime, 100);
+            const smoothing = lastDetectionTime < 0 ? 1 : 1 - Math.exp(-elapsed / 75);
+            const matches = [];
 
-            if (detectedFace) {
-                const elapsed = lastDetectionTime < 0 ? 0 : Math.min(timestamp - lastDetectionTime, 100);
-                const smoothing = lastDetectionTime < 0 ? 1 : 1 - Math.exp(-elapsed / 75);
-                smoothedFace = smoothedFace
-                    ? {
-                        x: smoothedFace.x + (detectedFace.x - smoothedFace.x) * smoothing,
-                        y: smoothedFace.y + (detectedFace.y - smoothedFace.y) * smoothing,
-                        noseX: smoothedFace.noseX + (detectedFace.noseX - smoothedFace.noseX) * smoothing,
-                        noseY: smoothedFace.noseY + (detectedFace.noseY - smoothedFace.noseY) * smoothing,
-                        width: smoothedFace.width + (detectedFace.width - smoothedFace.width) * smoothing,
-                        height: smoothedFace.height + (detectedFace.height - smoothedFace.height) * smoothing,
-                        roll: smoothedFace.roll + (detectedFace.roll - smoothedFace.roll) * smoothing,
-                        yaw: smoothedFace.yaw + (detectedFace.yaw - smoothedFace.yaw) * smoothing
-                    }
-                    : detectedFace;
+            smoothedFaces.forEach((face, faceIndex) => {
+                detectedFaces.forEach((detectedFace, detectedIndex) => {
+                    matches.push({
+                        faceIndex,
+                        detectedIndex,
+                        distance: Math.hypot(face.x - detectedFace.x, face.y - detectedFace.y)
+                    });
+                });
+            });
+            matches.sort((first, second) => first.distance - second.distance);
+
+            const matchedFaces = new Map();
+            const usedFaces = new Set();
+            const usedDetections = new Set();
+            matches.forEach(({ faceIndex, detectedIndex }) => {
+                if (usedFaces.has(faceIndex) || usedDetections.has(detectedIndex)) return;
+                matchedFaces.set(detectedIndex, smoothedFaces[faceIndex]);
+                usedFaces.add(faceIndex);
+                usedDetections.add(detectedIndex);
+            });
+
+            smoothedFaces = detectedFaces.map((detectedFace, detectedIndex) => {
+                const previousFace = matchedFaces.get(detectedIndex);
+                if (!previousFace) {
+                    return {
+                        ...detectedFace,
+                        heartParticles: [],
+                        nextHeartSpawnAt: 0,
+                        lastHeartUpdateAt: 0
+                    };
+                }
+
+                return {
+                    ...previousFace,
+                    x: previousFace.x + (detectedFace.x - previousFace.x) * smoothing,
+                    y: previousFace.y + (detectedFace.y - previousFace.y) * smoothing,
+                    noseX: previousFace.noseX + (detectedFace.noseX - previousFace.noseX) * smoothing,
+                    noseY: previousFace.noseY + (detectedFace.noseY - previousFace.noseY) * smoothing,
+                    width: previousFace.width + (detectedFace.width - previousFace.width) * smoothing,
+                    height: previousFace.height + (detectedFace.height - previousFace.height) * smoothing,
+                    roll: previousFace.roll + (detectedFace.roll - previousFace.roll) * smoothing,
+                    yaw: previousFace.yaw + (detectedFace.yaw - previousFace.yaw) * smoothing
+                };
+            });
+
+            if (smoothedFaces.length) {
                 lastDetectionTime = timestamp;
             } else {
-                smoothedFace = null;
                 lastDetectionTime = -1;
-                resetHeartParticles();
             }
         } catch (error) {
             console.error("Face tracking failed:", error);
             statusText.innerText = "Pelacakan wajah gagal. Coba pilih efek AR lagi.";
-            smoothedFace = null;
+            smoothedFaces = [];
             stopFaceEffectLoop();
             return;
         }
     }
 
     faceEffectContext.clearRect(0, 0, faceEffectSize.width, faceEffectSize.height);
-    if (!smoothedFace) return;
+    if (!smoothedFaces.length) return;
 
     const scale = Math.max(
         faceEffectSize.width / video.videoWidth,
@@ -1441,21 +1495,24 @@ function renderFaceEffect(timestamp) {
     );
     const cropX = (video.videoWidth * scale - faceEffectSize.width) / 2;
     const cropY = (video.videoHeight * scale - faceEffectSize.height) / 2;
-    const face = {
-        x: faceEffectSize.width - (smoothedFace.x * scale - cropX),
-        y: smoothedFace.y * scale - cropY,
-        noseX: faceEffectSize.width - (smoothedFace.noseX * scale - cropX),
-        noseY: smoothedFace.noseY * scale - cropY,
-        width: smoothedFace.width * scale,
-        height: smoothedFace.height * scale,
-        roll: -smoothedFace.roll,
-        yaw: -smoothedFace.yaw
-    };
-    drawFaceEffect(faceEffectContext, currentHeadEffect, face, timestamp);
+    smoothedFaces.forEach(smoothedFace => {
+        const face = {
+            x: faceEffectSize.width - (smoothedFace.x * scale - cropX),
+            y: smoothedFace.y * scale - cropY,
+            noseX: faceEffectSize.width - (smoothedFace.noseX * scale - cropX),
+            noseY: smoothedFace.noseY * scale - cropY,
+            width: smoothedFace.width * scale,
+            height: smoothedFace.height * scale,
+            roll: -smoothedFace.roll,
+            yaw: -smoothedFace.yaw,
+            heartState: smoothedFace
+        };
+        drawFaceEffect(faceEffectContext, currentHeadEffect, face, timestamp);
+    });
 }
 
 function drawHeadEffect(ctx, width, height, crop) {
-    if (currentHeadEffect === "none" || !smoothedFace) return;
+    if (currentHeadEffect === "none" || !smoothedFaces.length) return;
 
     const previewScale = Math.max(
         faceEffectSize.width / video.videoWidth,
@@ -1465,23 +1522,26 @@ function drawHeadEffect(ctx, width, height, crop) {
     const previewCropY = (video.videoHeight * previewScale - faceEffectSize.height) / 2;
     const scaleX = width / crop.sw;
     const scaleY = height / crop.sh;
-    const face = {
-        x: (crop.sx + crop.sw - smoothedFace.x) * scaleX,
-        y: (smoothedFace.y - crop.sy) * scaleY,
-        noseX: (crop.sx + crop.sw - smoothedFace.noseX) * scaleX,
-        noseY: (smoothedFace.noseY - crop.sy) * scaleY,
-        width: smoothedFace.width * scaleX,
-        height: smoothedFace.height * scaleY,
-        roll: -smoothedFace.roll,
-        yaw: -smoothedFace.yaw
-    };
-    drawFaceEffect(ctx, currentHeadEffect, face, performance.now(), {
-        advanceHearts: false,
-        heartTransform: {
-            scale: 1 / previewScale,
-            offsetX: crop.sw - ((faceEffectSize.width + previewCropX) / previewScale - crop.sx),
-            offsetY: (previewCropY / previewScale) - crop.sy
-        }
+    smoothedFaces.forEach(smoothedFace => {
+        const face = {
+            x: (crop.sx + crop.sw - smoothedFace.x) * scaleX,
+            y: (smoothedFace.y - crop.sy) * scaleY,
+            noseX: (crop.sx + crop.sw - smoothedFace.noseX) * scaleX,
+            noseY: (smoothedFace.noseY - crop.sy) * scaleY,
+            width: smoothedFace.width * scaleX,
+            height: smoothedFace.height * scaleY,
+            roll: -smoothedFace.roll,
+            yaw: -smoothedFace.yaw,
+            heartState: smoothedFace
+        };
+        drawFaceEffect(ctx, currentHeadEffect, face, performance.now(), {
+            advanceHearts: false,
+            heartTransform: {
+                scale: 1 / previewScale,
+                offsetX: crop.sw - ((faceEffectSize.width + previewCropX) / previewScale - crop.sx),
+                offsetY: (previewCropY / previewScale) - crop.sy
+            }
+        });
     });
 }
 
@@ -1554,15 +1614,16 @@ function drawPuppyEffect(ctx, face, sprite, parts) {
 
 function drawLoveHeartParticles(ctx, face, timestamp, options) {
     const transform = options.heartTransform || { scale: 1, offsetX: 0, offsetY: 0 };
+    const heartState = face.heartState;
 
-    if (options.advanceHearts !== false) {
-        const elapsed = lastHeartUpdateAt
-            ? Math.min((timestamp - lastHeartUpdateAt) / 1000, 0.05)
+    if (options.advanceHearts !== false && heartState) {
+        const elapsed = heartState.lastHeartUpdateAt
+            ? Math.min((timestamp - heartState.lastHeartUpdateAt) / 1000, 0.05)
             : 0;
-        lastHeartUpdateAt = timestamp;
+        heartState.lastHeartUpdateAt = timestamp;
 
-        for (let index = heartParticles.length - 1; index >= 0; index--) {
-            const particle = heartParticles[index];
+        for (let index = heartState.heartParticles.length - 1; index >= 0; index--) {
+            const particle = heartState.heartParticles[index];
             particle.x += particle.velocityX * elapsed;
             particle.y -= particle.riseSpeed * elapsed;
             particle.life += elapsed;
@@ -1571,25 +1632,25 @@ function drawLoveHeartParticles(ctx, face, timestamp, options) {
             particle.size = particle.startSize + (particle.targetSize - particle.startSize) * growth;
             particle.opacity = getHeartOpacity(progress, particle.maxOpacity);
             if (particle.life >= particle.maxLife || particle.y + particle.size < 0) {
-                heartParticles.splice(index, 1);
+                heartState.heartParticles.splice(index, 1);
             }
         }
 
-        if (!nextHeartSpawnAt) {
-            heartParticles.push(createHeartParticle(face));
-            heartParticles.push(createHeartParticle(face));
-            nextHeartSpawnAt = timestamp + randomBetween(70, 100);
-        } else if (timestamp >= nextHeartSpawnAt && heartParticles.length < 40) {
+        if (!heartState.nextHeartSpawnAt) {
+            heartState.heartParticles.push(createHeartParticle(face));
+            heartState.heartParticles.push(createHeartParticle(face));
+            heartState.nextHeartSpawnAt = timestamp + randomBetween(70, 100);
+        } else if (timestamp >= heartState.nextHeartSpawnAt && heartState.heartParticles.length < 40) {
             const batchSize = Math.random() < 0.18 ? 2 : 1;
-            for (let index = 0; index < batchSize && heartParticles.length < 40; index++) {
-                heartParticles.push(createHeartParticle(face));
+            for (let index = 0; index < batchSize && heartState.heartParticles.length < 40; index++) {
+                heartState.heartParticles.push(createHeartParticle(face));
             }
-            nextHeartSpawnAt = timestamp + randomBetween(70, 100);
+            heartState.nextHeartSpawnAt = timestamp + randomBetween(70, 100);
         }
     }
 
     ctx.save();
-    heartParticles.forEach(particle => {
+    (heartState?.heartParticles || []).forEach(particle => {
         if (particle.opacity <= 0.005) return;
 
         ctx.save();
@@ -1760,6 +1821,21 @@ function loadImage(src) {
 
 
 
+function traceRoundedRectangle(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
+
+
 function drawRoundedImage(
     ctx,
     img,
@@ -1772,19 +1848,7 @@ function drawRoundedImage(
 
     ctx.save();
 
-    ctx.beginPath();
-
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-
-    ctx.closePath();
+    traceRoundedRectangle(ctx, x, y, width, height, radius);
 
     ctx.clip();
 
@@ -1833,9 +1897,7 @@ async function drawFrameBackground(ctx, width, height) {
 //   CREATE PHOTO STRIP 
 
 async function createStrip() {
-
-    const displayedPhotoImgs =
-        Array.from(photosContainer.querySelectorAll("img"));
+    const displayedPhotoImgs = Array.from(photosContainer.querySelectorAll("img"));
 
     if (!displayedPhotoImgs.length) {
 
@@ -2270,8 +2332,8 @@ resetBtn.onclick = () => {
     captureSessionId++;
     photos = [];
 
+    strip.appendChild(document.getElementById("logoStrip"));
     photosContainer.innerHTML = "";
-
     strip.classList.remove(
         "show",
         "grid-6"

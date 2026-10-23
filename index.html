@@ -194,11 +194,21 @@
                             <span id="headEffectLabel">Efek: Off</span>
                         </button>
                         <div id="headEffectMenu" class="dropdown head-effect-menu">
-                            <div onclick="setHeadEffect('none', 'Off')">Off</div>
-                            <div onclick="setHeadEffect('hearts', 'Love Hearts')">Love Hearts</div>
-                            <div onclick="setHeadEffect('puppy', 'Puppy')">Puppy</div>
-                            <div onclick="setHeadEffect('doggy', 'Doggy')">Doggy</div>
-                            <div onclick="setHeadEffect('rabbit', 'Rabbit')">Rabbit</div>
+                            <button type="button" class="head-effect-option" data-effect="none" aria-label="Efek Off" title="Off" aria-pressed="true" onclick="setHeadEffect('none', 'Off')">
+                                <img src="assets/effects-icon.png" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="hearts" aria-label="Efek Love Hearts" title="Love Hearts" aria-pressed="false" onclick="setHeadEffect('hearts', 'Love Hearts')">
+                                <img class="head-effect-preview-hearts" src="assets/ar-love-hearts.svg" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="puppy" aria-label="Efek Puppy" title="Puppy" aria-pressed="false" onclick="setHeadEffect('puppy', 'Puppy')">
+                                <img src="assets/ar-puppy.png" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="doggy" aria-label="Efek Doggy" title="Doggy" aria-pressed="false" onclick="setHeadEffect('doggy', 'Doggy')">
+                                <img src="assets/ar-doggy.png" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="rabbit" aria-label="Efek Rabbit" title="Rabbit" aria-pressed="false" onclick="setHeadEffect('rabbit', 'Rabbit')">
+                                <img src="assets/ar-rabbit.png" alt="">
+                            </button>
                         </div>
                     </div>
 
