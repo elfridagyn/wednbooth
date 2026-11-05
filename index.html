@@ -1,420 +1,184 @@
-<!DOCTYPE html>
-<html lang="id">
-
-
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
-    <!-- SEO -->
-    <title>Photobooth Online | wednBOOth</title>
-
-    <meta name="description" content="Coba photobooth online gratis di wednBOOth! Ambil foto langsung dari kamera, pilih layout, filter estetik, efek lucu, dan frame menarik. Download hasilnya dalam JPG atau GIF.">
-    <meta name="keywords" content="photobooth online, foto booth online, photobooth gratis, online photobooth, foto booth, photobooth, foto foto, aplikasi photobooth, foto session, photobooth app, photobooth estetik, photobooth aesthetic, photobooth filter, photobooth effects, photobooth frame, photobooth layout, photobooth timer, photobooth download, photobooth JPG, photobooth GIF">
-
-    <meta name="robots" content="index, follow">
-
-    <link rel="canonical" href="https://wednbooth.netlify.app/">
-
-    <!-- Google Verification -->
-    <meta name="google-site-verification" content="_NyCSSTl3utaTkt9hZjL_MKQA5qwGN91B6APRuYbNRo">
-
-    <!-- Application -->
-    <meta name="application-name" content="wednBOOth">
-    <meta name="theme-color" content="#f3b6c1">
-    <meta name="format-detection" content="telephone=no">
-
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="wednBOOth">
-    <meta property="og:title" content="Photobooth Online | wednBOOth">
-    <meta property="og:description" content="Buat foto photobooth estetik secara gratis! Pilih layout, filter, efek, dan frame favoritmu di wednBOOth.">
-    <meta property="og:url" content="https://wednbooth.netlify.app/">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Photobooth Online | wednBOOth">
-    <meta name="twitter:description" content="Photobooth online gratis dengan berbagai layout, filter, efek, dan frame estetik.">
-
-    <!-- Mobile App -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Favicon -->
-    <link rel="icon" href="/logobg.png" type="image/png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Photobooth Online | wednBOOth</title>
+<meta name="description" content="Try a free online photobooth at wednBOOth! Snap photos straight from your camera, pick a layout, aesthetic filters, fun effects, and cute frames. Download your strip as a JPG or GIF.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://wednbooth.netlify.app/">
+<meta name="theme-color" content="#f3b6c1">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Photobooth Online | wednBOOth">
+<meta property="og:description" content="Make aesthetic photobooth strips for free! Pick your favorite layout, filter, effect, and frame at wednBOOth.">
+<meta property="og:url" content="https://wednbooth.netlify.app/">
+<link rel="icon" href="/logobg.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="landing.css">
 </head>
-
-
 <body>
-    <!-- HOMEPAGE -->
-    <section id="homePage" class="home-page">
-        <div class="home-content">
-            <h1 class="home-title" aria-label="wednbOOth">
-                <span aria-hidden="true">wedn<span class="hl">b<span class="eye"><i></i></span><span class="eye"><i></i></span>th</span></span>
-            </h1>
-            <h2 class="home-subtitle">Online Photobooth</h2>
-            <p class="home-desc">
-                <span class="shine-text">Say Cheese! Keep the Memories</span>
-                <span class="sparkle">✦</span>
-            </p>
-            <button id="startBtn" class="start-btn">START</button>
-        
+
+<!-- Ikon wajah dipakai ulang di strip hero -->
+<svg width="0" height="0" class="svg-definitions" aria-hidden="true">
+  <symbol id="face" viewBox="0 0 100 75">
+    <path d="M8 75c0-20 14-30 42-30s42 10 42 30z" fill="var(--shirt)"/>
+    <circle cx="50" cy="32" r="19" fill="var(--skin)"/>
+    <circle cx="43" cy="30" r="2.3" fill="#2f3e46"/><circle cx="57" cy="30" r="2.3" fill="#2f3e46"/>
+    <path d="M42 38q8 7 16 0" stroke="#2f3e46" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <circle cx="38" cy="36" r="3" fill="#ff4f8b" opacity=".35"/><circle cx="62" cy="36" r="3" fill="#ff4f8b" opacity=".35"/>
+  </symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="logo" aria-label="wednbOOth"><span aria-hidden="true">wedn<span class="hl">b<span class="eye"><i></i></span><span class="eye"><i></i></span>th</span></span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#how-it-works">How it works</a>
+      <a href="#layouts">Layouts</a>
+      <a href="#faq">FAQ</a>
+      <a href="app.html" class="btn sm">Capture</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1 aria-label="wednbOOth">
+          <span class="wordmark" aria-hidden="true">wedn<span class="hl">b<span class="eye"><i></i></span><span class="eye"><i></i></span>th</span></span>
+        </h1>
+        <p class="tag">Say cheese, keep the memories.</p>
+        <p class="lead">Your free online photobooth. Pick a layout, strike a pose, and walk away with memories worth keeping. Free, no sign-up, no install.</p>
+        <div class="cta-row">
+          <a href="app.html" class="btn">Start Capture</a>
+          <small>Just tap and smile!</small>
         </div>
-        
+      </div>
 
-    </section>
-
-    <!-- PHOTOBOOTH APP -->
-    <div id="photoboothApp" class="photobooth-app">
-        <div class="topper">
-            <h1 class="brand" aria-label="wednbOOth">
-                <span aria-hidden="true">wedn<span class="brand-mark">b<span class="eye"><i></i></span><span class="eye"><i></i></span>th</span></span>
-            </h1>
-            <button class="faq-trigger" type="button" popovertarget="faqPanel" aria-label="Buka FAQ & Contact" title="FAQ & Contact">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <div id="faqPanel" class="faq-panel is-menu" popover="auto" aria-label="Bantuan wednbOOth">
-                <div id="helpMenu" class="help-menu">
-                    <button class="help-option" type="button" data-help-view="faq">FAQ</button>
-                    <button class="help-option" type="button" data-help-view="request">CONTACT US</button>
-                </div>
-
-                <section id="faqView" class="help-view" hidden>
-                    <div class="help-heading">
-                        <button class="help-back" type="button" aria-label="Kembali ke menu bantuan">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
-                            </svg>
-                        </button>
-                        <h2>Frequently Ask Question</h2>
-                    </div>
-                    <h3>How do I use this site?</h3>
-                    <ol class="faq-steps">
-                        <li><span>Izinkan akses kamera agar situs dapat menggunakan kamera perangkatmu.</span></li>
-                        <li><span>Atur sesi foto dengan memilih layout, filter, efek, timer, dan frame yang kamu inginkan.</span></li>
-                        <li><span>Ambil foto dengan menekan tombol "AMBIL FOTO". Ulangi hingga semua slot foto pada layout terisi.</span></li>
-                        <li><span>Periksa hasil foto dan ambil ulang jika ada foto yang ingin diganti.</span></li>
-                        <li><span>Unduh hasil foto dengan memilih format JPG untuk gambar biasa atau GIF untuk foto bergerak di bawah hasil foto.</span></li>
-                    </ol>
-                    <details>
-                        <summary>Can I change the frame after taking photos?</summary>
-                        <p>Bisa! Kamu tetap bisa mengganti frame setelah sesi foto selesai tanpa perlu mengambil foto ulang.</p>
-                    </details>
-                    <details>
-                        <summary>Can I change the filter after taking photos?</summary>
-                        <p>Tidak. Filter hanya bisa dipilih sebelum mengambil foto. Setelah foto diambil, filter tidak dapat diubah, jadi pastikan kamu sudah memilih filter yang diinginkan sebelum memulai sesi foto.</p>
-                    </details>
-                    <details>
-                        <summary>Want to start a new session?</summary>
-                        <p>Tekan tombol Reset untuk menghapus hasil foto dan memulai sesi baru dari awal.</p>
-                    </details>
-                </section>
-
-                <section id="requestFrameView" class="help-view" hidden>
-                    <div class="help-heading">
-                        <button class="help-back" type="button" aria-label="Kembali ke menu bantuan">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
-                            </svg>
-                        </button>
-                        <h2>Contact Us</h2>
-                    </div>
-                    <form id="requestFrameForm" class="help-form" name="contact-request" method="POST" data-netlify="true">
-                        <input type="hidden" name="form-name" value="contact-request">
-                        <label>Nama
-                            <input name="name" type="text" autocomplete="name" required>
-                        </label>
-                        <label>Topik
-                            <span class="topic-select">
-                                <input id="requestTopic" name="topic" type="hidden" value="Frame Request">
-                                <button id="topicSelectButton" class="topic-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="topicOptions">
-                                    <span id="topicSelectLabel">Frame Request</span>
-                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                        <path d="m7 10 5 5 5-5" />
-                                    </svg>
-                                </button>
-                                <span id="topicOptions" class="topic-options" role="listbox" aria-label="Pilih topik" hidden>
-                                    <button class="topic-option" type="button" role="option" aria-selected="true" data-topic="Frame Request">Frame Request</button>
-                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="General Questions">General Questions</button>
-                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="Technical Issues">Technical Issues</button>
-                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="Others">Others</button>
-                                </span>
-                            </span>
-                        </label>
-                        <label>Pesan
-                            <textarea name="message" rows="4" required></textarea>
-                        </label>
-                        <button class="help-submit" type="submit">Kirim permintaan</button>
-                        <p id="formSubmitStatus" class="form-submit-status" role="status" aria-live="polite"></p>
-                    </form>
-                    <div class="help-contact">
-                        <p class="help-contact-title">SAY HI ON SOCIALS</p>
-                        <a class="help-contact-button" href="https://instagram.com/wednbooth" target="_blank" rel="noreferrer">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <rect x="3" y="3" width="18" height="18" rx="5" />
-                                <circle cx="12" cy="12" r="4" />
-                                <circle class="instagram-dot" cx="17.5" cy="6.5" r="1" />
-                            </svg>
-                            <span>@wednbooth</span>
-                        </a>
-                    </div>
-                </section>
-            </div>
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="count">3</div>
+        <div class="strip">
+          <div class="pic p1"><svg><use href="#face"/></svg></div>
+          <div class="pic p2"><svg><use href="#face"/></svg></div>
+          <div class="pic p3"><svg><use href="#face"/></svg></div>
+          <div class="pic p4"><svg><use href="#face"/></svg></div>
+          <div class="stamp">wednbOOth 2026</div>
         </div>
-
-        <div class="container">
-            <div class="left-panel">
-                <div class="header">
-                    <img src="wlogo.png" alt="logo" class="logo-header">
-                </div>
-
-                <div class="camera-box">
-                    <video id="video" autoplay playsinline webkit-playsinline="true" muted disablePictureInPicture disableRemotePlayback></video>
-                    <div class="noise-overlay" aria-hidden="true"></div>
-                    <canvas id="headEffectCanvas" class="head-effect-canvas" aria-hidden="true"></canvas>
-                    <div id="countdown" aria-live="polite" aria-atomic="true">
-                        <div class="countdown-ring" aria-hidden="true"></div>
-                        <span class="countdown-number"></span>
-                    </div>
-                </div>
-
-                <div class="controls">
-                    <button id="captureBtn" class="btn pink">◉ AMBIL FOTO</button>
-
-                    <div class="btn-group">
-                        <button id="layoutBtn" class="btn layout-button" onclick="toggleMenu('layoutMenu')">
-                            <img src="assets/layout-icon.png" alt="" aria-hidden="true">
-                            <span id="layoutLabel">Layout: 1 Foto</span>
-                        </button>
-                        <div id="layoutMenu" class="dropdown layout-menu">
-                            <div class="layout-options">
-                                <div class="layout-item" onclick="setLayout(1)"><img src="layout1.png"><span>1 Foto</span></div>
-                                <div class="layout-item" onclick="setLayout(2)"><img src="layout2.png"><span>2 Foto</span></div>
-                                <div class="layout-item" onclick="setLayout(3)"><img src="layout3.png"><span>3 Foto</span></div>
-                                <div class="layout-item" onclick="setLayout(4)"><img src="layout4.png"><span>4 Foto</span></div>
-                                <div class="layout-item" onclick="setLayout(6)"><img src="layout6.png"><span>6 Foto</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="filterBtn" class="btn" onclick="toggleMenu('filterMenu')">✦ Filter: Normal</button>
-                        <div id="filterMenu" class="dropdown grid-mode">
-                        <div class="filter-item" onclick="setFilter('none','Normal')"><div class="preview-box" data-filter="none"></div><span>Normal</span></div>
-                        <div class="filter-item" onclick="setFilter('bw','B&W')"><div class="preview-box" data-filter="bw"></div><span>B&W</span></div>
-                        <div class="filter-item" onclick="setFilter('sepia','Sepia')"><div class="preview-box" data-filter="sepia"></div><span>Sepia</span></div>
-                        <div class="filter-item" onclick="setFilter('bright','Bright')"><div class="preview-box" data-filter="bright"></div><span>Bright</span></div>
-                        <div class="filter-item" onclick="setFilter('contrast','Contrast')"><div class="preview-box" data-filter="contrast"></div><span>Contrast</span></div>
-                        <div class="filter-item" onclick="setFilter('vintage','Vintage')"><div class="preview-box" data-filter="vintage"></div><span>Vintage</span></div>
-                        <div class="filter-item" onclick="setFilter('soft','Soft')"><div class="preview-box" data-filter="soft"></div><span>Soft</span></div>
-                        <div class="filter-item" onclick="setFilter('noise','Noise')"><div class="preview-box noise" data-filter="noise"></div><span>Noise</span></div>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="headEffectBtn" class="btn effect-button" onclick="toggleMenu('headEffectMenu')">
-                            <img src="assets/effects-icon.png" alt="" aria-hidden="true">
-                            <span id="headEffectLabel">Efek: Off</span>
-                        </button>
-                        <div id="headEffectMenu" class="dropdown head-effect-menu">
-                            <button type="button" class="head-effect-option" data-effect="none" aria-label="Efek Off" title="Off" aria-pressed="true" onclick="setHeadEffect('none', 'Off')">
-                                <img src="assets/effects-icon.png" alt="">
-                            </button>
-                            <button type="button" class="head-effect-option" data-effect="hearts" aria-label="Efek Love Hearts" title="Love Hearts" aria-pressed="false" onclick="setHeadEffect('hearts', 'Love Hearts')">
-                                <img class="head-effect-preview-hearts" src="assets/ar-love-hearts.svg" alt="">
-                            </button>
-                            <button type="button" class="head-effect-option" data-effect="puppy" aria-label="Efek Puppy" title="Puppy" aria-pressed="false" onclick="setHeadEffect('puppy', 'Puppy')">
-                                <img src="assets/ar-puppy.png" alt="">
-                            </button>
-                            <button type="button" class="head-effect-option" data-effect="doggy" aria-label="Efek Doggy" title="Doggy" aria-pressed="false" onclick="setHeadEffect('doggy', 'Doggy')">
-                                <img src="assets/ar-doggy.png" alt="">
-                            </button>
-                            <button type="button" class="head-effect-option" data-effect="rabbit" aria-label="Efek Rabbit" title="Rabbit" aria-pressed="false" onclick="setHeadEffect('rabbit', 'Rabbit')">
-                                <img src="assets/ar-rabbit.png" alt="">
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="timerBtn" class="btn timer-button" onclick="toggleMenu('timerMenu')">
-                            <img src="assets/timer-icon.png" alt="" aria-hidden="true">
-                            <span id="timerLabel">Timer: Off</span>
-                        </button>
-                        <div id="timerMenu" class="dropdown">
-                            <div onclick="setTimer(0,'Off')">Off</div>
-                            <div onclick="setTimer(3,'3s')">3s</div>
-                            <div onclick="setTimer(5,'5s')">5s</div>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="frameBtn" class="btn frame-button" onclick="toggleMenu('frameMenu')">
-                            <img src="assets/frame-icon.png" alt="" aria-hidden="true">
-                            <span id="frameLabel">Frame: White</span>
-                        </button>
-
-                        <div id="frameMenu" class="dropdown frame-menu">
-
-                            <!-- COLOR -->
-                            <div class="frame-category">
-                                <p>Color</p>
-                                <div class="frame-grid colors">
-                                <button class="frame-option color-option" style="background:#ffffff;" onclick="setFrameColor('#ffffff', 'White')"></button>
-                                <button class="frame-option color-option" style="background:#f3b6c1;" onclick="setFrameColor('#f3b6c1', 'Pink')"></button>
-                                <button class="frame-option color-option" style="background:#c8a1da;" onclick="setFrameColor('#c8a1da', 'Lilac')"></button>
-                                <button class="frame-option color-option" style="background:#c8edf3;" onclick="setFrameColor('#c8edf3', 'Blue')"></button>
-                                <button class="frame-option color-option" style="background:#fff5a8;" onclick="setFrameColor('#fff5a8', 'Yellow')"></button>
-                                <button class="frame-option color-option" style="background:#93ad55;" onclick="setFrameColor('#93ad55', 'Green')"></button>
-                                <button class="frame-option color-option" style="background:#dfc1a8;" onclick="setFrameColor('#dfc1a8', 'Cream')"></button>
-                                <button class="frame-option color-option" style="background:#8b0000;" onclick="setFrameColor('#8b0000', 'Red')"></button>
-                                <button class="frame-option color-option" style="background:#000000;" onclick="setFrameColor('#000000', 'Black')"></button>
-                                <button id="customColorSwatch" class="frame-option color-option custom-color-option" title="Custom Color" onclick="toggleCustomColorPanel(event)"></button>
-                                </div>
-
-                                <!-- CUSTOM COLOR -->
-                                <div id="customColorPanel" class="custom-color-panel">
-                                    <label>
-                                        Hue
-                                        <input type="range" id="hueSlider" class="hue-slider" min="0" max="360" value="330">
-                                    </label>
-                                    <label>
-                                        Lightness
-                                        <input type="range" id="lightSlider" class="light-slider" min="5" max="95" value="70">
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- PATTERN -->
-                            <div class="frame-category">
-                                <p>Pattern</p>
-                                <div class="frame-grid patterns">
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/kredacak.jpg', 'Kredacak')"><img src="frames/kredacak.jpg" alt="Kredacak"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/abstrakred.jpg', 'Abstrak Red')"><img src="frames/abstrakred.jpg" alt="Abstrak Red"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/beigepinkacak.jpg', 'Beige Pink')"><img src="frames/beigepinkacak.jpg" alt="Beige Pink"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/blueabstrak.jpg', 'Blue Abstrak')"><img src="frames/blueabstrak.jpg" alt="Blue Abstrak"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/blueorange.jpg', 'Blue Orange')"><img src="frames/blueorange.jpg" alt="Blue Orange"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/browncow.jpg', 'Brown Cow')"><img src="frames/browncow.jpg" alt="Brown Cow"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/cherrybows.jpg', 'Cherry Bows')"><img src="frames/cherrybows.jpg" alt="Cherry Bows"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/floweredcheckered.jpg', 'Flowered Checkered')"><img src="frames/floweredcheckered.jpg" alt="Flowered Checkered"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/flowwy.jpg', 'Flowwy')"><img src="frames/flowwy.jpg" alt="Flowwy"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/flowy.jpg', 'Flowy')"><img src="frames/flowy.jpg" alt="Flowy"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/leopard.jpg', 'Leopard')"><img src="frames/leopard.jpg" alt="Leopard"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/pardbrown.jpg', 'Pardown')"><img src="frames/pardbrown.jpg" alt="Pardown"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/pinkredcheckered.jpg', 'Pink Red Checkered')"><img src="frames/pinkredcheckered.jpg" alt="Pink Red Checkered"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/redacakadut.jpg', 'Red Acakadut')"><img src="frames/redacakadut.jpg" alt="Red Acakadut"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/softpard.jpg', 'Soft Card')"><img src="frames/softpard.jpg" alt="Soft Card"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/star.jpg', 'Star')"><img src="frames/star.jpg" alt="Star"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/starpinkmaroon.jpg', 'Star Pink Maroon')"><img src="frames/starpinkmaroon.jpg" alt="Star Pink Maroon"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/tigerblack.jpg', 'Tiger Black')"><img src="frames/tigerblack.jpg" alt="Tiger Black"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/bluepolka.jpg', 'Blue Polka')"><img src="frames/bluepolka.jpg" alt="Blue Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/blueredpolka.jpg', 'Blue Red Polka')"><img src="frames/blueredpolka.jpg" alt="Blue Red Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/brownpolka.jpg', 'Brown Polka')"><img src="frames/brownpolka.jpg" alt="Brown Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/brownybluepolka.jpg', 'Browny Blue Polka')"><img src="frames/brownybluepolka.jpg" alt="Browny Blue Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/brownyexturedot.jpg', 'Browny Texture Dot')"><img src="frames/brownyexturedot.jpg" alt="Browny Texture Dot"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/brownypinkpolka.jpg', 'Browny Pink Polka')"><img src="frames/brownypinkpolka.jpg" alt="Browny Pink Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/butteryelpolka.jpg', 'Buttery Yellow Polka')"><img src="frames/butteryelpolka.jpg" alt="Buttery Yellow Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/deepbluepolka.jpg', 'Deep Blue Polka')"><img src="frames/deepbluepolka.jpg" alt="Deep Blue Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/fabriclace.jpg', 'Fabric Lace')"><img src="frames/fabriclace.jpg" alt="Fabric Lace"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/fabricminired.jpg', 'Fabric Mini Red')"><img src="frames/fabricminired.jpg" alt="Fabric Mini Red"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/fabricred.jpg', 'Fabric Red')"><img src="frames/fabricred.jpg" alt="Fabric Red"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/floralblue.jpg', 'Floral Blue')"><img src="frames/floralblue.jpg" alt="Floral Blue"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/greenpolka.jpg', 'Green Polka')"><img src="frames/greenpolka.jpg" alt="Green Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/greenwaves.jpg', 'Green Waves')"><img src="frames/greenwaves.jpg" alt="Green Waves"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/jeanspolka.jpg', 'Jeans Polka')"><img src="frames/jeanspolka.jpg" alt="Jeans Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/lace.jpg', 'Lace')"><img src="frames/lace.jpg" alt="Lace"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/maroonpolka.jpg', 'Maroon Polka')"><img src="frames/maroonpolka.jpg" alt="Maroon Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/matchapolka.jpg', 'Matcha Polka')"><img src="frames/matchapolka.jpg" alt="Matcha Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/minipolkapinkgreen.jpg', 'Mini Polka Pink Green')"><img src="frames/minipolkapinkgreen.jpg" alt="Mini Polka Pink Green"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/ministar.jpg', 'Mini Star')"><img src="frames/ministar.jpg" alt="Mini Star"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/navypolka.jpg', 'Navy Polka')"><img src="frames/navypolka.jpg" alt="Navy Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/pinkflower.jpg', 'Pink Flower')"><img src="frames/pinkflower.jpg" alt="Pink Flower"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/pinkleopardfur.jpg', 'Pink Leopard Fur')"><img src="frames/pinkleopardfur.jpg" alt="Pink Leopard Fur"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polka.jpg', 'Polka')"><img src="frames/polka.jpg" alt="Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polkablue.jpg', 'Polka Blue')"><img src="frames/polkablue.jpg" alt="Polka Blue"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polkadots.jpg', 'Polka Dots')"><img src="frames/polkadots.jpg" alt="Polka Dots"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polkajeans.jpg', 'Polka Jeans')"><img src="frames/polkajeans.jpg" alt="Polka Jeans"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polkamagenta.jpg', 'Polka Magenta')"><img src="frames/polkamagenta.jpg" alt="Polka Magenta"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polkamaroon.jpg', 'Polka Maroon')"><img src="frames/polkamaroon.jpg" alt="Polka Maroon"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/polkawhite.jpg', 'Polka White')"><img src="frames/polkawhite.jpg" alt="Polka White"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/softstripes.jpg', 'Soft Stripes')"><img src="frames/softstripes.jpg" alt="Soft Stripes"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/stargreenpink.jpg', 'Star Green Pink')"><img src="frames/stargreenpink.jpg" alt="Star Green Pink"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/stripesbluered.jpg', 'Stripes Blue Red')"><img src="frames/stripesbluered.jpg" alt="Stripes Blue Red"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/stripethin.jpg', 'Stripe Thin')"><img src="frames/stripethin.jpg" alt="Stripe Thin"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/toscapolka.jpg', 'Tosca Polka')"><img src="frames/toscapolka.jpg" alt="Tosca Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/yellowpinkpolka.jpg', 'Yellow Pink Polka')"><img src="frames/yellowpinkpolka.jpg" alt="Yellow Pink Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/yellowpolka.jpg', 'Yellow Polka')"><img src="frames/yellowpolka.jpg" alt="Yellow Polka"></button>
-                                <button class="frame-option pattern-option" onclick="setFramePattern('frames/yellowstar.jpg', 'Yellow Star')"><img src="frames/yellowstar.jpg" alt="Yellow Star"></button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <button id="reset" class="btn">⟲ Reset</button>
-                </div>
-
-                <div class="info">
-                    <p id="status">Ready</p>
-                </div>
-            </div>
-
-            <div class="right-panel">
-                <div class="machine">
-                    <div class="camera-top">
-                        <div class="red-dot"></div>
-                        <div class="lens"></div>
-                    </div>
-                    <div class="output-slot"></div>
-                </div>
-
-                <div class="photo-result">
-                    <div id="strip" class="strip">
-                        <div id="photosContainer"></div>
-                        <img src="LOGO.png" id="logoStrip" alt="Logo Strip">
-                    </div>
-                </div>
-                <div id="printAnimationViewport" class="print-animation-viewport" aria-hidden="true"></div>
-
-                <div class="download-actions">
-                    <button id="downloadJPG" class="btn download-button download-primary">
-                        <svg class="download-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 16v4h14v-4" />
-                        </svg>
-                        <span>JPG</span>
-                    </button>
-                    <button id="downloadGIF" class="btn download-button download-secondary">
-                        <svg class="download-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 16v4h14v-4" />
-                        </svg>
-                        <span>GIF</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
-        <script src="script.js"></script>
-
-        <footer>
-            <div class="footer-content">
-                <p>&copy; 2026 wednbOOth | All Rights Reserved</p>
-                <p>Made with <span>♡</span> for your special moments</p>
-            </div>
-        </footer>
+        <div class="sticker">100% free ♡</div>
+      </div>
     </div>
-</body>
+  </section>
 
+  <div class="ticker" aria-hidden="true">
+    <div>
+      <span>Say cheese ✦</span><span>Keep the memories ✦</span><span>Strike a pose ✦</span><span>Snap, snap, snap ✦</span><span>Make it a moment ✦</span>
+      <span>Say cheese ✦</span><span>Keep the memories ✦</span><span>Strike a pose ✦</span><span>Snap, snap, snap ✦</span><span>Make it a moment ✦</span>
+    </div>
+  </div>
+
+  <!-- CARA PAKAI -->
+  <section id="how-it-works" class="blk how">
+    <div class="wrap">
+      <h2>Five steps to a photo you'll keep.</h2>
+      <p class="sub">No sign-up, no app, no fuss. Just you, the camera, and a really good pose.</p>
+      <ol class="steps">
+        <li><span class="n">1</span><h3>Say hi to the camera</h3><p>Allow camera access and let your best angle shine.</p></li>
+        <li><span class="n">2</span><h3>Style your strip</h3><p>Choose a layout, filter, effect, timer, and frame that feel like you.</p></li>
+        <li><span class="n">3</span><h3>Strike a pose</h3><p>Hit the “AMBIL FOTO” (take photo) button and fill every slot on your strip.</p></li>
+        <li><span class="n">4</span><h3>Pick your keepers</h3><p>Not feeling one? Retake it until it’s just right.</p></li>
+        <li><span class="n">5</span><h3>Take it home</h3><p>Download a JPG to frame it, or a GIF to bring it to life.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- LAYOUT -->
+  <section id="layouts" class="blk layouts">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h2>Solo or squad, pick your strip.</h2>
+          <p class="sub">From a single polaroid-style shot to a six-photo spread, there’s a layout for every mood.</p>
+        </div>
+      </div>
+      <div class="shelf">
+        <figure class="lay"><div class="tile"><div class="paper p1"><i class="ph"></i></div></div><figcaption>1 Photo</figcaption></figure>
+        <figure class="lay"><div class="tile"><div class="paper p2"><i class="ph"></i><i class="ph"></i></div></div><figcaption>2 Photos</figcaption></figure>
+        <figure class="lay"><div class="tile"><div class="paper p3"><i class="ph"></i><i class="ph"></i><i class="ph"></i></div></div><figcaption>3 Photos</figcaption></figure>
+        <figure class="lay"><div class="tile"><div class="paper p4"><i class="ph"></i><i class="ph"></i><i class="ph"></i><i class="ph"></i></div></div><figcaption>4 Photos</figcaption></figure>
+        <figure class="lay"><div class="tile"><div class="paper p6"><i class="ph"></i><i class="ph"></i><i class="ph"></i><i class="ph"></i><i class="ph"></i><i class="ph"></i></div></div><figcaption>6 Photos</figcaption></figure>
+      </div>
+      <p class="note">And that's just the start: loads of color and pattern frames are waiting inside ✦</p>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="blk">
+    <div class="wrap">
+      <h2>Little extras that make every shot better.</h2>
+      <div class="feat-grid">
+        <div class="f w"><h3>Aesthetic filters</h3><p>Set the mood before you snap. Filters lock in once the photo is taken, so choose your look first.</p></div>
+        <div class="f w"><h3>Swappable frames</h3><p>Changed your mind? Swap the frame anytime after your session, no retakes needed.</p></div>
+        <div class="f"><h3>Fun effects</h3><p>Sprinkle a little chaos (the cute kind) on every shot.</p></div>
+        <div class="f"><h3>Timer</h3><p>Set the countdown, strike your pose, and let the camera do the rest.</p></div>
+        <div class="f"><h3>JPG &amp; GIF</h3><p>Keep it still or make it move. Your memories, your format.</p>
+          <div class="chips"><b>.jpg</b><b>.gif</b></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="blk faq">
+    <div class="wrap">
+      <div>
+        <h2>Still curious?</h2>
+        <p class="sub">Quick answers before you hop in.</p>
+      </div>
+      <div>
+        <details open>
+          <summary>How do I use this site?</summary>
+          <p>Allow camera access, set your layout, filter, effect, timer, and frame, then press the “AMBIL FOTO” (take photo) button until every slot is filled. Check the results, retake if needed, then download as a JPG or GIF.</p>
+        </details>
+        <details>
+          <summary>Can I change the frame after taking photos?</summary>
+          <p>Yes! You can swap the frame after your session ends, no retakes needed.</p>
+        </details>
+        <details>
+          <summary>Can I change the filter after taking photos?</summary>
+          <p>No. Filters can only be chosen before you take photos, so make sure you’re happy with your pick before starting your session.</p>
+        </details>
+        <details>
+          <summary>Want to start a new session?</summary>
+          <p>Press the Reset button to clear your photos and start fresh.</p>
+        </details>
+        <details>
+          <summary>Is wednbOOth free?</summary>
+          <p>Yes! Totally free, and no account needed.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA AKHIR -->
+  <section class="final">
+    <div class="wrap">
+      <h2>Your turn to say cheese.</h2>
+      <p>Grab your friends, find your best angle, and turn this moment into a memory.</p>
+      <a href="app.html" class="btn light">Let's Capture!</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 wednbOOth | All Rights Reserved</p>
+    <p>Made with <span>♡</span> for your special moments</p>
+  </div>
+</footer>
+
+<script src="landing.js"></script>
+</body>
 </html>

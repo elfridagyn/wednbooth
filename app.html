@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- SEO (halaman aplikasi tidak diindeks; landing page ada di index.html) -->
+    <title>Photobooth App | wednBOOth</title>
+
+    <meta name="robots" content="noindex, follow">
+
+    <link rel="canonical" href="https://wednbooth.netlify.app/">
+
+    <!-- Application -->
+    <meta name="application-name" content="wednBOOth">
+    <meta name="theme-color" content="#f3b6c1">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Mobile App -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/logobg.png" type="image/png">
+</head>
+
+
+<body>
+    <!-- PHOTOBOOTH APP -->
+    <div id="photoboothApp" class="photobooth-app active">
+        <header class="nav app-nav">
+            <div class="wrap">
+                <a href="index.html" class="logo" aria-label="wednbOOth">
+                    <span aria-hidden="true">wedn<span class="hl">b<span class="eye"><i></i></span><span class="eye"><i></i></span>th</span></span>
+                </a>
+                <button class="faq-trigger" type="button" popovertarget="faqPanel" aria-label="Buka FAQ & Contact" title="FAQ & Contact">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+            <div id="faqPanel" class="faq-panel is-menu" popover="auto" aria-label="Bantuan wednbOOth">
+                <div id="helpMenu" class="help-menu">
+                    <button class="help-option" type="button" data-help-view="faq">FAQ</button>
+                    <button class="help-option" type="button" data-help-view="request">CONTACT US</button>
+                </div>
+
+                <section id="faqView" class="help-view" hidden>
+                    <div class="help-heading">
+                        <button class="help-back" type="button" aria-label="Kembali ke menu bantuan">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
+                            </svg>
+                        </button>
+                        <h2>Frequently Ask Question</h2>
+                    </div>
+                    <h3>How do I use this site?</h3>
+                    <ol class="faq-steps">
+                        <li><span>Izinkan akses kamera agar situs dapat menggunakan kamera perangkatmu.</span></li>
+                        <li><span>Atur sesi foto dengan memilih layout, filter, efek, timer, dan frame yang kamu inginkan.</span></li>
+                        <li><span>Ambil foto dengan menekan tombol "AMBIL FOTO". Ulangi hingga semua slot foto pada layout terisi.</span></li>
+                        <li><span>Periksa hasil foto dan ambil ulang jika ada foto yang ingin diganti.</span></li>
+                        <li><span>Unduh hasil foto dengan memilih format JPG untuk gambar biasa atau GIF untuk foto bergerak di bawah hasil foto.</span></li>
+                    </ol>
+                    <details>
+                        <summary>Can I change the frame after taking photos?</summary>
+                        <p>Bisa! Kamu tetap bisa mengganti frame setelah sesi foto selesai tanpa perlu mengambil foto ulang.</p>
+                    </details>
+                    <details>
+                        <summary>Can I change the filter after taking photos?</summary>
+                        <p>Tidak. Filter hanya bisa dipilih sebelum mengambil foto. Setelah foto diambil, filter tidak dapat diubah, jadi pastikan kamu sudah memilih filter yang diinginkan sebelum memulai sesi foto.</p>
+                    </details>
+                    <details>
+                        <summary>Want to start a new session?</summary>
+                        <p>Tekan tombol Reset untuk menghapus hasil foto dan memulai sesi baru dari awal.</p>
+                    </details>
+                </section>
+
+                <section id="requestFrameView" class="help-view" hidden>
+                    <div class="help-heading">
+                        <button class="help-back" type="button" aria-label="Kembali ke menu bantuan">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M19 12H5m0 0 7-7m-7 7 7 7" />
+                            </svg>
+                        </button>
+                        <h2>Contact Us</h2>
+                    </div>
+                    <form id="requestFrameForm" class="help-form" name="contact-request" method="POST" data-netlify="true">
+                        <input type="hidden" name="form-name" value="contact-request">
+                        <label>Nama
+                            <input name="name" type="text" autocomplete="name" required>
+                        </label>
+                        <label>Topik
+                            <span class="topic-select">
+                                <input id="requestTopic" name="topic" type="hidden" value="Frame Request">
+                                <button id="topicSelectButton" class="topic-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="topicOptions">
+                                    <span id="topicSelectLabel">Request</span>
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                        <path d="m7 10 5 5 5-5" />
+                                    </svg>
+                                </button>
+                                <span id="topicOptions" class="topic-options" role="listbox" aria-label="Pilih topik" hidden>
+                                    <button class="topic-option" type="button" role="option" aria-selected="true" data-topic="Frame Request">Request</button>
+                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="General Questions">General Questions</button>
+                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="Technical Issues">Technical Issues</button>
+                                    <button class="topic-option" type="button" role="option" aria-selected="false" data-topic="Others">Others</button>
+                                </span>
+                            </span>
+                        </label>
+                        <label>Pesan
+                            <textarea name="message" rows="4" required></textarea>
+                        </label>
+                        <button class="help-submit" type="submit">Kirim permintaan</button>
+                        <p id="formSubmitStatus" class="form-submit-status" role="status" aria-live="polite"></p>
+                    </form>
+                    <div class="help-contact">
+                        <p class="help-contact-title">SAY HI ON SOCIALS</p>
+                        <a class="help-contact-button" href="https://instagram.com/wednbooth" target="_blank" rel="noreferrer">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <rect x="3" y="3" width="18" height="18" rx="5" />
+                                <circle cx="12" cy="12" r="4" />
+                                <circle class="instagram-dot" cx="17.5" cy="6.5" r="1" />
+                            </svg>
+                            <span>@wednbooth</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="left-panel">
+                <div class="header">
+                    <img src="wlogo.png" alt="logo" class="logo-header">
+                </div>
+
+                <div class="camera-box">
+                    <video id="video" autoplay playsinline webkit-playsinline="true" muted disablePictureInPicture disableRemotePlayback></video>
+                    <div class="noise-overlay" aria-hidden="true"></div>
+                    <canvas id="headEffectCanvas" class="head-effect-canvas" aria-hidden="true"></canvas>
+                    <div id="countdown" aria-live="polite" aria-atomic="true">
+                        <div class="countdown-ring" aria-hidden="true"></div>
+                        <span class="countdown-number"></span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="captureBtn" class="btn pink">◉ AMBIL FOTO</button>
+
+                    <div class="btn-group">
+                        <button id="layoutBtn" class="btn layout-button" data-action="toggleMenu" data-action-args='["layoutMenu"]'>
+                            <img src="assets/layout-icon.png" alt="" aria-hidden="true">
+                            <span id="layoutLabel">Layout: 1 Foto</span>
+                        </button>
+                        <div id="layoutMenu" class="dropdown layout-menu">
+                            <div class="layout-options">
+                                <div class="layout-item" data-action="setLayout" data-action-args='[1]'><img src="layout1.png"><span>1 Foto</span></div>
+                                <div class="layout-item" data-action="setLayout" data-action-args='[2]'><img src="layout2.png"><span>2 Foto</span></div>
+                                <div class="layout-item" data-action="setLayout" data-action-args='[3]'><img src="layout3.png"><span>3 Foto</span></div>
+                                <div class="layout-item" data-action="setLayout" data-action-args='[4]'><img src="layout4.png"><span>4 Foto</span></div>
+                                <div class="layout-item" data-action="setLayout" data-action-args='[6]'><img src="layout6.png"><span>6 Foto</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="filterBtn" class="btn" data-action="toggleMenu" data-action-args='["filterMenu"]'>✦ Filter: Normal</button>
+                        <div id="filterMenu" class="dropdown grid-mode">
+                        <div class="filter-item" data-action="setFilter" data-action-args='["none","Normal"]'><div class="preview-box" data-filter="none"></div><span>Normal</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["bw","B\u0026W"]'><div class="preview-box" data-filter="bw"></div><span>B&W</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["sepia","Sepia"]'><div class="preview-box" data-filter="sepia"></div><span>Sepia</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["bright","Bright"]'><div class="preview-box" data-filter="bright"></div><span>Bright</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["contrast","Contrast"]'><div class="preview-box" data-filter="contrast"></div><span>Contrast</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["vintage","Vintage"]'><div class="preview-box" data-filter="vintage"></div><span>Vintage</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["soft","Soft"]'><div class="preview-box" data-filter="soft"></div><span>Soft</span></div>
+                        <div class="filter-item" data-action="setFilter" data-action-args='["noise","Noise"]'><div class="preview-box noise" data-filter="noise"></div><span>Noise</span></div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="headEffectBtn" class="btn effect-button" data-action="toggleMenu" data-action-args='["headEffectMenu"]'>
+                            <img src="assets/effects-icon.png" alt="" aria-hidden="true">
+                            <span id="headEffectLabel">Efek: Off</span>
+                        </button>
+                        <div id="headEffectMenu" class="dropdown head-effect-menu">
+                            <button type="button" class="head-effect-option" data-effect="none" aria-label="Efek Off" title="Off" aria-pressed="true" data-action="setHeadEffect" data-action-args='["none","Off"]'>
+                                <img src="assets/effects-icon.png" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="hearts" aria-label="Efek Love Hearts" title="Love Hearts" aria-pressed="false" data-action="setHeadEffect" data-action-args='["hearts","Love Hearts"]'>
+                                <img class="head-effect-preview-hearts" src="assets/ar-love-hearts.svg" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="puppy" aria-label="Efek Puppy" title="Puppy" aria-pressed="false" data-action="setHeadEffect" data-action-args='["puppy","Puppy"]'>
+                                <img src="assets/ar-puppy.png" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="doggy" aria-label="Efek Doggy" title="Doggy" aria-pressed="false" data-action="setHeadEffect" data-action-args='["doggy","Doggy"]'>
+                                <img src="assets/ar-doggy.png" alt="">
+                            </button>
+                            <button type="button" class="head-effect-option" data-effect="rabbit" aria-label="Efek Rabbit" title="Rabbit" aria-pressed="false" data-action="setHeadEffect" data-action-args='["rabbit","Rabbit"]'>
+                                <img src="assets/ar-rabbit.png" alt="">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="timerBtn" class="btn timer-button" data-action="toggleMenu" data-action-args='["timerMenu"]'>
+                            <img src="assets/timer-icon.png" alt="" aria-hidden="true">
+                            <span id="timerLabel">Timer: Off</span>
+                        </button>
+                        <div id="timerMenu" class="dropdown">
+                            <div data-action="setTimer" data-action-args='[0,"Off"]'>Off</div>
+                            <div data-action="setTimer" data-action-args='[3,"3s"]'>3s</div>
+                            <div data-action="setTimer" data-action-args='[5,"5s"]'>5s</div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="frameBtn" class="btn frame-button" data-action="toggleMenu" data-action-args='["frameMenu"]'>
+                            <img src="assets/frame-icon.png" alt="" aria-hidden="true">
+                            <span id="frameLabel">Frame: White</span>
+                        </button>
+
+                        <div id="frameMenu" class="dropdown frame-menu">
+
+                            <!-- COLOR -->
+                            <div class="frame-category">
+                                <p>Color</p>
+                                <div class="frame-grid colors">
+                                <button class="frame-option color-option" data-color="#ffffff" data-action="setFrameColor" data-action-args='["#ffffff","White"]'></button>
+                                <button class="frame-option color-option" data-color="#f3b6c1" data-action="setFrameColor" data-action-args='["#f3b6c1","Pink"]'></button>
+                                <button class="frame-option color-option" data-color="#c8a1da" data-action="setFrameColor" data-action-args='["#c8a1da","Lilac"]'></button>
+                                <button class="frame-option color-option" data-color="#c8edf3" data-action="setFrameColor" data-action-args='["#c8edf3","Blue"]'></button>
+                                <button class="frame-option color-option" data-color="#fff5a8" data-action="setFrameColor" data-action-args='["#fff5a8","Yellow"]'></button>
+                                <button class="frame-option color-option" data-color="#93ad55" data-action="setFrameColor" data-action-args='["#93ad55","Green"]'></button>
+                                <button class="frame-option color-option" data-color="#dfc1a8" data-action="setFrameColor" data-action-args='["#dfc1a8","Cream"]'></button>
+                                <button class="frame-option color-option" data-color="#8b0000" data-action="setFrameColor" data-action-args='["#8b0000","Red"]'></button>
+                                <button class="frame-option color-option" data-color="#000000" data-action="setFrameColor" data-action-args='["#000000","Black"]'></button>
+                                <button id="customColorSwatch" class="frame-option color-option custom-color-option" title="Custom Color" data-action="toggleCustomColorPanel" data-action-args='[]' data-action-event="true"></button>
+                                </div>
+
+                                <!-- CUSTOM COLOR -->
+                                <div id="customColorPanel" class="custom-color-panel">
+                                    <label>
+                                        Hue
+                                        <input type="range" id="hueSlider" class="hue-slider" min="0" max="360" value="330">
+                                    </label>
+                                    <label>
+                                        Lightness
+                                        <input type="range" id="lightSlider" class="light-slider" min="5" max="95" value="70">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- PATTERN -->
+                            <div class="frame-category">
+                                <p>Pattern</p>
+                                <div class="frame-grid patterns">
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/kredacak.jpg","Kredacak"]'><img src="frames/kredacak.jpg" alt="Kredacak"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/abstrakred.jpg","Abstrak Red"]'><img src="frames/abstrakred.jpg" alt="Abstrak Red"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/beigepinkacak.jpg","Beige Pink"]'><img src="frames/beigepinkacak.jpg" alt="Beige Pink"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/blueabstrak.jpg","Blue Abstrak"]'><img src="frames/blueabstrak.jpg" alt="Blue Abstrak"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/blueorange.jpg","Blue Orange"]'><img src="frames/blueorange.jpg" alt="Blue Orange"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/browncow.jpg","Brown Cow"]'><img src="frames/browncow.jpg" alt="Brown Cow"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/cherrybows.jpg","Cherry Bows"]'><img src="frames/cherrybows.jpg" alt="Cherry Bows"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/floweredcheckered.jpg","Flowered Checkered"]'><img src="frames/floweredcheckered.jpg" alt="Flowered Checkered"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/flowwy.jpg","Flowwy"]'><img src="frames/flowwy.jpg" alt="Flowwy"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/flowy.jpg","Flowy"]'><img src="frames/flowy.jpg" alt="Flowy"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/leopard.jpg","Leopard"]'><img src="frames/leopard.jpg" alt="Leopard"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/pardbrown.jpg","Pardown"]'><img src="frames/pardbrown.jpg" alt="Pardown"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/pinkredcheckered.jpg","Pink Red Checkered"]'><img src="frames/pinkredcheckered.jpg" alt="Pink Red Checkered"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/redacakadut.jpg","Red Acakadut"]'><img src="frames/redacakadut.jpg" alt="Red Acakadut"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/softpard.jpg","Soft Card"]'><img src="frames/softpard.jpg" alt="Soft Card"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/star.jpg","Star"]'><img src="frames/star.jpg" alt="Star"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/starpinkmaroon.jpg","Star Pink Maroon"]'><img src="frames/starpinkmaroon.jpg" alt="Star Pink Maroon"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/tigerblack.jpg","Tiger Black"]'><img src="frames/tigerblack.jpg" alt="Tiger Black"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/bluepolka.jpg","Blue Polka"]'><img src="frames/bluepolka.jpg" alt="Blue Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/blueredpolka.jpg","Blue Red Polka"]'><img src="frames/blueredpolka.jpg" alt="Blue Red Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/brownpolka.jpg","Brown Polka"]'><img src="frames/brownpolka.jpg" alt="Brown Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/brownybluepolka.jpg","Browny Blue Polka"]'><img src="frames/brownybluepolka.jpg" alt="Browny Blue Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/brownyexturedot.jpg","Browny Texture Dot"]'><img src="frames/brownyexturedot.jpg" alt="Browny Texture Dot"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/brownypinkpolka.jpg","Browny Pink Polka"]'><img src="frames/brownypinkpolka.jpg" alt="Browny Pink Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/butteryelpolka.jpg","Buttery Yellow Polka"]'><img src="frames/butteryelpolka.jpg" alt="Buttery Yellow Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/deepbluepolka.jpg","Deep Blue Polka"]'><img src="frames/deepbluepolka.jpg" alt="Deep Blue Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/fabriclace.jpg","Fabric Lace"]'><img src="frames/fabriclace.jpg" alt="Fabric Lace"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/fabricminired.jpg","Fabric Mini Red"]'><img src="frames/fabricminired.jpg" alt="Fabric Mini Red"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/fabricred.jpg","Fabric Red"]'><img src="frames/fabricred.jpg" alt="Fabric Red"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/floralblue.jpg","Floral Blue"]'><img src="frames/floralblue.jpg" alt="Floral Blue"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/greenpolka.jpg","Green Polka"]'><img src="frames/greenpolka.jpg" alt="Green Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/greenwaves.jpg","Green Waves"]'><img src="frames/greenwaves.jpg" alt="Green Waves"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/jeanspolka.jpg","Jeans Polka"]'><img src="frames/jeanspolka.jpg" alt="Jeans Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/lace.jpg","Lace"]'><img src="frames/lace.jpg" alt="Lace"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/maroonpolka.jpg","Maroon Polka"]'><img src="frames/maroonpolka.jpg" alt="Maroon Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/matchapolka.jpg","Matcha Polka"]'><img src="frames/matchapolka.jpg" alt="Matcha Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/minipolkapinkgreen.jpg","Mini Polka Pink Green"]'><img src="frames/minipolkapinkgreen.jpg" alt="Mini Polka Pink Green"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/ministar.jpg","Mini Star"]'><img src="frames/ministar.jpg" alt="Mini Star"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/navypolka.jpg","Navy Polka"]'><img src="frames/navypolka.jpg" alt="Navy Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/pinkflower.jpg","Pink Flower"]'><img src="frames/pinkflower.jpg" alt="Pink Flower"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/pinkleopardfur.jpg","Pink Leopard Fur"]'><img src="frames/pinkleopardfur.jpg" alt="Pink Leopard Fur"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polka.jpg","Polka"]'><img src="frames/polka.jpg" alt="Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polkablue.jpg","Polka Blue"]'><img src="frames/polkablue.jpg" alt="Polka Blue"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polkadots.jpg","Polka Dots"]'><img src="frames/polkadots.jpg" alt="Polka Dots"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polkajeans.jpg","Polka Jeans"]'><img src="frames/polkajeans.jpg" alt="Polka Jeans"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polkamagenta.jpg","Polka Magenta"]'><img src="frames/polkamagenta.jpg" alt="Polka Magenta"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polkamaroon.jpg","Polka Maroon"]'><img src="frames/polkamaroon.jpg" alt="Polka Maroon"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/polkawhite.jpg","Polka White"]'><img src="frames/polkawhite.jpg" alt="Polka White"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/softstripes.jpg","Soft Stripes"]'><img src="frames/softstripes.jpg" alt="Soft Stripes"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/stargreenpink.jpg","Star Green Pink"]'><img src="frames/stargreenpink.jpg" alt="Star Green Pink"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/stripesbluered.jpg","Stripes Blue Red"]'><img src="frames/stripesbluered.jpg" alt="Stripes Blue Red"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/stripethin.jpg","Stripe Thin"]'><img src="frames/stripethin.jpg" alt="Stripe Thin"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/toscapolka.jpg","Tosca Polka"]'><img src="frames/toscapolka.jpg" alt="Tosca Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/yellowpinkpolka.jpg","Yellow Pink Polka"]'><img src="frames/yellowpinkpolka.jpg" alt="Yellow Pink Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/yellowpolka.jpg","Yellow Polka"]'><img src="frames/yellowpolka.jpg" alt="Yellow Polka"></button>
+                                <button class="frame-option pattern-option" data-action="setFramePattern" data-action-args='["frames/yellowstar.jpg","Yellow Star"]'><img src="frames/yellowstar.jpg" alt="Yellow Star"></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <button id="reset" class="btn">⟲ Reset</button>
+                </div>
+
+                <div class="info">
+                    <p id="status">Ready</p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="machine">
+                    <div class="camera-top">
+                        <div class="red-dot"></div>
+                        <div class="lens"></div>
+                    </div>
+                    <div class="output-slot"></div>
+                </div>
+
+                <div class="photo-result">
+                    <div id="strip" class="strip">
+                        <div id="photosContainer"></div>
+                        <img src="LOGO.png" id="logoStrip" alt="Logo Strip">
+                    </div>
+                </div>
+                <div id="printAnimationViewport" class="print-animation-viewport" aria-hidden="true"></div>
+
+                <div class="download-actions">
+                    <button id="downloadJPG" class="btn download-button download-primary">
+                        <svg class="download-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 16v4h14v-4" />
+                        </svg>
+                        <span>JPG</span>
+                    </button>
+                    <button id="downloadGIF" class="btn download-button download-secondary">
+                        <svg class="download-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 16v4h14v-4" />
+                        </svg>
+                        <span>GIF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+        <script src="script.js"></script>
+
+        <footer class="app-footer">
+            <div class="wrap">
+                <p>&copy; 2026 wednbOOth | All Rights Reserved</p>
+                <p>Made with <span>♡</span> for your special moments</p>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

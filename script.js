@@ -180,12 +180,97 @@ let faceEffectLastFrame = 0;
 let faceEffectSize = { width: 0, height: 0, pixelRatio: 1 };
 const faceEffectContext = headEffectCanvas.getContext("2d");
 
-const shutter = new Audio(
-    "https://www.soundjay.com/mechanical/camera-shutter-click-01.mp3"
-);
-shutter.preload = "auto";
+let soundContext = null;
+let audioContextWarningShown = false;
 
+function getSoundContext() {
+    if (soundContext) {
+        if (soundContext.state === "suspended") {
+            soundContext.resume().catch(error => {
+                console.warn("Audio playback could not start:", error);
+            });
+        }
+        return soundContext;
+    }
 
+    const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextConstructor) {
+        if (!audioContextWarningShown) {
+            console.warn("Web Audio is unavailable; countdown and print sounds are disabled.");
+            audioContextWarningShown = true;
+        }
+        return null;
+    }
+
+    soundContext = new AudioContextConstructor();
+    soundContext.resume().catch(error => {
+        console.warn("Audio playback could not start:", error);
+    });
+    return soundContext;
+}
+
+function playTone(frequency, duration, volume = 0.12) {
+    const context = getSoundContext();
+    if (!context) return;
+
+    const startTime = context.currentTime;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(frequency, startTime);
+    gain.gain.setValueAtTime(0.0001, startTime);
+    gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration);
+}
+
+function playShutterSound() {
+    const context = getSoundContext();
+    if (!context) return;
+
+    const startTime = context.currentTime;
+    const duration = 0.14;
+    const noiseBuffer = context.createBuffer(
+        1,
+        Math.ceil(context.sampleRate * duration),
+        context.sampleRate
+    );
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let index = 0; index < noiseData.length; index++) {
+        noiseData[index] = Math.random() * 2 - 1;
+    }
+
+    const noise = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const noiseGain = context.createGain();
+    noise.buffer = noiseBuffer;
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(1900, startTime);
+    noiseGain.gain.setValueAtTime(0.0001, startTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.16, startTime + 0.003);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(context.destination);
+    noise.start(startTime);
+    noise.stop(startTime + duration);
+
+    const thump = context.createOscillator();
+    const thumpGain = context.createGain();
+    thump.type = "sine";
+    thump.frequency.setValueAtTime(150, startTime);
+    thump.frequency.exponentialRampToValueAtTime(55, startTime + 0.08);
+    thumpGain.gain.setValueAtTime(0.0001, startTime);
+    thumpGain.gain.exponentialRampToValueAtTime(0.12, startTime + 0.003);
+    thumpGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.09);
+    thump.connect(thumpGain);
+    thumpGain.connect(context.destination);
+    thump.start(startTime);
+    thump.stop(startTime + 0.09);
+}
 
 function isIOS() {
 
@@ -460,11 +545,7 @@ function boxBlur(ctx, width, height, radius) {
 
 }
 
-//homepage
-
-const homePage = document.getElementById("homePage");
-const photoboothApp = document.getElementById("photoboothApp");
-const startBtn = document.getElementById("startBtn");
+// (Homepage dipindah ke index.html. Aplikasi ini langsung aktif.)
 
 
 async function startCamera() {
@@ -575,32 +656,11 @@ async function startCamera() {
 }
 
 
-if (startBtn) {
+document.addEventListener("click", () => {
+    getSoundContext();
+}, { once: true });
 
-    startBtn.addEventListener("click", async function () {
-
-        
-        shutter
-            .play()
-            .then(() => {
-                shutter.pause();
-                shutter.currentTime = 0;
-            })
-            .catch(() => {});
-
-        homePage.classList.add("hide");
-
-        setTimeout(async () => {
-
-            photoboothApp.classList.add("active");
-
-            await startCamera();
-
-        }, 300);
-
-    });
-
-}
+startCamera();
 
 
 
@@ -611,9 +671,11 @@ function updateFrameDropdownClearance() {
 
     if (!frameMenu || !container) return;
 
+    const isOpen = frameMenu.style.display === "block";
+    container.classList.toggle("dropdown-open", isOpen);
     container.style.removeProperty("margin-bottom");
 
-    if (frameMenu.style.display !== "block") return;
+    if (!isOpen) return;
 
     const menuBottom = frameMenu.getBoundingClientRect().bottom;
     const containerBottom = container.getBoundingClientRect().bottom;
@@ -983,9 +1045,7 @@ captureBtn.onclick = async () => {
 
 
 
-            shutter.currentTime = 0;
-
-            shutter.play().catch(() => {});
+            playShutterSound();
 
 
             await wait(150);
@@ -1755,9 +1815,14 @@ function countdown(sec) {
 
         const ticks = Array.from(countdownRingEl.children);
         const startTime = performance.now();
+        let lastAnnouncedRemaining = null;
         const renderCountdown = () => {
             const elapsed = performance.now() - startTime;
             const remaining = sec - Math.floor(elapsed / 1000);
+            if (remaining !== lastAnnouncedRemaining && remaining >= 0) {
+                playTone(remaining === 0 ? 1320 : 880, remaining === 0 ? 0.16 : 0.07);
+                lastAnnouncedRemaining = remaining;
+            }
             countdownNumberEl.textContent = remaining;
             const clearedTickCount = Math.floor((elapsed % 1000) / 1000 * ticks.length);
             ticks.forEach((tick, index) => {
@@ -2364,11 +2429,42 @@ window.addEventListener("pagehide", () => {
 
 });
 
+const delegatedActions = new Map([
+    ["toggleMenu", toggleMenu],
+    ["setLayout", setLayout],
+    ["setFilter", setFilter],
+    ["setHeadEffect", setHeadEffect],
+    ["setTimer", setTimer],
+    ["setFrameColor", setFrameColor],
+    ["setFramePattern", setFramePattern],
+    ["toggleCustomColorPanel", toggleCustomColorPanel]
+]);
+
+document.addEventListener("click", event => {
+    const trigger = event.target.closest("[data-action]");
+    if (!trigger) return;
+
+    const action = delegatedActions.get(trigger.dataset.action);
+    if (!action) {
+        throw new Error(`Unknown app action: ${trigger.dataset.action}`);
+    }
+
+    const args = JSON.parse(trigger.dataset.actionArgs || "[]");
+    if (!Array.isArray(args)) {
+        throw new TypeError("App action arguments must be a JSON array.");
+    }
+
+    if (trigger.dataset.actionEvent === "true") {
+        args.push(event);
+    }
+
+    action(...args);
+});
 
 applyFramePreview();
 
 /* =========================================================
-   BOLA MATA HOMEPAGE
+   BOLA MATA (logo di header)
    Pupil mengikuti kursor/sentuhan, melirik acak saat diam,
    dan berkedip sesekali.
    ========================================================= */
@@ -2377,7 +2473,7 @@ applyFramePreview();
 
     const eyes = Array.from(document.querySelectorAll(".eye"));
 
-    if (!eyes.length || !homePage) return;
+    if (!eyes.length) return;
 
     let lastMove = 0;
 
@@ -2422,8 +2518,6 @@ applyFramePreview();
     // Melirik acak kalau tidak ada gerakan
     setInterval(() => {
 
-        if (homePage.classList.contains("hide")) return;
-
         if (Date.now() - lastMove < 2500) return;
 
         const gx = Math.random() * 2 - 1;
@@ -2436,15 +2530,11 @@ applyFramePreview();
     // Berkedip
     function blink() {
 
-        if (!homePage.classList.contains("hide")) {
+        eyes.forEach(eye => eye.classList.add("blink"));
 
-            eyes.forEach(eye => eye.classList.add("blink"));
-
-            setTimeout(() => {
-                eyes.forEach(eye => eye.classList.remove("blink"));
-            }, 140);
-
-        }
+        setTimeout(() => {
+            eyes.forEach(eye => eye.classList.remove("blink"));
+        }, 140);
 
         setTimeout(blink, 2500 + Math.random() * 2500);
 
